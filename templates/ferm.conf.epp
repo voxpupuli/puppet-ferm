@@ -1,0 +1,16 @@
+# End custom section
+
+domain (ip ip6) table filter {
+  chain INPUT {
+    interface lo ACCEPT;
+    @include '/etc/ferm.d/chains/INPUT.conf';
+  }
+
+  chain OUTPUT {
+    @include '/etc/ferm.d/chains/OUTPUT.conf';
+  }
+
+  chain FORWARD {
+    @include '/etc/ferm.d/chains/FORWARD.conf';
+  }
+}

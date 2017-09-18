@@ -1,0 +1,8 @@
+---
+ferm::manage_service: false
+ferm::manage_configfile: false
+ferm::configfile: /etc/ferm.conf
+ferm::input_policy: DROP
+ferm::forward_policy: DROP
+ferm::output_policy: ACCEPT
+ferm::rules: {}
