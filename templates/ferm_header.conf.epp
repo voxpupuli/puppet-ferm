@@ -1,0 +1,8 @@
+# Currently managed by Puppet
+# Author: Tim Meusel <tim@bastelfreak.de>
+#
+
+# get all ip definitions
+@include '/etc/ferm.d/definitions/';
+
+# Begin custom section
