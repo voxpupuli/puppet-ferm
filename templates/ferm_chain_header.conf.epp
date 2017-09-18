@@ -1,0 +1,8 @@
+<%- | Ferm::Policies $policy,
+| -%>
+# Default policy for this chain
+policy <%= $policy %>;
+
+# connection tracking
+mod state state INVALID DROP;
+mod state state (ESTABLISHED RELATED) ACCEPT;
