@@ -47,7 +47,7 @@ class ferm (
 
   $rules.each |$rulename, $attributes| {
     ferm::rule{$rulename:
-      * => $attributes
+      * => $attributes,
     }
   }
   # import all exported resources with ferm rules for this node

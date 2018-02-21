@@ -1,13 +1,13 @@
 define ferm::rule (
- Ferm::Chains $chain,
- Ferm::Policies $policy,
- Ferm::Protocols $proto,
- String $comment = $name,
- Optional[Variant[Integer,String]] $dport = undef,
- Optional[Variant[Integer,String]] $sport = undef,
- Optional[String] $saddr = undef,
- Optional[String] $daddr = undef,
- Enum['absent','present'] $ensure = 'present',
+  Ferm::Chains $chain,
+  Ferm::Policies $policy,
+  Ferm::Protocols $proto,
+  String $comment = $name,
+  Optional[Variant[Integer,String]] $dport = undef,
+  Optional[Variant[Integer,String]] $sport = undef,
+  Optional[String] $saddr = undef,
+  Optional[String] $daddr = undef,
+  Enum['absent','present'] $ensure = 'present',
 ){
   $proto_real = "proto ${proto}"
 
@@ -25,7 +25,7 @@ define ferm::rule (
   }
   $daddr_real = $daddr ? {
     undef =>  '',
-   default => "daddr @ipfilter(${daddr})"
+    default => "daddr @ipfilter(${daddr})"
   }
   $comment_real = "mod comment comment '${comment}'"
 
