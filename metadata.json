@@ -1,12 +1,12 @@
 {
   "name": "puppet-ferm",
   "version": "0.1.0",
-  "author": "Tim Meusel",
+  "author": "Vox Pupuli",
   "summary": "deploy and manage ferm",
   "license": "AGPL-3.0",
-  "source": "https://github.com/bastelfreak/puppet-ferm.git",
-  "project_page": "https://github.com/bastelfreak/puppet-ferm",
-  "issues_url": "https://github.com/bastelfreak/puppet-ferm/issues",
+  "source": "https://github.com/voxpupuli/puppet-ferm.git",
+  "project_page": "https://github.com/voxpupuli/puppet-ferm",
+  "issues_url": "https://github.com/voxpupuli/puppet-ferm/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
