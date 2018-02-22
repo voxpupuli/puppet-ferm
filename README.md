@@ -178,14 +178,6 @@ bundle install --path .vendor/ --without system_tests --without development --wi
 bundle exec rake test
 ```
 
-For acceptance tests:
-
-```bash
-bundle install --path .vendor/ --with system_tests --without development --without release
-BEAKER_debug=true PUPPET_INSTALL_TYPE=agent bundle exec rake beaker:fedora-25-x64
-BEAKER_debug=true PUPPET_INSTALL_TYPE=agent bundle exec rake acceptance BEAKER_set=docker/centos-7
-```
-
 ## Authors
 
-puppet-lldpd is maintained by [Vox Pupuli](https://voxpupuli.org), it was written by [Tim 'bastelfreak' Meusel](https://github.com/bastelfreak).
+puppet-ferm is maintained by [Vox Pupuli](https://voxpupuli.org), it was written by [Tim 'bastelfreak' Meusel](https://github.com/bastelfreak).
