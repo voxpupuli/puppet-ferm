@@ -1,13 +1,13 @@
 define ferm::rule (
- Ferm::Chains $chain,
- Ferm::Policies $policy,
- Ferm::Protocols $proto,
- String $comment = $name,
- Optional[Variant[Integer,String]] $dport = undef,
- Optional[Variant[Integer,String]] $sport = undef,
- Optional[String] $saddr = undef,
- Optional[String] $daddr = undef,
- Enum['absent','present'] $ensure = 'present',
+  Ferm::Chains $chain,
+  Ferm::Policies $policy,
+  Ferm::Protocols $proto,
+  String $comment = $name,
+  Optional[Variant[Integer,String]] $dport = undef,
+  Optional[Variant[Integer,String]] $sport = undef,
+  Optional[String] $saddr = undef,
+  Optional[String] $daddr = undef,
+  Enum['absent','present'] $ensure = 'present',
 ){
   $proto_real = "proto ${proto}"
 
@@ -25,15 +25,16 @@ define ferm::rule (
   }
   $daddr_real = $daddr ? {
     undef =>  '',
-   default => "daddr @ipfilter(${daddr})"
+    default => "daddr @ipfilter(${daddr})"
   }
   $comment_real = "mod comment comment '${comment}'"
 
-  $trimmed_rule = remove_duplicate_whitespace("${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};")
+  #$trimmed_rule = remove_duplicate_whitespace("${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};")
+  $rule = "${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};"
   if $ensure == 'present' {
     concat::fragment{"${chain}-${name}":
       target  => "/etc/ferm.d/chains/${chain}.conf",
-      content => "${trimmed_rule}\n",
+      content => "${rule}\n",
     }
   }
 }

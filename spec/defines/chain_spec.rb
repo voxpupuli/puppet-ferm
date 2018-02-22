@@ -7,7 +7,7 @@ describe 'ferm::chain', type: :define do
         facts
       end
       let(:title) { 'INPUT' }
-      let(:params) {{policy: 'DROP'}}
+      let(:params) { { policy: 'DROP' } }
 
       context 'default params creates INPUT chain' do
         it { is_expected.to compile.with_all_deps }

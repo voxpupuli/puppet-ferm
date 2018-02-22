@@ -28,15 +28,17 @@ describe 'ferm' do
 
       context 'with managed service' do
         let :params do
-        {manage_service: true}
+          { manage_service: true }
         end
+
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_service('ferm') }
       end
       context 'with managed configfile' do
         let :params do
-        {manage_configfile: true}
+          { manage_configfile: true }
         end
+
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat('/etc/ferm.conf') }
         it { is_expected.to contain_concat__fragment('ferm_header.conf') }

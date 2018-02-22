@@ -19,7 +19,7 @@ describe 'ferm::rule', type: :define do
 
       context 'default params create simple rule' do
         it { is_expected.to compile.with_all_deps }
-        #it { is_expected.to contain_concat__fragment('INPUT-filter-ssh').with_content("proto tcp dport ssh  saddr @ipfilter(127.0.0.1)  ACCEPT;") }
+        # it { is_expected.to contain_concat__fragment('INPUT-filter-ssh').with_content("proto tcp dport ssh  saddr @ipfilter(127.0.0.1)  ACCEPT;") }
         it { is_expected.to contain_concat__fragment('INPUT-filter-ssh') }
       end
     end
