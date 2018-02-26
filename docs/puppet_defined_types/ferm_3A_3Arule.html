@@ -6,7 +6,7 @@
 <title>
   Defined Type: ferm::rule
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -236,21 +236,23 @@
 34
 35
 36
-37</pre>
+37
+38
+39</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/rule.pp', line 1</span>
 
 define ferm::rule (
- Ferm::Chains $chain,
- Ferm::Policies $policy,
- Ferm::Protocols $proto,
- String $comment = $name,
- Optional[Variant[Integer,String]] $dport = undef,
- Optional[Variant[Integer,String]] $sport = undef,
- Optional[String] $saddr = undef,
- Optional[String] $daddr = undef,
- Enum[&#39;absent&#39;,&#39;present&#39;] $ensure = &#39;present&#39;,
+  Ferm::Chains $chain,
+  Ferm::Policies $policy,
+  Ferm::Protocols $proto,
+  String $comment = $name,
+  Optional[Variant[Integer,String]] $dport = undef,
+  Optional[Variant[Integer,String]] $sport = undef,
+  Optional[String] $saddr = undef,
+  Optional[String] $daddr = undef,
+  Enum[&#39;absent&#39;,&#39;present&#39;] $ensure = &#39;present&#39;,
 ){
   $proto_real = &quot;proto ${proto}&quot;
 
@@ -268,13 +270,15 @@ define ferm::rule (
   }
   $daddr_real = $daddr ? {
     undef =&gt;  &#39;&#39;,
-   default =&gt; &quot;daddr @ipfilter(${daddr})&quot;
+    default =&gt; &quot;daddr @ipfilter(${daddr})&quot;
   }
+  $comment_real = &quot;mod comment comment &#39;${comment}&#39;&quot;
 
+  $rule = squeeze(&quot;${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};&quot;, &#39; &#39;)
   if $ensure == &#39;present&#39; {
     concat::fragment{&quot;${chain}-${name}&quot;:
       target  =&gt; &quot;/etc/ferm.d/chains/${chain}.conf&quot;,
-      content =&gt; &quot;${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};\n&quot;,
+      content =&gt; &quot;${rule}\n&quot;,
     }
   }
 }</pre>
