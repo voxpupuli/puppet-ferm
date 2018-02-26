@@ -6,7 +6,7 @@
 <title>
   Puppet Class: ferm
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -250,7 +250,9 @@ Allowed value: Any Hash</p>
 50
 51
 52
-53</pre>
+53
+54
+55</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 31</span>
@@ -274,9 +276,11 @@ class ferm (
 
   $rules.each |$rulename, $attributes| {
     ferm::rule{$rulename:
-      * =&gt; $attributes
+      * =&gt; $attributes,
     }
   }
+  # import all exported resources with ferm rules for this node
+  Ferm::Rule &lt;&lt;| tag == $trusted[&#39;certname&#39;] |&gt;&gt;
 }</pre>
       </td>
     </tr>

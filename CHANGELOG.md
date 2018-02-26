@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.1.0) (2018-02-26)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.0.0...v1.1.0)
+
+**Implemented enhancements:**
+
+- use squeeze\(\) to remove duplicate whitespace [\#3](https://github.com/voxpupuli/puppet-ferm/pull/3) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- release 1.0.0 [\#2](https://github.com/voxpupuli/puppet-ferm/pull/2) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.0.0) (2018-02-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/2c1be5b9f0413e27f0fceed71b1776a263356758...v1.0.0)
