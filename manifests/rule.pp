@@ -29,8 +29,7 @@ define ferm::rule (
   }
   $comment_real = "mod comment comment '${comment}'"
 
-  #$trimmed_rule = remove_duplicate_whitespace("${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};")
-  $rule = "${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};"
+  $rule = squeeze("${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};", ' ')
   if $ensure == 'present' {
     concat::fragment{"${chain}-${name}":
       target  => "/etc/ferm.d/chains/${chain}.conf",
