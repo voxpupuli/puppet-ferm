@@ -30,7 +30,7 @@ rules.
 This is very easy:
 
 ```puppet
-include ferm
+include ::ferm
 ```
 
 This will install the package, but nothing more. It won't explicitly enable it
