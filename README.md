@@ -11,6 +11,7 @@
 ## Table of Contents
 
 * [Overview](#overview)
+* [What happened to older releases?](#what-happenend-to-older-releases)
 * [Setup](#setup)
 * [Support](#support)
 * [Reference](#reference)
@@ -24,6 +25,11 @@
 This module manages the [ferm](http://ferm.foo-projects.org/) firewalling
 software. It allows you to configure the actual software, but also all related
 rules.
+
+## What happened to older releases?
+
+You maybe wonder what happend to release 1.1.0 and 1.0.0. We had to take them
+down because they contained sensitive information.
 
 ## Setup
 
