@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v1.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.1.0) (2018-02-26)
+## [v1.1.1](https://github.com/voxpupuli/puppet-ferm/tree/v1.1.1) (2018-03-15)
 
-[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.0.0...v1.1.0)
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/2d355a4c1baadc761d6b12645d0274da8866f722...v1.1.1)
 
 **Implemented enhancements:**
 
@@ -14,14 +14,9 @@ These should not affect the functionality of the module.
 
 **Merged pull requests:**
 
+- add notice about older releases [\#7](https://github.com/voxpupuli/puppet-ferm/pull/7) ([bastelfreak](https://github.com/bastelfreak))
+- Release 1.1.0 [\#4](https://github.com/voxpupuli/puppet-ferm/pull/4) ([bastelfreak](https://github.com/bastelfreak))
 - release 1.0.0 [\#2](https://github.com/voxpupuli/puppet-ferm/pull/2) ([bastelfreak](https://github.com/bastelfreak))
-
-## [v1.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.0.0) (2018-02-22)
-
-[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/2c1be5b9f0413e27f0fceed71b1776a263356758...v1.0.0)
-
-**Merged pull requests:**
-
 - modulesync 1.8.0 [\#1](https://github.com/voxpupuli/puppet-ferm/pull/1) ([bastelfreak](https://github.com/bastelfreak))
 
 
