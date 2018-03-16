@@ -16,6 +16,9 @@
 # @param configfile [Stdlib::Absolutepath] path to the config file
 #   Default value: /etc/ferm.conf
 #   Allowed values: Stdlib::Absolutepath
+# @param disable_conntrack [Boolean] disable/enable the generation of conntrack rules
+#   Default value: false
+#   Allowed values: (true|false)
 # @param forward_policy [Ferm::Policies] default policy for the FORWARD chain
 #   Default value: DROP
 #   Allowed values: (ACCEPT|DROP|REJECT)
@@ -32,6 +35,7 @@ class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
   Stdlib::Absolutepath $configfile,
+  Boolean $disable_conntrack,
   Ferm::Policies $forward_policy,
   Ferm::Policies $output_policy,
   Ferm::Policies $input_policy,
