@@ -131,7 +131,10 @@
 43
 44
 45
-46</pre>
+46
+47
+48
+49</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/config.pp', line 3</span>
@@ -171,13 +174,16 @@ class ferm::config {
   }
 
   ferm::chain{&#39;INPUT&#39;:
-    policy =&gt; $ferm::input_policy,
+    policy            =&gt; $ferm::input_policy,
+    disable_conntrack =&gt; $ferm::disable_conntrack,
   }
   ferm::chain{&#39;FORWARD&#39;:
-    policy =&gt; $ferm::forward_policy,
+    policy            =&gt; $ferm::forward_policy,
+    disable_conntrack =&gt; $ferm::disable_conntrack,
   }
   ferm::chain{&#39;OUTPUT&#39;:
-    policy =&gt; $ferm::output_policy,
+    policy            =&gt; $ferm::output_policy,
+    disable_conntrack =&gt; $ferm::disable_conntrack,
   }
 }</pre>
       </td>

@@ -97,6 +97,21 @@
   
     <li>
       
+        <span class='name'>disable_conntrack</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>disable/enable usage of conntrack</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>chain</span>
       
       
@@ -122,7 +137,6 @@
         <pre class="lines">
 
 
-4
 5
 6
 7
@@ -138,13 +152,21 @@
 17
 18
 19
-20</pre>
+20
+21
+22
+23
+24
+25
+26
+27</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/chain.pp', line 4</span>
+        <pre class="code"><span class="info file"># File 'manifests/chain.pp', line 5</span>
 
 define ferm::chain (
   Ferm::Policies $policy,
+  Boolean $disable_conntrack,
   Ferm::Chains $chain = $name,
 ) {
 
@@ -156,7 +178,12 @@ define ferm::chain (
 
   concat::fragment{&quot;${chain}-policy&quot;:
     target  =&gt; &quot;/etc/ferm.d/chains/${chain}.conf&quot;,
-    content =&gt; epp(&quot;${module_name}/ferm_chain_header.conf.epp&quot;, {&#39;policy&#39; =&gt; $policy }),
+    content =&gt; epp(
+      &quot;${module_name}/ferm_chain_header.conf.epp&quot;, {
+        &#39;policy&#39;            =&gt; $policy,
+        &#39;disable_conntrack&#39; =&gt; $disable_conntrack,
+      }
+    ),
     order   =&gt; &#39;01&#39;,
   }
 }</pre>
