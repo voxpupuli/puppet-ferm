@@ -1,8 +1,11 @@
 <%- | Ferm::Policies $policy,
+      Boolean $disable_conntrack,
 | -%>
 # Default policy for this chain
 policy <%= $policy %>;
 
+<% unless $disable_conntrack { -%>
 # connection tracking
 mod state state INVALID DROP;
 mod state state (ESTABLISHED RELATED) ACCEPT;
+<% } -%>

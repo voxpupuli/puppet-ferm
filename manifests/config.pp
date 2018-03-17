@@ -35,12 +35,15 @@ class ferm::config {
   }
 
   ferm::chain{'INPUT':
-    policy => $ferm::input_policy,
+    policy            => $ferm::input_policy,
+    disable_conntrack => $ferm::disable_conntrack,
   }
   ferm::chain{'FORWARD':
-    policy => $ferm::forward_policy,
+    policy            => $ferm::forward_policy,
+    disable_conntrack => $ferm::disable_conntrack,
   }
   ferm::chain{'OUTPUT':
-    policy => $ferm::output_policy,
+    policy            => $ferm::output_policy,
+    disable_conntrack => $ferm::disable_conntrack,
   }
 }
