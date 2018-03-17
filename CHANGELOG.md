@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.2.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.2.0) (2018-03-17)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.1.1...v1.2.0)
+
+**Implemented enhancements:**
+
+- Make usage of conntrack optional [\#9](https://github.com/voxpupuli/puppet-ferm/issues/9)
+- introduce parameter disable\_conntrack [\#10](https://github.com/voxpupuli/puppet-ferm/pull/10) ([kBite](https://github.com/kBite))
+
+**Merged pull requests:**
+
+- release 1.1.1 [\#8](https://github.com/voxpupuli/puppet-ferm/pull/8) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.1.1](https://github.com/voxpupuli/puppet-ferm/tree/v1.1.1) (2018-03-15)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/2d355a4c1baadc761d6b12645d0274da8866f722...v1.1.1)

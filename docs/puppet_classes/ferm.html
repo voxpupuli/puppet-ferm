@@ -152,6 +152,23 @@ Allowed values: Stdlib::Absolutepath</p>
   
     <li>
       
+        <span class='name'>disable_conntrack</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>disable/enable the generation of conntrack rules
+Default value: false
+Allowed values: (true|false)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>forward_policy</span>
       
       
@@ -228,9 +245,6 @@ Allowed value: Any Hash</p>
         <pre class="lines">
 
 
-31
-32
-33
 34
 35
 36
@@ -252,15 +266,20 @@ Allowed value: Any Hash</p>
 52
 53
 54
-55</pre>
+55
+56
+57
+58
+59</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 31</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 34</span>
 
 class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
   Stdlib::Absolutepath $configfile,
+  Boolean $disable_conntrack,
   Ferm::Policies $forward_policy,
   Ferm::Policies $output_policy,
   Ferm::Policies $input_policy,
