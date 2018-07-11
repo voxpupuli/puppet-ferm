@@ -18,6 +18,11 @@ class ferm::service {
         line  => 'ENABLED="yes"',
         match => 'ENABLED=',
       }
+      file_line{'disable_ferm_cache':
+        path  => '/etc/default/ferm',
+        line  => 'CACHE="no"',
+        match => 'CACHE=',
+      }
     }
   }
 }
