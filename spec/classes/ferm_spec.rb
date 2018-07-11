@@ -31,7 +31,7 @@ describe 'ferm' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_service('ferm') }
-        if facts[:os]['name'] == "Ubuntu"
+        if facts[:os]['name'] == 'Ubuntu'
           it { is_expected.to contain_file_line('enable_ferm') }
           it { is_expected.to contain_file_line('disable_ferm_cache') }
         end
