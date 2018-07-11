@@ -31,14 +31,21 @@ describe 'ferm' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_service('ferm') }
+        if facts[:os]['name'] == "Ubuntu"
+          it { is_expected.to contain_file_line('enable_ferm') }
+        end
       end
       context 'with managed configfile' do
         let :params do
           { manage_configfile: true }
         end
 
+        if facts[:os]['name'] == 'Ubuntu'
+          it { is_expected.to contain_concat('/etc/ferm/ferm.conf') }
+        else
+          it { is_expected.to contain_concat('/etc/ferm.conf') }
+        end
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_concat('/etc/ferm.conf') }
         it { is_expected.to contain_concat__fragment('ferm_header.conf') }
         it { is_expected.to contain_concat__fragment('ferm.conf') }
       end
