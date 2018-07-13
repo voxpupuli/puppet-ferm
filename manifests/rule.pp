@@ -7,6 +7,7 @@ define ferm::rule (
   Optional[Variant[Integer,String]] $sport = undef,
   Optional[String] $saddr = undef,
   Optional[String] $daddr = undef,
+  Optional[String[1]] $proto_options = undef,
   Enum['absent','present'] $ensure = 'present',
 ){
   $proto_real = "proto ${proto}"
@@ -24,12 +25,16 @@ define ferm::rule (
     default => "saddr @ipfilter(${saddr})",
   }
   $daddr_real = $daddr ? {
-    undef =>  '',
+    undef   =>  '',
     default => "daddr @ipfilter(${daddr})"
+  }
+  $proto_options_real = $proto_options ? {
+    undef   =>  '',
+    default => $proto_options
   }
   $comment_real = "mod comment comment '${comment}'"
 
-  $rule = squeeze("${comment_real} ${proto_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};", ' ')
+  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};", ' ')
   if $ensure == 'present' {
     concat::fragment{"${chain}-${name}":
       target  => "/etc/ferm.d/chains/${chain}.conf",
