@@ -131,6 +131,20 @@ The desired policy. Allowed values are Enum['ACCEPT','DROP', 'REJECT']
 
 the protocol we would like to filter. Allowed values are Enum['icmp', 'tcp', 'udp']
 
+### `proto_options`
+
+The protocol options we would like to add.
+The following example will suppress the hostname in programs like `traceroute`:
+```yaml
+---
+ferm::rules:
+  'drop_output_traceroute':
+    chain: 'OUTPUT'
+    policy: 'DROP'
+    proto: 'icmp'
+    proto_options: 'icmp-type time-exceeded'
+```
+
 #### `comment`
 
 A comment that will be written into the file and into ip(6)tables
