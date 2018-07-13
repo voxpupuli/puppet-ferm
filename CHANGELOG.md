@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.3.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.3.0) (2018-07-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.2.0...v1.3.0)
+
+**Implemented enhancements:**
+
+- Add `proto\_options` to enable usage of icmp types [\#20](https://github.com/voxpupuli/puppet-ferm/pull/20) ([kBite](https://github.com/kBite))
+- Add official ubuntu support [\#17](https://github.com/voxpupuli/puppet-ferm/pull/17) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- ferm fails to apply changed/new rules on Ubuntu 16.04 [\#16](https://github.com/voxpupuli/puppet-ferm/issues/16)
+
+**Merged pull requests:**
+
+- Remove docker nodesets [\#15](https://github.com/voxpupuli/puppet-ferm/pull/15) ([bastelfreak](https://github.com/bastelfreak))
+- drop EOL OSs; fix puppet version range [\#13](https://github.com/voxpupuli/puppet-ferm/pull/13) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.2.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.2.0) (2018-03-17)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.1.1...v1.2.0)
@@ -13,24 +31,14 @@ These should not affect the functionality of the module.
 - Make usage of conntrack optional [\#9](https://github.com/voxpupuli/puppet-ferm/issues/9)
 - introduce parameter disable\_conntrack [\#10](https://github.com/voxpupuli/puppet-ferm/pull/10) ([kBite](https://github.com/kBite))
 
-**Merged pull requests:**
-
-- release 1.1.1 [\#8](https://github.com/voxpupuli/puppet-ferm/pull/8) ([bastelfreak](https://github.com/bastelfreak))
-
 ## [v1.1.1](https://github.com/voxpupuli/puppet-ferm/tree/v1.1.1) (2018-03-15)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/2d355a4c1baadc761d6b12645d0274da8866f722...v1.1.1)
 
-**Implemented enhancements:**
-
-- use squeeze\(\) to remove duplicate whitespace [\#3](https://github.com/voxpupuli/puppet-ferm/pull/3) ([bastelfreak](https://github.com/bastelfreak))
-
 **Merged pull requests:**
 
+- release 1.1.1 [\#8](https://github.com/voxpupuli/puppet-ferm/pull/8) ([bastelfreak](https://github.com/bastelfreak))
 - add notice about older releases [\#7](https://github.com/voxpupuli/puppet-ferm/pull/7) ([bastelfreak](https://github.com/bastelfreak))
-- Release 1.1.0 [\#4](https://github.com/voxpupuli/puppet-ferm/pull/4) ([bastelfreak](https://github.com/bastelfreak))
-- release 1.0.0 [\#2](https://github.com/voxpupuli/puppet-ferm/pull/2) ([bastelfreak](https://github.com/bastelfreak))
-- modulesync 1.8.0 [\#1](https://github.com/voxpupuli/puppet-ferm/pull/1) ([bastelfreak](https://github.com/bastelfreak))
 
 
 
