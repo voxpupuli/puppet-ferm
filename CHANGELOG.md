@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.3.2](https://github.com/voxpupuli/puppet-ferm/tree/v1.3.2) (2018-10-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.3.1...v1.3.2)
+
+**Merged pull requests:**
+
+- allow puppet 6.x and  puppetlabs/concat 5.x [\#27](https://github.com/voxpupuli/puppet-ferm/pull/27) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.3.1](https://github.com/voxpupuli/puppet-ferm/tree/v1.3.1) (2018-08-31)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.3.0...v1.3.1)
