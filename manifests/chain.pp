@@ -1,8 +1,8 @@
 # defined resource which creates all rules for one chain
-# @param policy [Ferm::Policies] Set the default policy for a CHAIN
-# @param disable_conntrack [Boolean] disable/enable usage of conntrack
-# @param chain [Ferm::Chains] name of the chain that should be managed
-# @param log_dropped_packets [Boolean] boolean to enable/disable logging of packets to the kernel log, if no explicit chain matched
+# @param policy Set the default policy for a CHAIN
+# @param disable_conntrack Disable/Enable usage of conntrack
+# @param chain Name of the chain that should be managed
+# @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 define ferm::chain (
   Ferm::Policies $policy,
   Boolean $disable_conntrack,
