@@ -7,30 +7,39 @@
 #   manage_service =>  true,
 # }
 #
-# @param manage_service [Boolean] disable/enable the management of the ferm daemon
+# @param manage_service Disable/Enable the management of the ferm daemon
 #   Default value: false
 #   Allowed values: (true|false)
-# @param manage_configfile [Boolean] disable/enable the management of the ferm default config
+# @param manage_configfile Disable/Enable the management of the ferm default config
 #   Default value: false
 #   Allowed values: (true|false)
-# @param configfile [Stdlib::Absolutepath] path to the config file
+# @param configfile Path to the config file
 #   Default value: /etc/ferm.conf
 #   Allowed values: Stdlib::Absolutepath
-# @param disable_conntrack [Boolean] disable/enable the generation of conntrack rules
+# @param disable_conntrack Disable/Enable the generation of conntrack rules
 #   Default value: false
 #   Allowed values: (true|false)
-# @param forward_policy [Ferm::Policies] default policy for the FORWARD chain
+# @param forward_policy Default policy for the FORWARD chain
 #   Default value: DROP
 #   Allowed values: (ACCEPT|DROP|REJECT)
-# @param output_policy [Ferm::Policies] default policy for the OUTPUT chain
+# @param output_policy Default policy for the OUTPUT chain
 #   Default value: ACCEPT
 #   Allowed values: (ACCEPT|DROP|REJECT)
-# @param input_policy [Ferm::Policies] default policy for the INPUT chain
+# @param input_policy Default policy for the INPUT chain
 #   Default value: DROP
 #   Allowed values: (ACCEPT|DROP|REJECT)
-# @param rules a hash that holds all data for ferm::rule
+# @param rules A hash that holds all data for ferm::rule
 #   Default value: Empty Hash
 #   Allowed value: Any Hash
+# @param forward_log_dropped_packets Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no explicit chain matched
+#   Default value: false
+#   Allowed values: (true|false)
+# @param output_log_dropped_packets Enable/Disable logging in the OUTPUT chain of packets to the kernel log, if no explicit chain matched
+#   Default value: false
+#   Allowed values: (true|false)
+# @param input_log_dropped_packets Enable/Disable logging in the INPUT chain of packets to the kernel log, if no explicit chain matched
+#   Default value: false
+#   Allowed values: (true|false)
 class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
@@ -39,6 +48,9 @@ class ferm (
   Ferm::Policies $forward_policy,
   Ferm::Policies $output_policy,
   Ferm::Policies $input_policy,
+  Boolean $forward_log_dropped_packets,
+  Boolean $output_log_dropped_packets,
+  Boolean $input_log_dropped_packets,
   Hash $rules,
 ) {
   contain ferm::install
