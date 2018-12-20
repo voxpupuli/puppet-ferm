@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v1.4.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.4.0) (2018-12-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.3.2...v1.4.0)
+
+**Implemented enhancements:**
+
+- Implement logging to kernel log [\#32](https://github.com/voxpupuli/puppet-ferm/pull/32) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.3.2](https://github.com/voxpupuli/puppet-ferm/tree/v1.3.2) (2018-10-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.3.1...v1.3.2)
