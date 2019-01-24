@@ -5,6 +5,8 @@ class ferm::config {
   # this is a private class
   assert_private("You're not supposed to do that!")
 
+  $_ip = join($ferm::ip_versions, ' ')
+
   # copy static files to ferm
   # on a long term point of view, we want to package this
   file{'/etc/ferm.d':
@@ -29,7 +31,11 @@ class ferm::config {
 
     concat::fragment{'ferm.conf':
       target  => $ferm::configfile,
-      content => epp("${module_name}/ferm.conf.epp"),
+      content => epp(
+        "${module_name}/ferm.conf.epp", {
+          'ip' => $_ip,
+          }
+      ),
       order   => '50',
     }
   }

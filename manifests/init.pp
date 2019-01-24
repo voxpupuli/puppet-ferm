@@ -2,9 +2,10 @@
 #
 # This class manages ferm installation and rule generation on modern linux systems
 #
-# @example deploy ferm and start it
+# @example deploy ferm and start it, on node with only ipv6 enabled
 # class{'ferm':
-#   manage_service =>  true,
+#   manage_service => true,
+#   ip_versions    =>  ['ip6'],
 # }
 #
 # @param manage_service Disable/Enable the management of the ferm daemon
@@ -40,6 +41,8 @@
 # @param input_log_dropped_packets Enable/Disable logging in the INPUT chain of packets to the kernel log, if no explicit chain matched
 #   Default value: false
 #   Allowed values: (true|false)
+# @param ip_versions Set list of versions of ip we want ot use.
+#   Default value: ['ip', 'ip6']
 class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
@@ -52,6 +55,7 @@ class ferm (
   Boolean $output_log_dropped_packets,
   Boolean $input_log_dropped_packets,
   Hash $rules,
+  Array[Enum['ip','ip6']] $ip_versions,
 ) {
   contain ferm::install
   contain ferm::config
