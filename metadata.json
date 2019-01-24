@@ -1,6 +1,6 @@
 {
   "name": "puppet-ferm",
-  "version": "1.4.1-rc0",
+  "version": "2.0.0",
   "author": "Vox Pupuli",
   "summary": "deploy and manage ferm",
   "license": "AGPL-3.0",
