@@ -7,7 +7,7 @@
 
 _Public Classes_
 
-* [`ferm`](#ferm): Class: ferm  This class manages ferm installation and rule generation on modern linux systems  class{'ferm':   manage_service =>  true, }
+* [`ferm`](#ferm): Class: ferm  This class manages ferm installation and rule generation on modern linux systems  class{'ferm':   manage_service => true,   ip_v
 
 _Private Classes_
 
@@ -29,12 +29,13 @@ Class: ferm
 This class manages ferm installation and rule generation on modern linux systems
 
 class{'ferm':
-  manage_service =>  true,
+  manage_service => true,
+  ip_versions    =>  ['ip6'],
 }
 
 #### Examples
 
-##### deploy ferm and start it
+##### deploy ferm and start it, on node with only ipv6 enabled
 
 ```puppet
 
@@ -131,6 +132,13 @@ Data type: `Boolean`
 Enable/Disable logging in the INPUT chain of packets to the kernel log, if no explicit chain matched
 Default value: false
 Allowed values: (true|false)
+
+##### `ip_versions`
+
+Data type: `Array[Enum['ip','ip6']]`
+
+Set list of versions of ip we want ot use.
+Default value: ['ip', 'ip6']
 
 ## Defined types
 

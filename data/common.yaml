@@ -10,3 +10,6 @@ ferm::rules: {}
 ferm::input_log_dropped_packets: false
 ferm::forward_log_dropped_packets: false
 ferm::output_log_dropped_packets: false
+ferm::ip_versions:
+  - ip
+  - ip6

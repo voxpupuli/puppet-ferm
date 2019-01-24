@@ -1,6 +1,7 @@
+<%- | String[1] $ip | -%>
 # End custom section
 
-domain (ip ip6) table filter {
+domain (<%= $ip %>) table filter {
   chain INPUT {
     interface lo ACCEPT;
     @include '/etc/ferm.d/chains/INPUT.conf';
