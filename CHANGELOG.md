@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.0.0) (2019-01-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.4.0...v2.0.0)
+
+**Breaking changes:**
+
+- modulesync 2.5.1 and drop Puppet4 [\#36](https://github.com/voxpupuli/puppet-ferm/pull/36) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- permit to choose ipv4, ipv6 or both [\#35](https://github.com/voxpupuli/puppet-ferm/pull/35) ([Dan33l](https://github.com/Dan33l))
+
 ## [v1.4.0](https://github.com/voxpupuli/puppet-ferm/tree/v1.4.0) (2018-12-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.3.2...v1.4.0)
