@@ -212,7 +212,7 @@ Default value: $name
 
 ##### `dport`
 
-Data type: `Optional[Variant[Integer,String]]`
+Data type: `Optional[Variant[Stdlib::Port,String[1]]]`
 
 The destination port, can be a range as string or a single port number as integer
 
@@ -220,7 +220,7 @@ Default value: `undef`
 
 ##### `sport`
 
-Data type: `Optional[Variant[Integer,String]]`
+Data type: `Optional[Variant[Stdlib::Port,String[1]]]`
 
 The source port, can be a range as string or a single port number as integer
 
@@ -228,7 +228,7 @@ Default value: `undef`
 
 ##### `saddr`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The source address we want to match
 
@@ -236,7 +236,7 @@ Default value: `undef`
 
 ##### `daddr`
 
-Data type: `Optional[String]`
+Data type: `Optional[String[1]]`
 
 The destination address we want to match
 
