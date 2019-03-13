@@ -1,1 +1,1 @@
-type Ferm::Protocols = Enum['icmp', 'tcp', 'udp']
+type Ferm::Protocols = Enum['icmp', 'tcp', 'udp', 'all']
