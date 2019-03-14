@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.1.0) (2019-03-14)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.0.0...v2.1.0)
+
+**Implemented enhancements:**
+
+- add 'all' to protocols [\#40](https://github.com/voxpupuli/puppet-ferm/pull/40) ([kBite](https://github.com/kBite))
+- enhance type validation; require stdlib 4.25.0 [\#39](https://github.com/voxpupuli/puppet-ferm/pull/39) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.0.0) (2019-01-24)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v1.4.0...v2.0.0)
