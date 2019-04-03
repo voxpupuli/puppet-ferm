@@ -22,6 +22,9 @@ describe 'ferm' do
         it { is_expected.to contain_file('/etc/ferm.d/chains') }
         it { is_expected.not_to contain_service('ferm') }
         it { is_expected.not_to contain_file('/etc/ferm.conf') }
+        if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
+          it { is_expected.not_to contain_file('/etc/init.d/ferm') }
+        end
       end
 
       context 'with managed service' do
@@ -49,6 +52,17 @@ describe 'ferm' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('ferm_header.conf') }
         it { is_expected.to contain_concat__fragment('ferm.conf') }
+      end
+      context 'with managed initfile' do
+        let :params do
+          { manage_initfile: true }
+        end
+
+        if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
+          it { is_expected.to contain_file('/etc/init.d/ferm') }
+        else
+          it { is_expected.not_to contain_file('/etc/init.d/ferm') }
+        end
       end
       context 'it creates chains' do
         it { is_expected.to contain_concat__fragment('FORWARD-policy') }
