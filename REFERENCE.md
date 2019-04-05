@@ -61,6 +61,14 @@ Disable/Enable the management of the ferm default config
 Default value: false
 Allowed values: (true|false)
 
+##### `manage_initfile`
+
+Data type: `Boolean`
+
+Disable/Enable the management of the ferm init script for RedHat-based OS
+Default value: false
+Allowed values: (true|false)
+
 ##### `configfile`
 
 Data type: `Stdlib::Absolutepath`
