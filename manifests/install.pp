@@ -8,4 +8,14 @@ class ferm::install {
   package{'ferm':
     ensure => 'latest',
   }
+
+  if $ferm::manage_initfile {
+    if $facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['major'], '6') <= 0 {
+      file{'/etc/init.d/ferm':
+        ensure => 'present',
+        mode   => '0755',
+        source => "puppet:///modules/${module_name}/ferm",
+      }
+    }
+  }
 }
