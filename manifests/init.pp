@@ -14,6 +14,9 @@
 # @param manage_configfile Disable/Enable the management of the ferm default config
 #   Default value: false
 #   Allowed values: (true|false)
+# @param manage_initfile Disable/Enable the management of the ferm init script for RedHat-based OS
+#   Default value: false
+#   Allowed values: (true|false)
 # @param configfile Path to the config file
 #   Default value: /etc/ferm.conf
 #   Allowed values: Stdlib::Absolutepath
@@ -46,6 +49,7 @@
 class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
+  Boolean $manage_initfile,
   Stdlib::Absolutepath $configfile,
   Boolean $disable_conntrack,
   Ferm::Policies $forward_policy,

@@ -95,6 +95,10 @@ The main class has the following parameters:
 
 [Boolean] disable/enable the management of the ferm default config
 
+#### `manage_initfile`
+
+[Boolean] disable/enable the management of the ferm init script for RedHat-based OS
+
 #### `configfile`
 
 [Stdlib::Absolutepath] path to the config file
