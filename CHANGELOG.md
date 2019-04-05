@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.2.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.2.0) (2019-04-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.1.0...v2.2.0)
+
+**Implemented enhancements:**
+
+- Add RedHat init script [\#43](https://github.com/voxpupuli/puppet-ferm/pull/43) ([kBite](https://github.com/kBite))
+
 ## [v2.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.1.0) (2019-03-14)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.0.0...v2.1.0)
