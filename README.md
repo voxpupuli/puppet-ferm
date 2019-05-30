@@ -178,6 +178,10 @@ Same as above, just for the destination IP address
 
 Add or remove it from the ruleset
 
+#### `interface`
+
+If set, this rule only applies to this specific interface
+
 ### chain defined resource
 
 The module defines the three default chains for you, INPUT, FORWARD and OUTPUT.

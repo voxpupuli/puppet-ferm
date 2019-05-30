@@ -8,6 +8,7 @@
 # @param saddr The source address we want to match
 # @param daddr The destination address we want to match
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
+# @param interface an Optional interface where this rule should be applied
 # @param ensure Set the rule to present or absent
 define ferm::rule (
   Ferm::Chains $chain,
@@ -19,6 +20,7 @@ define ferm::rule (
   Optional[String[1]] $saddr = undef,
   Optional[String[1]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
+  Optional[String[1]] $interface = undef,
   Enum['absent','present'] $ensure = 'present',
 ){
   $proto_real = "proto ${proto}"
@@ -47,9 +49,33 @@ define ferm::rule (
 
   $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};", ' ')
   if $ensure == 'present' {
-    concat::fragment{"${chain}-${name}":
-      target  => "/etc/ferm.d/chains/${chain}.conf",
-      content => "${rule}\n",
+    if $interface {
+      unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
+        concat::fragment{"${chain}-${interface}-aaa":
+          target  => "/etc/ferm.d/chains/${chain}.conf",
+          content => "interface ${interface} {\n",
+          order   => $interface,
+        }
+      }
+
+      concat::fragment{"${chain}-${interface}-${name}":
+        target  => "/etc/ferm.d/chains/${chain}.conf",
+        content => "  ${rule}\n",
+        order   => $interface,
+      }
+
+      unless defined(Concat::Fragment["${chain}-${interface}-zzz"]) {
+        concat::fragment{"${chain}-${interface}-zzz":
+          target  => "/etc/ferm.d/chains/${chain}.conf",
+          content => "}\n",
+          order   => $interface,
+        }
+      }
+    } else {
+      concat::fragment{"${chain}-${name}":
+        target  => "/etc/ferm.d/chains/${chain}.conf",
+        content => "${rule}\n",
+      }
     }
   }
 }

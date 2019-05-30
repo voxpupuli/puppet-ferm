@@ -31,7 +31,7 @@ define ferm::chain (
     concat::fragment{"${chain}-footer":
       target  => "/etc/ferm.d/chains/${chain}.conf",
       content => epp("${module_name}/ferm_chain_footer.conf.epp", { 'chain' => $chain }),
-      order   => '99',
+      order   => 'zzzzzzzzzzzzzzzzzzzzz',
     }
   }
 }

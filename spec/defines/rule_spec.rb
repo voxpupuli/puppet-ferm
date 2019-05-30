@@ -6,21 +6,39 @@ describe 'ferm::rule', type: :define do
       let :facts do
         facts
       end
-      let(:title) { 'filter-ssh' }
-      let :params do
-        {
-          chain: 'INPUT',
-          policy: 'ACCEPT',
-          proto: 'tcp',
-          dport: '22',
-          saddr: '127.0.0.1'
-        }
-      end
 
-      context 'default params create simple rule' do
+      context 'without a specific interface' do
+        let(:title) { 'filter-ssh' }
+        let :params do
+          {
+            chain: 'INPUT',
+            policy: 'ACCEPT',
+            proto: 'tcp',
+            dport: '22',
+            saddr: '127.0.0.1'
+          }
+        end
+
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('INPUT-filter-ssh').with_content("mod comment comment 'filter-ssh' proto tcp dport 22 saddr @ipfilter(127.0.0.1) ACCEPT;\n") }
-        it { is_expected.to contain_concat__fragment('INPUT-filter-ssh') }
+      end
+      context 'with a specific interface' do
+        let(:title) { 'filter-ssh' }
+        let :params do
+          {
+            chain: 'INPUT',
+            policy: 'ACCEPT',
+            proto: 'tcp',
+            dport: '22',
+            saddr: '127.0.0.1',
+            interface: 'eth0'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('INPUT-eth0-filter-ssh').with_content("  mod comment comment 'filter-ssh' proto tcp dport 22 saddr @ipfilter(127.0.0.1) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('INPUT-eth0-aaa').with_content("interface eth0 {\n") }
+        it { is_expected.to contain_concat__fragment('INPUT-eth0-zzz').with_content("}\n") }
       end
     end
   end
