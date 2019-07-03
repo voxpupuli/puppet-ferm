@@ -1,6 +1,7 @@
 <%- | Ferm::Policies $policy,
       Boolean $disable_conntrack,
 | -%>
+# THIS FILE IS MANAGED BY PUPPET
 # Default policy for this chain
 policy <%= $policy %>;
 
