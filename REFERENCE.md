@@ -7,7 +7,7 @@
 
 _Public Classes_
 
-* [`ferm`](#ferm): Class: ferm  This class manages ferm installation and rule generation on modern linux systems  class{'ferm':   manage_service => true,   ip_v
+* [`ferm`](#ferm): This class manages ferm installation and rule generation on modern linux systems
 
 _Private Classes_
 
@@ -31,19 +31,38 @@ _Private Classes_
 
 Class: ferm
 
-This class manages ferm installation and rule generation on modern linux systems
-
-class{'ferm':
-  manage_service => true,
-  ip_versions    =>  ['ip6'],
-}
-
 #### Examples
 
-##### deploy ferm and start it, on node with only ipv6 enabled
+##### deploy ferm without any configured rules, but also don't start the service or modify existing config files
 
 ```puppet
+include ferm
+```
 
+##### deploy ferm and start it, on nodes with only ipv6 enabled
+
+```puppet
+class{'ferm':
+  manage_service  => true,
+  ip_versions     => ['ip6'],
+}
+```
+
+##### deploy ferm and don't touch chains from other software, like fail2ban and docker
+
+```puppet
+class{'ferm':
+  manage_service            => true,
+  preserve_chains_in_tables => {
+    'filter' => [
+      'f2b-sshd',
+      'DOCKER',
+      'DOCKER-ISOLATION-STAGE-1',
+      'DOCKER-ISOLATION-STAGE-2',
+      'DOCKER-USER',
+    ]
+  }
+}
 ```
 
 #### Parameters
@@ -160,6 +179,15 @@ Data type: `Array[Enum['ip','ip6']]`
 
 Set list of versions of ip we want ot use.
 Default value: ['ip', 'ip6']
+
+##### `preserve_chains_in_tables`
+
+Data type: `Hash[String[1],Array[String[1]]]`
+
+Hash with table:chains[] to use ferm @preserve for
+Default value: Empty Hash
+Allowed values: Hash with a list of tables and chains in it to preserve
+Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 
 ## Defined types
 

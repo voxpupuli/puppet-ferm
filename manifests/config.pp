@@ -33,8 +33,9 @@ class ferm::config {
       target  => $ferm::configfile,
       content => epp(
         "${module_name}/ferm.conf.epp", {
-          'ip'              => $_ip,
-          'configdirectory' => $ferm::configdirectory,
+          'ip'                        => $_ip,
+          'configdirectory'           => $ferm::configdirectory,
+          'preserve_chains_in_tables' => $ferm::preserve_chains_in_tables,
           }
       ),
       order   => '50',

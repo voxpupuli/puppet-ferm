@@ -1,7 +1,16 @@
 <%- | String[1] $ip,
 Stdlib::Absolutepath $configdirectory,
+Hash[String[1], Array[String[1]]] $preserve_chains_in_tables,
 | -%>
 # End custom section
+
+<%- $preserve_chains_in_tables.each |$table, $chains| { -%>
+domain (<%= $ip %>) table <%= $table %> {
+  <%- $chains.each |$chain| { -%>
+  chain <%= $chain %> @preserve;
+  <%- } -%>
+}
+<%- } -%>
 
 domain (<%= $ip %>) table filter {
   chain INPUT {
