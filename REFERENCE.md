@@ -258,6 +258,14 @@ Optional parameters that will be passed to the protocol (for example to match sp
 
 Default value: `undef`
 
+##### `interface`
+
+Data type: `Optional[String[1]]`
+
+an Optional interface where this rule should be applied
+
+Default value: `undef`
+
 ##### `ensure`
 
 Data type: `Enum['absent','present']`

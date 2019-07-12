@@ -139,6 +139,7 @@ the protocol we would like to filter. Allowed values are Enum['icmp', 'tcp', 'ud
 
 The protocol options we would like to add.
 The following example will suppress the hostname in programs like `traceroute`:
+
 ```yaml
 ---
 ferm::rules:
@@ -155,7 +156,8 @@ A comment that will be written into the file and into ip(6)tables
 
 #### `dport`
 
-The destination port we want to filter for. Can be any string from /etc/services or an integer
+The destination port we want to filter for. Can be any string from
+/etc/services or an integer
 
 #### `sport`
 
@@ -177,6 +179,10 @@ Same as above, just for the destination IP address
 #### `ensure`
 
 Add or remove it from the ruleset
+
+#### `interface`
+
+If set, this rule only applies to this specific interface
 
 ### chain defined resource
 
