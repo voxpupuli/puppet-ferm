@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.3.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.3.0) (2019-07-12)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.2.0...v2.3.0)
+
+**Implemented enhancements:**
+
+- add support for interface specific rules [\#48](https://github.com/voxpupuli/puppet-ferm/pull/48) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Allow puppetlabs/concat 6.x, puppetlabs/stdlib 6.x [\#46](https://github.com/voxpupuli/puppet-ferm/pull/46) ([dhoppe](https://github.com/dhoppe))
+
+**Merged pull requests:**
+
+- add `managed by puppet` header to template [\#47](https://github.com/voxpupuli/puppet-ferm/pull/47) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.2.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.2.0) (2019-04-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.1.0...v2.2.0)
