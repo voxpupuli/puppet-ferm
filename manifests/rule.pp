@@ -17,8 +17,8 @@ define ferm::rule (
   String $comment = $name,
   Optional[Variant[Stdlib::Port,String[1]]] $dport = undef,
   Optional[Variant[Stdlib::Port,String[1]]] $sport = undef,
-  Optional[String[1]] $saddr = undef,
-  Optional[String[1]] $daddr = undef,
+  Optional[Variant[Array, String[1]]] $saddr = undef,
+  Optional[Variant[Array, String[1]]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
   Enum['absent','present'] $ensure = 'present',
@@ -33,13 +33,29 @@ define ferm::rule (
     undef   => '',
     default => "sport ${sport}",
   }
+  if $saddr =~ Array {
+    assert_type(Array[Stdlib::IP::Address], flatten($saddr)) |$expected, $actual| {
+      fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($saddr)}." )
+        ''
+    }
+  }
   $saddr_real = $saddr ? {
     undef   => '',
-    default => "saddr @ipfilter(${saddr})",
+    Array   => "saddr @ipfilter((${join(flatten($saddr).unique, ' ')}))",
+    String  => "saddr @ipfilter((${saddr}))",
+    default => '',
+  }
+  if $daddr =~ Array {
+    assert_type(Array[Stdlib::IP::Address], flatten($daddr)) |$expected, $actual| {
+      fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($daddr)}." )
+        ''
+    }
   }
   $daddr_real = $daddr ? {
-    undef   =>  '',
-    default => "daddr @ipfilter(${daddr})"
+    undef   => '',
+    Array   => "daddr @ipfilter((${join(flatten($daddr).unique, ' ')}))",
+    String  => "daddr @ipfilter((${daddr}))",
+    default => '',
   }
   $proto_options_real = $proto_options ? {
     undef   =>  '',
