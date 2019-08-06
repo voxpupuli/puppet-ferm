@@ -63,17 +63,29 @@ You can collect them like this:
 Ferm::Rule <<| tag == 'allow_kafka_server2server' |>>
 ```
 
-You can also define rules in hiera:
+You can also define rules in Hiera. Make sure to use `alias()` as interpolation function, because `hiera()` will always return string.
 
 ```yaml
 ---
+subnet01: '123.123.123.0/24'
+subnet02: '123.123.124.0/24'
+subnet03:
+ - '123.123.125.0/24'
+ - '123.123.126.0/24'
+
+subnets:
+  - "%{alias('subnet01')}"
+  - "%{alias('subnet02')}"
+  - "%{alias('subnet03')}"
+  - 123.123.127.0/24
+
 ferm::rules:
   'allow_http_https':
     chain: 'INPUT'
     policy: 'ACCEPT'
     proto: 'tcp'
     dport: '(80 443)'
-    saddr: "%{hiera('some_other_hiera_key')}"
+    saddr: "%{alias('subnets')}"
 ```
 
 ferm::rules is a hash. configured for deep merge. Hiera will collect all
