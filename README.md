@@ -63,7 +63,7 @@ You can collect them like this:
 Ferm::Rule <<| tag == 'allow_kafka_server2server' |>>
 ```
 
-You can also define rules in Hiera. Make sure to use `alias()` as interpolation function, because `hiera()` will always return string.
+You can also define rules in Hiera. Make sure to use `alias()` as interpolation function, because `hiera()` will always return a string.
 
 ```yaml
 ---
