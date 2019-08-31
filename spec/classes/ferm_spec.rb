@@ -17,9 +17,16 @@ describe 'ferm' do
         it { is_expected.to contain_class('ferm::service') }
         it { is_expected.to contain_class('ferm::install') }
         it { is_expected.to contain_package('ferm') }
-        it { is_expected.to contain_file('/etc/ferm.d') }
-        it { is_expected.to contain_file('/etc/ferm.d/definitions') }
-        it { is_expected.to contain_file('/etc/ferm.d/chains') }
+        if facts[:os]['release']['major'].to_i == 10
+          it { is_expected.to contain_file('/etc/ferm/ferm.d') }
+          it { is_expected.to contain_file('/etc/ferm/ferm.d/definitions') }
+          it { is_expected.to contain_file('/etc/ferm/ferm.d/chains') }
+        else
+          it { is_expected.to contain_file('/etc/ferm.d') }
+          it { is_expected.to contain_file('/etc/ferm.d/definitions') }
+          it { is_expected.to contain_file('/etc/ferm.d/chains') }
+        end
+
         it { is_expected.not_to contain_service('ferm') }
         it { is_expected.not_to contain_file('/etc/ferm.conf') }
         if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
@@ -44,7 +51,7 @@ describe 'ferm' do
           { manage_configfile: true }
         end
 
-        if facts[:os]['name'] == 'Ubuntu'
+        if facts[:os]['name'] == 'Ubuntu' || facts[:os]['release']['major'].to_i == 10
           it { is_expected.to contain_concat('/etc/ferm/ferm.conf') }
         else
           it { is_expected.to contain_concat('/etc/ferm.conf') }
@@ -68,9 +75,15 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('FORWARD-policy') }
         it { is_expected.to contain_concat__fragment('INPUT-policy') }
         it { is_expected.to contain_concat__fragment('OUTPUT-policy') }
-        it { is_expected.to contain_concat('/etc/ferm.d/chains/FORWARD.conf') }
-        it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT.conf') }
-        it { is_expected.to contain_concat('/etc/ferm.d/chains/OUTPUT.conf') }
+        if facts[:os]['release']['major'].to_i == 10
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/FORWARD.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/OUTPUT.conf') }
+        else
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/FORWARD.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/OUTPUT.conf') }
+        end
         it { is_expected.to contain_ferm__chain('FORWARD') }
         it { is_expected.to contain_ferm__chain('OUTPUT') }
         it { is_expected.to contain_ferm__chain('INPUT') }

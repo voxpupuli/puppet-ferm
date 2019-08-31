@@ -1,17 +1,19 @@
-<%- | String[1] $ip | -%>
+<%- | String[1] $ip,
+Stdlib::Absolutepath $configdirectory,
+| -%>
 # End custom section
 
 domain (<%= $ip %>) table filter {
   chain INPUT {
     interface lo ACCEPT;
-    @include '/etc/ferm.d/chains/INPUT.conf';
+    @include '<%= $configdirectory %>/chains/INPUT.conf';
   }
 
   chain OUTPUT {
-    @include '/etc/ferm.d/chains/OUTPUT.conf';
+    @include '<%= $configdirectory %>/chains/OUTPUT.conf';
   }
 
   chain FORWARD {
-    @include '/etc/ferm.d/chains/FORWARD.conf';
+    @include '<%= $configdirectory %>/chains/FORWARD.conf';
   }
 }

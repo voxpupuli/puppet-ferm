@@ -9,13 +9,13 @@ class ferm::config {
 
   # copy static files to ferm
   # on a long term point of view, we want to package this
-  file{'/etc/ferm.d':
+  file{$ferm::configdirectory:
     ensure => 'directory',
   }
-  -> file{'/etc/ferm.d/definitions':
+  -> file{"${ferm::configdirectory}/definitions":
     ensure => 'directory',
   }
-  -> file{'/etc/ferm.d/chains':
+  -> file{"${ferm::configdirectory}/chains":
     ensure => 'directory',
   }
 
@@ -25,7 +25,7 @@ class ferm::config {
     }
     concat::fragment{'ferm_header.conf':
       target  => $ferm::configfile,
-      content => epp("${module_name}/ferm_header.conf.epp"),
+      content => epp("${module_name}/ferm_header.conf.epp", {'configdirectory' => $ferm::configdirectory}),
       order   => '01',
     }
 
@@ -33,7 +33,8 @@ class ferm::config {
       target  => $ferm::configfile,
       content => epp(
         "${module_name}/ferm.conf.epp", {
-          'ip' => $_ip,
+          'ip'              => $_ip,
+          'configdirectory' => $ferm::configdirectory,
           }
       ),
       order   => '50',

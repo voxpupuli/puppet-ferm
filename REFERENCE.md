@@ -22,7 +22,6 @@ _Private Classes_
 
 **Data types**
 
-* [`Ferm::Chains`](#fermchains): a type that allows the default iptables chains
 * [`Ferm::Policies`](#fermpolicies): a list of allowed default policies for a chain
 * [`Ferm::Protocols`](#fermprotocols): a list of allowed protocolls to match
 
@@ -81,6 +80,14 @@ Data type: `Stdlib::Absolutepath`
 
 Path to the config file
 Default value: /etc/ferm.conf
+Allowed values: Stdlib::Absolutepath
+
+##### `configdirectory`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to the directory where the module stores ferm configuration files
+Default value: /etc/ferm.d or /etc/ferm/ferm.d
 Allowed values: Stdlib::Absolutepath
 
 ##### `disable_conntrack`
@@ -178,7 +185,7 @@ Disable/Enable usage of conntrack
 
 ##### `chain`
 
-Data type: `Ferm::Chains`
+Data type: `String[1]`
 
 Name of the chain that should be managed
 
@@ -200,7 +207,7 @@ The following parameters are available in the `ferm::rule` defined type.
 
 ##### `chain`
 
-Data type: `Ferm::Chains`
+Data type: `String[1]`
 
 Configure the chain where we want to add the rule
 
@@ -281,12 +288,6 @@ Set the rule to present or absent
 Default value: 'present'
 
 ## Data types
-
-### Ferm::Chains
-
-a type that allows the default iptables chains
-
-Alias of `Enum['INPUT', 'FORWARD', 'OUTPUT']`
 
 ### Ferm::Policies
 

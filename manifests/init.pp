@@ -20,6 +20,9 @@
 # @param configfile Path to the config file
 #   Default value: /etc/ferm.conf
 #   Allowed values: Stdlib::Absolutepath
+# @param configdirectory Path to the directory where the module stores ferm configuration files
+#   Default value: /etc/ferm.d or /etc/ferm/ferm.d
+#   Allowed values: Stdlib::Absolutepath
 # @param disable_conntrack Disable/Enable the generation of conntrack rules
 #   Default value: false
 #   Allowed values: (true|false)
@@ -51,6 +54,7 @@ class ferm (
   Boolean $manage_configfile,
   Boolean $manage_initfile,
   Stdlib::Absolutepath $configfile,
+  Stdlib::Absolutepath $configdirectory,
   Boolean $disable_conntrack,
   Ferm::Policies $forward_policy,
   Ferm::Policies $output_policy,
