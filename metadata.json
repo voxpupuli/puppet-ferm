@@ -40,14 +40,6 @@
       ]
     },
     {
-      "operatingsystem": "FreeBSD",
-      "operatingsystemrelease": [
-        "9",
-        "10",
-        "11"
-      ]
-    },
-    {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "14.04",
