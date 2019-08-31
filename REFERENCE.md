@@ -20,6 +20,12 @@ _Private Classes_
 * [`ferm::chain`](#fermchain): defined resource which creates all rules for one chain
 * [`ferm::rule`](#fermrule): defined resource which creates a single rule in a specific chain
 
+**Data types**
+
+* [`Ferm::Chains`](#fermchains): a type that allows the default iptables chains
+* [`Ferm::Policies`](#fermpolicies): a list of allowed default policies for a chain
+* [`Ferm::Protocols`](#fermprotocols): a list of allowed protocolls to match
+
 ## Classes
 
 ### ferm
@@ -236,7 +242,7 @@ Default value: `undef`
 
 ##### `saddr`
 
-Data type: `Optional[String[1]]`
+Data type: `Optional[Variant[Array, String[1]]]`
 
 The source address we want to match
 
@@ -244,7 +250,7 @@ Default value: `undef`
 
 ##### `daddr`
 
-Data type: `Optional[String[1]]`
+Data type: `Optional[Variant[Array, String[1]]]`
 
 The destination address we want to match
 
@@ -273,4 +279,24 @@ Data type: `Enum['absent','present']`
 Set the rule to present or absent
 
 Default value: 'present'
+
+## Data types
+
+### Ferm::Chains
+
+a type that allows the default iptables chains
+
+Alias of `Enum['INPUT', 'FORWARD', 'OUTPUT']`
+
+### Ferm::Policies
+
+a list of allowed default policies for a chain
+
+Alias of `Enum['ACCEPT', 'DROP', 'REJECT']`
+
+### Ferm::Protocols
+
+a list of allowed protocolls to match
+
+Alias of `Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']`
 
