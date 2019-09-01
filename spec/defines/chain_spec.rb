@@ -6,9 +6,13 @@ describe 'ferm::chain', type: :define do
       let :facts do
         facts
       end
-      let(:title) { 'INPUT' }
+      let(:title) { 'INPUT2' }
 
-      context 'default params creates INPUT chain' do
+      let :pre_condition do
+        'include ferm'
+      end
+
+      context 'default params creates INPUT2 chain' do
         let :params do
           {
             policy: 'DROP',
@@ -19,15 +23,19 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it do
-          is_expected.to contain_concat__fragment('INPUT-policy'). \
+          is_expected.to contain_concat__fragment('INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
         it do
-          is_expected.to contain_concat__fragment('INPUT-footer'). \
-            with_content(%r{LOG log-prefix 'INPUT: ';})
+          is_expected.to contain_concat__fragment('INPUT2-footer'). \
+            with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
-        it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT.conf') }
-        it { is_expected.to contain_ferm__chain('INPUT') }
+        if facts[:os]['release']['major'].to_i == 10
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/INPUT2.conf') }
+        else
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT2.conf') }
+        end
+        it { is_expected.to contain_ferm__chain('INPUT2') }
       end
 
       context 'without conntrack' do
@@ -41,13 +49,13 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it do
-          is_expected.to contain_concat__fragment('INPUT-policy')
-          is_expected.not_to contain_concat__fragment('INPUT-policy'). \
+          is_expected.to contain_concat__fragment('INPUT2-policy')
+          is_expected.not_to contain_concat__fragment('INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
         it do
-          is_expected.not_to contain_concat__fragment('INPUT-footer'). \
-            with_content(%r{LOG log-prefix 'INPUT: ';})
+          is_expected.not_to contain_concat__fragment('INPUT2-footer'). \
+            with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
       end
     end

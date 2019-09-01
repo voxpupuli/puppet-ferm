@@ -1,8 +1,9 @@
+<%- | Stdlib::Absolutepath $configdirectory | -%>
 # Currently managed by Puppet
 # Author: Tim Meusel <tim@bastelfreak.de>
 #
 
 # get all ip definitions
-@include '/etc/ferm.d/definitions/';
+@include '<%= $configdirectory %>/definitions/';
 
 # Begin custom section

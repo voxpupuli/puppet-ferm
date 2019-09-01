@@ -7,6 +7,10 @@ describe 'ferm::rule', type: :define do
         facts
       end
 
+      let :pre_condition do
+        'include ferm'
+      end
+
       context 'without a specific interface' do
         let(:title) { 'filter-ssh' }
         let :params do

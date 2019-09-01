@@ -11,7 +11,7 @@
 # @param interface an Optional interface where this rule should be applied
 # @param ensure Set the rule to present or absent
 define ferm::rule (
-  Ferm::Chains $chain,
+  String[1] $chain,
   Ferm::Policies $policy,
   Ferm::Protocols $proto,
   String $comment = $name,
@@ -68,28 +68,28 @@ define ferm::rule (
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
         concat::fragment{"${chain}-${interface}-aaa":
-          target  => "/etc/ferm.d/chains/${chain}.conf",
+          target  => "${ferm::configdirectory}/chains/${chain}.conf",
           content => "interface ${interface} {\n",
           order   => $interface,
         }
       }
 
       concat::fragment{"${chain}-${interface}-${name}":
-        target  => "/etc/ferm.d/chains/${chain}.conf",
+        target  => "${ferm::configdirectory}/chains/${chain}.conf",
         content => "  ${rule}\n",
         order   => $interface,
       }
 
       unless defined(Concat::Fragment["${chain}-${interface}-zzz"]) {
         concat::fragment{"${chain}-${interface}-zzz":
-          target  => "/etc/ferm.d/chains/${chain}.conf",
+          target  => "${ferm::configdirectory}/chains/${chain}.conf",
           content => "}\n",
           order   => $interface,
         }
       }
     } else {
       concat::fragment{"${chain}-${name}":
-        target  => "/etc/ferm.d/chains/${chain}.conf",
+        target  => "${ferm::configdirectory}/chains/${chain}.conf",
         content => "${rule}\n",
       }
     }
