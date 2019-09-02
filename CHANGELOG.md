@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.4.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.4.0) (2019-09-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.3.0...v2.4.0)
+
+**Implemented enhancements:**
+
+- allow preserving of chains in tables [\#55](https://github.com/voxpupuli/puppet-ferm/pull/55) ([bastelfreak](https://github.com/bastelfreak))
+- Add Debian 10 support & make configdirectory configureable [\#54](https://github.com/voxpupuli/puppet-ferm/pull/54) ([bastelfreak](https://github.com/bastelfreak))
+- allow all supported iptables protocolls & enhance puppet-strings documentation Unverified [\#52](https://github.com/voxpupuli/puppet-ferm/pull/52) ([bastelfreak](https://github.com/bastelfreak))
+- Allow array for saddr and daddr [\#51](https://github.com/voxpupuli/puppet-ferm/pull/51) ([kBite](https://github.com/kBite))
+
+**Merged pull requests:**
+
+- remove FreeBSD from supported OS list [\#53](https://github.com/voxpupuli/puppet-ferm/pull/53) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.3.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.3.0) (2019-07-12)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.2.0...v2.3.0)
