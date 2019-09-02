@@ -1,12 +1,29 @@
 # Class: ferm
 #
-# This class manages ferm installation and rule generation on modern linux systems
+# @summary This class manages ferm installation and rule generation on modern linux systems
 #
-# @example deploy ferm and start it, on node with only ipv6 enabled
-# class{'ferm':
-#   manage_service => true,
-#   ip_versions    =>  ['ip6'],
-# }
+# @example deploy ferm without any configured rules, but also don't start the service or modify existing config files
+#   include ferm
+#
+# @example deploy ferm and start it, on nodes with only ipv6 enabled
+#   class{'ferm':
+#     manage_service  => true,
+#     ip_versions     => ['ip6'],
+#   }
+#
+# @example deploy ferm and don't touch chains from other software, like fail2ban and docker
+#   class{'ferm':
+#     manage_service            => true,
+#     preserve_chains_in_tables => {
+#       'filter' => [
+#         'f2b-sshd',
+#         'DOCKER',
+#         'DOCKER-ISOLATION-STAGE-1',
+#         'DOCKER-ISOLATION-STAGE-2',
+#         'DOCKER-USER',
+#       ]
+#     }
+#   }
 #
 # @param manage_service Disable/Enable the management of the ferm daemon
 #   Default value: false
@@ -49,6 +66,10 @@
 #   Allowed values: (true|false)
 # @param ip_versions Set list of versions of ip we want ot use.
 #   Default value: ['ip', 'ip6']
+# @param preserve_chains_in_tables Hash with table:chains[] to use ferm @preserve for
+#   Default value: Empty Hash
+#   Allowed values: Hash with a list of tables and chains in it to preserve
+#   Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 class ferm (
   Boolean $manage_service,
   Boolean $manage_configfile,
@@ -64,6 +85,7 @@ class ferm (
   Boolean $input_log_dropped_packets,
   Hash $rules,
   Array[Enum['ip','ip6']] $ip_versions,
+  Hash[String[1],Array[String[1]]] $preserve_chains_in_tables,
 ) {
   contain ferm::install
   contain ferm::config

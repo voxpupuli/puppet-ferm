@@ -59,6 +59,11 @@ describe 'ferm' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('ferm_header.conf') }
         it { is_expected.to contain_concat__fragment('ferm.conf') }
+        # the following string exists only if we preserve chains
+        it do
+          is_expected.to contain_concat__fragment('ferm.conf'). \
+            without_content(%r{@preserve;})
+        end
       end
       context 'with managed initfile' do
         let :params do
@@ -87,6 +92,29 @@ describe 'ferm' do
         it { is_expected.to contain_ferm__chain('FORWARD') }
         it { is_expected.to contain_ferm__chain('OUTPUT') }
         it { is_expected.to contain_ferm__chain('INPUT') }
+      end
+
+      context 'it preserves chains' do
+        let :params do
+          {
+            manage_configfile: true,
+            preserve_chains_in_tables: { 'nat' => %w[PREROUTING POSTROUTING] }
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it do
+          is_expected.to contain_concat__fragment('ferm.conf'). \
+            with_content(%r{domain \(ip ip6\) table nat \{})
+        end
+        it do
+          is_expected.to contain_concat__fragment('ferm.conf'). \
+            with_content(%r{chain PREROUTING @preserve;})
+        end
+        it do
+          is_expected.to contain_concat__fragment('ferm.conf'). \
+            with_content(%r{chain POSTROUTING @preserve;})
+        end
       end
     end
   end

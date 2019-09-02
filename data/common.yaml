@@ -8,6 +8,7 @@ ferm::configdirectory: /etc/ferm.d
 ferm::input_policy: DROP
 ferm::forward_policy: DROP
 ferm::output_policy: ACCEPT
+ferm::preserve_chains_in_tables: {}
 ferm::rules: {}
 ferm::input_log_dropped_packets: false
 ferm::forward_log_dropped_packets: false
