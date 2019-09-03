@@ -16,7 +16,7 @@ describe 'ferm::rule', type: :define do
         let :params do
           {
             chain: 'INPUT',
-            policy: 'ACCEPT',
+            action: 'ACCEPT',
             proto: 'tcp',
             dport: '22',
             saddr: '127.0.0.1'
@@ -31,7 +31,7 @@ describe 'ferm::rule', type: :define do
         let :params do
           {
             chain: 'INPUT',
-            policy: 'ACCEPT',
+            action: 'ACCEPT',
             proto: 'tcp',
             dport: '22',
             saddr: '127.0.0.1',
@@ -49,7 +49,7 @@ describe 'ferm::rule', type: :define do
         let :params do
           {
             chain: 'INPUT',
-            policy: 'ACCEPT',
+            action: 'ACCEPT',
             proto: 'tcp',
             dport: '22',
             daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],

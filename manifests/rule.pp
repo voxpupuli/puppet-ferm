@@ -1,6 +1,6 @@
 # defined resource which creates a single rule in a specific chain
 # @param chain Configure the chain where we want to add the rule
-# @param policy Configure what we want to do with the packet (drop, accept, log...)
+# @param action Configure what we want to do with the packet (drop, accept, log...)
 # @param proto Which protocol do we want to match, typically UDP or TCP
 # @param comment A comment that will be added to the ferm config and to ip{,6}tables
 # @param dport The destination port, can be a range as string or a single port number as integer
@@ -10,9 +10,10 @@
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
 # @param ensure Set the rule to present or absent
+# @param table Select the target table (filter/raw/mangle/nat)
 define ferm::rule (
   String[1] $chain,
-  Ferm::Policies $policy,
+  Ferm::Actions $action,
   Ferm::Protocols $proto,
   String $comment = $name,
   Optional[Variant[Stdlib::Port,String[1]]] $dport = undef,
@@ -22,6 +23,7 @@ define ferm::rule (
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
   Enum['absent','present'] $ensure = 'present',
+  Ferm::Tables $table = 'filter',
 ){
   $proto_real = "proto ${proto}"
 
@@ -63,7 +65,7 @@ define ferm::rule (
   }
   $comment_real = "mod comment comment '${comment}'"
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${policy};", ' ')
+  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action};", ' ')
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
