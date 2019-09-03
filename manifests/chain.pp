@@ -1,23 +1,57 @@
-# defined resource which creates all rules for one chain
-# @param policy Set the default policy for a CHAIN
+# @summary This defined resource manages ferm/iptables chains
+#
+# @example create a custom chain, e.g. for all incoming SSH connections
+#   ferm::chain{'check-ssh':
+#     chain               => 'SSH',
+#     disable_conntrack   => true,
+#     log_dropped_packets => true,
+#   }
+#
 # @param disable_conntrack Disable/Enable usage of conntrack
-# @param chain Name of the chain that should be managed
 # @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
+# @param policy Set the default policy for CHAIN (works only for builtin chains)
+#   Default value: undef
+#   Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
+# @param chain Name of the chain that should be managed
+#   Default value: $name (resource name)
+#   Allowed values: String[1]
+# @param table Select the target table (filter/raw/mangle/nat)
+#   Default value: 'filter'
+#   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 define ferm::chain (
-  Ferm::Policies $policy,
   Boolean $disable_conntrack,
   Boolean $log_dropped_packets,
-  String[1] $chain = $name,
+  String[1] $chain                 = $name,
+  Optional[Ferm::Policies] $policy = undef,
+  Ferm::Tables $table              = 'filter',
 ) {
+  # prevent unmanaged files due to new naming schema
+  # keep the default "filter" chains in the original location
+  # only prefix chains in other tables with the table name
+  if $table == 'filter' and $chain in ['INPUT', 'FORWARD', 'OUTPUT'] {
+    $filename = "${ferm::configdirectory}/chains/${chain}.conf"
+  } else {
+    $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
+  }
+
+  $builtin_chains = {
+    'raw'    => ['PREROUTING', 'OUTPUT'],
+    'nat'    => ['PREROUTING', 'INPUT', 'OUTPUT', 'POSTROUTING'],
+    'mangle' => ['PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING'],
+    'filter' => ['INPUT', 'FORWARD', 'OUTPUT'],
+  }
+
+  if $policy and ! ($chain in $builtin_chains[$table]) {
+    fail("Can only set a default policy for builtin chains. '${chain}' is not a builtin chain.")
+  }
 
   # concat resource for the chain
-  $filename = downcase($chain)
-  concat{"${ferm::configdirectory}/chains/${chain}.conf":
+  concat{$filename:
     ensure  => 'present',
   }
 
-  concat::fragment{"${chain}-policy":
-    target  => "${ferm::configdirectory}/chains/${chain}.conf",
+  concat::fragment{"${table}-${chain}-policy":
+    target  => $filename,
     content => epp(
       "${module_name}/ferm_chain_header.conf.epp", {
         'policy'            => $policy,
@@ -28,10 +62,25 @@ define ferm::chain (
   }
 
   if $log_dropped_packets {
-    concat::fragment{"${chain}-footer":
-      target  => "${ferm::configdirectory}/chains/${chain}.conf",
+    concat::fragment{"${table}-${chain}-footer":
+      target  => $filename,
       content => epp("${module_name}/ferm_chain_footer.conf.epp", { 'chain' => $chain }),
       order   => 'zzzzzzzzzzzzzzzzzzzzz',
     }
+  }
+
+  # make sure the generated snippet is actually included
+  concat::fragment{"${table}-${chain}-config-include":
+    target  => $ferm::configfile,
+    content => epp(
+      "${module_name}/ferm-table-chain-config-include.epp", {
+        'ip'       => join($ferm::ip_versions, ' '),
+        'table'    => $table,
+        'chain'    => $chain,
+        'filename' => $filename,
+      }
+    ),
+    order   => "${table}-${chain}",
+    require => Concat[$filename],
   }
 }

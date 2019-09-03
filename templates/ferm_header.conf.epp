@@ -5,5 +5,3 @@
 
 # get all ip definitions
 @include '<%= $configdirectory %>/definitions/';
-
-# Begin custom section

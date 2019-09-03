@@ -15,25 +15,25 @@ describe 'ferm::chain', type: :define do
       context 'default params creates INPUT2 chain' do
         let :params do
           {
-            policy: 'DROP',
             disable_conntrack: false,
             log_dropped_packets: true
           }
         end
 
         it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('filter-INPUT2-config-include') }
         it do
-          is_expected.to contain_concat__fragment('INPUT2-policy'). \
+          is_expected.to contain_concat__fragment('filter-INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
         it do
-          is_expected.to contain_concat__fragment('INPUT2-footer'). \
+          is_expected.to contain_concat__fragment('filter-INPUT2-footer'). \
             with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
         if facts[:os]['release']['major'].to_i == 10
-          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/INPUT2.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-INPUT2.conf') }
         else
-          it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT2.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/filter-INPUT2.conf') }
         end
         it { is_expected.to contain_ferm__chain('INPUT2') }
       end
@@ -41,7 +41,6 @@ describe 'ferm::chain', type: :define do
       context 'without conntrack' do
         let :params do
           {
-            policy: 'DROP',
             disable_conntrack: true,
             log_dropped_packets: false
           }
@@ -49,14 +48,27 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it do
-          is_expected.to contain_concat__fragment('INPUT2-policy')
-          is_expected.not_to contain_concat__fragment('INPUT2-policy'). \
+          is_expected.to contain_concat__fragment('filter-INPUT2-policy')
+          is_expected.not_to contain_concat__fragment('filter-INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
         it do
-          is_expected.not_to contain_concat__fragment('INPUT2-footer'). \
+          is_expected.not_to contain_concat__fragment('filter-INPUT2-footer'). \
             with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
+      end
+
+      context 'with policy setting for custom chain' do
+        let :params do
+          {
+            chain: 'INPUT2',
+            policy: 'DROP',
+            disable_conntrack: true,
+            log_dropped_packets: false
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Can only set a default policy for builtin chains}) }
       end
     end
   end

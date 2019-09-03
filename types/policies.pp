@@ -1,2 +1,2 @@
-# @summary a list of allowed default policies for a chain
-type Ferm::Policies = Enum['ACCEPT','DROP', 'REJECT']
+# @summary a list of allowed policies for a chain
+type Ferm::Policies = Enum['ACCEPT','DROP']
