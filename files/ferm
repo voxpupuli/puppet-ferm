@@ -31,6 +31,8 @@ test -f "${CONFIG}" || exit 0
 # shellcheck disable=SC1091
 [ -r /etc/sysconfig/ferm ] && . /etc/sysconfig/ferm
 
+lockfile=/var/lock/subsys/$NAME
+
 umask 0077
 
 FAST=${FAST:-yes}
@@ -51,17 +53,41 @@ case "${1}" in
     start|reload|restart|force-reload)
         # shellcheck disable=SC2039
         echo -n "${1}ing ${DESC}" "${NAME}"
-        configure_ferm && echo " ... ok." || echo "... failed!"
+        configure_ferm
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            touch $lockfile
+            echo " ... ok."
+        else
+            echo "... failed!"
+        fi
+        exit $RETVAL
         ;;
     stop)
         # shellcheck disable=SC2039
         echo -n "stopping ${DESC}" "${NAME}"
         OPTIONS="${OPTIONS} --flush"
-        configure_ferm && echo " ... ok." || echo "... failed!"
+        configure_ferm
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            rm -f $lockfile
+            echo " ... ok."
+        else
+            echo "... failed!"
+        fi
+        exit $RETVAL
+        ;;
+    status)
+        if [ -f $lockfile ]; then
+            echo "${NAME} has configured iptables rules."
+        else
+            echo "${NAME} has NOT configured iptables rules."
+            exit 1
+        fi
         ;;
     *)
         N=/etc/init.d/${NAME}
-        echo "Usage: ${N} {start|stop|restart|reload|force-reload}"
+        echo "Usage: ${N} {start|stop|restart|reload|force-reload|status}"
         exit 1
         ;;
 esac
