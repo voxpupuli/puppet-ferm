@@ -1,0 +1,2 @@
+---
+ferm::configfile: '/etc/ferm.conf'

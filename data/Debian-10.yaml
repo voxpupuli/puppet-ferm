@@ -1,3 +1,0 @@
----
-ferm::configfile: /etc/ferm/ferm.conf
-ferm::configdirectory: /etc/ferm/ferm.d

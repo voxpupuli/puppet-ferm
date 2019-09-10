@@ -74,120 +74,122 @@ The following parameters are available in the `ferm` class.
 Data type: `Boolean`
 
 Disable/Enable the management of the ferm daemon
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `manage_configfile`
 
 Data type: `Boolean`
 
 Disable/Enable the management of the ferm default config
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `manage_initfile`
 
 Data type: `Boolean`
 
 Disable/Enable the management of the ferm init script for RedHat-based OS
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `configfile`
 
 Data type: `Stdlib::Absolutepath`
 
 Path to the config file
-Default value: /etc/ferm.conf
-Allowed values: Stdlib::Absolutepath
+
+Default value: '/etc/ferm.conf'
 
 ##### `configdirectory`
 
 Data type: `Stdlib::Absolutepath`
 
 Path to the directory where the module stores ferm configuration files
-Default value: /etc/ferm.d or /etc/ferm/ferm.d
-Allowed values: Stdlib::Absolutepath
+
+Default value: '/etc/ferm.d'
 
 ##### `disable_conntrack`
 
 Data type: `Boolean`
 
 Disable/Enable the generation of conntrack rules
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `forward_policy`
 
 Data type: `Ferm::Policies`
 
 Default policy for the FORWARD chain
-Default value: DROP
-Allowed values: (ACCEPT|DROP|REJECT)
+
+Default value: 'DROP'
 
 ##### `output_policy`
 
 Data type: `Ferm::Policies`
 
 Default policy for the OUTPUT chain
-Default value: ACCEPT
-Allowed values: (ACCEPT|DROP|REJECT)
+
+Default value: 'ACCEPT'
 
 ##### `input_policy`
 
 Data type: `Ferm::Policies`
 
 Default policy for the INPUT chain
-Default value: DROP
-Allowed values: (ACCEPT|DROP|REJECT)
+
+Default value: 'DROP'
 
 ##### `rules`
 
 Data type: `Hash`
 
 A hash that holds all data for ferm::rule
-Default value: Empty Hash
-Allowed value: Any Hash
+
+Default value: {}
 
 ##### `forward_log_dropped_packets`
 
 Data type: `Boolean`
 
 Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no explicit chain matched
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `output_log_dropped_packets`
 
 Data type: `Boolean`
 
 Enable/Disable logging in the OUTPUT chain of packets to the kernel log, if no explicit chain matched
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `input_log_dropped_packets`
 
 Data type: `Boolean`
 
 Enable/Disable logging in the INPUT chain of packets to the kernel log, if no explicit chain matched
-Default value: false
-Allowed values: (true|false)
+
+Default value: `false`
 
 ##### `ip_versions`
 
 Data type: `Array[Enum['ip','ip6']]`
 
 Set list of versions of ip we want ot use.
-Default value: ['ip', 'ip6']
+
+Default value: ['ip','ip6']
 
 ##### `preserve_chains_in_tables`
 
 Data type: `Hash[String[1],Array[String[1]]]`
 
 Hash with table:chains[] to use ferm @preserve for
-Default value: Empty Hash
 Allowed values: Hash with a list of tables and chains in it to preserve
 Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
+
+Default value: {}
 
 ## Defined types
 

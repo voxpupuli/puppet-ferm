@@ -1,2 +1,2 @@
 ---
-ferm::configfile: /etc/ferm/ferm.conf
+ferm::configfile: '/etc/ferm/ferm.conf'
