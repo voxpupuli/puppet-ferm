@@ -114,6 +114,25 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('INPUT-eth0-zzz').with_content("}\n") }
       end
 
+      context 'without a specific interface using array for proto' do
+        let(:title) { 'filter-consul' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: %w[tcp udp],
+            dport: '(8301 8302)',
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) dport (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
+      end
+
       context 'with jumping to custom chains' do
         # create custom chain
         let(:pre_condition) do
