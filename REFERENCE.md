@@ -151,6 +151,14 @@ A hash that holds all data for ferm::rule
 Default value: Empty Hash
 Allowed value: Any Hash
 
+##### `chains`
+
+Data type: `Hash`
+
+A hash that holds all data for ferm::chain
+Default value: Empty Hash
+Allowed value: Any Hash
+
 ##### `forward_log_dropped_packets`
 
 Data type: `Boolean`

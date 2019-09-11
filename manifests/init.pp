@@ -55,6 +55,9 @@
 # @param rules A hash that holds all data for ferm::rule
 #   Default value: Empty Hash
 #   Allowed value: Any Hash
+# @param chains A hash that holds all data for ferm::chain
+#   Default value: Empty Hash
+#   Allowed value: Any Hash
 # @param forward_log_dropped_packets Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no explicit chain matched
 #   Default value: false
 #   Allowed values: (true|false)
@@ -84,6 +87,7 @@ class ferm (
   Boolean $output_log_dropped_packets,
   Boolean $input_log_dropped_packets,
   Hash $rules,
+  Hash $chains,
   Array[Enum['ip','ip6']] $ip_versions,
   Hash[String[1],Array[String[1]]] $preserve_chains_in_tables,
 ) {
@@ -97,6 +101,12 @@ class ferm (
 
   Ferm::Chain <| |>
   ~> Class['ferm::service']
+
+  $chains.each |$chainname, $attributes| {
+    ferm::chain{$chainname:
+      * => $attributes,
+    }
+  }
 
   $rules.each |$rulename, $attributes| {
     ferm::rule{$rulename:
