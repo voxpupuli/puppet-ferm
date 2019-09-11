@@ -64,6 +64,17 @@ describe 'ferm' do
           is_expected.to contain_concat__fragment('ferm.conf'). \
             without_content(%r{@preserve;})
         end
+        it { is_expected.to contain_concat__fragment('raw-PREROUTING-config-include') }
+        it { is_expected.to contain_concat__fragment('raw-OUTPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('nat-PREROUTING-config-include') }
+        it { is_expected.to contain_concat__fragment('nat-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('nat-POSTROUTING-config-include') }
+        it { is_expected.to contain_concat__fragment('mangle-PREROUTING-config-include') }
+        it { is_expected.to contain_concat__fragment('mangle-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('mangle-FORWARD-config-include') }
+        it { is_expected.to contain_concat__fragment('mangle-OUTPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('mangle-POSTROUTING-config-include') }
       end
       context 'with managed initfile' do
         let :params do
@@ -77,18 +88,62 @@ describe 'ferm' do
         end
       end
       context 'it creates chains' do
-        it { is_expected.to contain_concat__fragment('FORWARD-policy') }
-        it { is_expected.to contain_concat__fragment('INPUT-policy') }
-        it { is_expected.to contain_concat__fragment('OUTPUT-policy') }
+        it { is_expected.to contain_concat__fragment('raw-PREROUTING-policy') }
+        it { is_expected.to contain_concat__fragment('raw-OUTPUT-policy') }
+        it { is_expected.to contain_concat__fragment('nat-PREROUTING-policy') }
+        it { is_expected.to contain_concat__fragment('nat-INPUT-policy') }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-policy') }
+        it { is_expected.to contain_concat__fragment('nat-POSTROUTING-policy') }
+        it { is_expected.to contain_concat__fragment('mangle-PREROUTING-policy') }
+        it { is_expected.to contain_concat__fragment('mangle-INPUT-policy') }
+        it { is_expected.to contain_concat__fragment('mangle-FORWARD-policy') }
+        it { is_expected.to contain_concat__fragment('mangle-OUTPUT-policy') }
+        it { is_expected.to contain_concat__fragment('mangle-POSTROUTING-policy') }
+        it { is_expected.to contain_concat__fragment('filter-INPUT-policy') }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-policy') }
+        it { is_expected.to contain_concat__fragment('filter-OUTPUT-policy') }
         if facts[:os]['release']['major'].to_i == 10
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-POSTROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/mangle-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/mangle-INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/mangle-FORWARD.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/mangle-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/mangle-POSTROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/FORWARD.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/INPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/OUTPUT.conf') }
         else
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-POSTROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/mangle-PREROUTING.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/mangle-INPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/mangle-FORWARD.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/mangle-OUTPUT.conf') }
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/mangle-POSTROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/FORWARD.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/INPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/OUTPUT.conf') }
         end
+        it { is_expected.to contain_ferm__chain('raw-PREROUTING') }
+        it { is_expected.to contain_ferm__chain('raw-OUTPUT') }
+        it { is_expected.to contain_ferm__chain('nat-PREROUTING') }
+        it { is_expected.to contain_ferm__chain('nat-INPUT') }
+        it { is_expected.to contain_ferm__chain('nat-OUTPUT') }
+        it { is_expected.to contain_ferm__chain('nat-POSTROUTING') }
+        it { is_expected.to contain_ferm__chain('mangle-PREROUTING') }
+        it { is_expected.to contain_ferm__chain('mangle-INPUT') }
+        it { is_expected.to contain_ferm__chain('mangle-FORWARD') }
+        it { is_expected.to contain_ferm__chain('mangle-OUTPUT') }
+        it { is_expected.to contain_ferm__chain('mangle-POSTROUTING') }
         it { is_expected.to contain_ferm__chain('FORWARD') }
         it { is_expected.to contain_ferm__chain('OUTPUT') }
         it { is_expected.to contain_ferm__chain('INPUT') }

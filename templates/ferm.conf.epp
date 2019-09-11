@@ -2,7 +2,6 @@
 Stdlib::Absolutepath $configdirectory,
 Hash[String[1], Array[String[1]]] $preserve_chains_in_tables,
 | -%>
-# End custom section
 
 <%- $preserve_chains_in_tables.each |$table, $chains| { -%>
 domain (<%= $ip %>) table <%= $table %> {
@@ -11,18 +10,3 @@ domain (<%= $ip %>) table <%= $table %> {
   <%- } -%>
 }
 <%- } -%>
-
-domain (<%= $ip %>) table filter {
-  chain INPUT {
-    interface lo ACCEPT;
-    @include '<%= $configdirectory %>/chains/INPUT.conf';
-  }
-
-  chain OUTPUT {
-    @include '<%= $configdirectory %>/chains/OUTPUT.conf';
-  }
-
-  chain FORWARD {
-    @include '<%= $configdirectory %>/chains/FORWARD.conf';
-  }
-}

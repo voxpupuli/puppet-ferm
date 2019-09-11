@@ -57,4 +57,33 @@ class ferm::config {
     disable_conntrack   => $ferm::disable_conntrack,
     log_dropped_packets => $ferm::output_log_dropped_packets,
   }
+
+  # initialize default tables and chains
+  ['PREROUTING', 'OUTPUT'].each |$raw_chain| {
+    ferm::chain{"raw-${raw_chain}":
+      chain               => $raw_chain,
+      policy              => 'ACCEPT',
+      disable_conntrack   => true,
+      log_dropped_packets => false,
+      table               => 'raw',
+    }
+  }
+  ['PREROUTING', 'INPUT', 'OUTPUT', 'POSTROUTING'].each |$nat_chain| {
+    ferm::chain{"nat-${nat_chain}":
+      chain               => $nat_chain,
+      policy              => 'ACCEPT',
+      disable_conntrack   => true,
+      log_dropped_packets => false,
+      table               => 'nat',
+    }
+  }
+  ['PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING'].each |$mangle_chain| {
+    ferm::chain{"mangle-${mangle_chain}":
+      chain               => $mangle_chain,
+      policy              => 'ACCEPT',
+      disable_conntrack   => true,
+      log_dropped_packets => false,
+      table               => 'mangle',
+    }
+  }
 }

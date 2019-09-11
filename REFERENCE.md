@@ -17,13 +17,15 @@ _Private Classes_
 
 **Defined types**
 
-* [`ferm::chain`](#fermchain): defined resource which creates all rules for one chain
-* [`ferm::rule`](#fermrule): defined resource which creates a single rule in a specific chain
+* [`ferm::chain`](#fermchain): This defined resource manages ferm/iptables chains
+* [`ferm::rule`](#fermrule): This defined resource manages a single rule in a specific chain
 
 **Data types**
 
-* [`Ferm::Policies`](#fermpolicies): a list of allowed default policies for a chain
+* [`Ferm::Actions`](#fermactions): a list of allowed actions for a rule
+* [`Ferm::Policies`](#fermpolicies): a list of allowed policies for a chain
 * [`Ferm::Protocols`](#fermprotocols): a list of allowed protocolls to match
+* [`Ferm::Tables`](#fermtables): a list of available tables
 
 ## Classes
 
@@ -123,7 +125,7 @@ Data type: `Ferm::Policies`
 
 Default policy for the FORWARD chain
 Default value: DROP
-Allowed values: (ACCEPT|DROP|REJECT)
+Allowed values: (ACCEPT|DROP)
 
 ##### `output_policy`
 
@@ -131,7 +133,7 @@ Data type: `Ferm::Policies`
 
 Default policy for the OUTPUT chain
 Default value: ACCEPT
-Allowed values: (ACCEPT|DROP|REJECT)
+Allowed values: (ACCEPT|DROP)
 
 ##### `input_policy`
 
@@ -139,7 +141,7 @@ Data type: `Ferm::Policies`
 
 Default policy for the INPUT chain
 Default value: DROP
-Allowed values: (ACCEPT|DROP|REJECT)
+Allowed values: (ACCEPT|DROP)
 
 ##### `rules`
 
@@ -193,17 +195,23 @@ Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 
 ### ferm::chain
 
-defined resource which creates all rules for one chain
+This defined resource manages ferm/iptables chains
+
+#### Examples
+
+##### create a custom chain, e.g. for all incoming SSH connections
+
+```puppet
+ferm::chain{'check-ssh':
+  chain               => 'SSH',
+  disable_conntrack   => true,
+  log_dropped_packets => true,
+}
+```
 
 #### Parameters
 
 The following parameters are available in the `ferm::chain` defined type.
-
-##### `policy`
-
-Data type: `Ferm::Policies`
-
-Set the default policy for a CHAIN
 
 ##### `disable_conntrack`
 
@@ -211,23 +219,70 @@ Data type: `Boolean`
 
 Disable/Enable usage of conntrack
 
-##### `chain`
-
-Data type: `String[1]`
-
-Name of the chain that should be managed
-
-Default value: $name
-
 ##### `log_dropped_packets`
 
 Data type: `Boolean`
 
 Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 
+##### `policy`
+
+Data type: `Optional[Ferm::Policies]`
+
+Set the default policy for CHAIN (works only for builtin chains)
+Default value: undef
+Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
+
+Default value: `undef`
+
+##### `chain`
+
+Data type: `String[1]`
+
+Name of the chain that should be managed
+Default value: $name (resource name)
+Allowed values: String[1]
+
+Default value: $name
+
+##### `table`
+
+Data type: `Ferm::Tables`
+
+Select the target table (filter/raw/mangle/nat)
+Default value: 'filter'
+Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
+
+Default value: 'filter'
+
 ### ferm::rule
 
-defined resource which creates a single rule in a specific chain
+This defined resource manages a single rule in a specific chain
+
+#### Examples
+
+##### Jump to the 'SSH' chain for all incoming SSH traffic (see chain.pp examples on how to create the chain)
+
+```puppet
+ferm::rule{'incoming-ssh':
+  chain  => 'INPUT',
+  action => 'SSH',
+  proto  => 'tcp',
+  dport  => '22',
+}
+```
+
+##### Create a rule in the 'SSH' chain to allow connections from localhost
+
+```puppet
+ferm::rule{'allow-ssh-localhost':
+  chain  => 'SSH',
+  action => 'ACCEPT',
+  proto  => 'tcp',
+  dport  => '22',
+  saddr  => '127.0.0.1',
+}
+```
 
 #### Parameters
 
@@ -238,12 +293,6 @@ The following parameters are available in the `ferm::rule` defined type.
 Data type: `String[1]`
 
 Configure the chain where we want to add the rule
-
-##### `policy`
-
-Data type: `Ferm::Policies`
-
-Configure what we want to do with the packet (drop, accept, log...)
 
 ##### `proto`
 
@@ -258,6 +307,26 @@ Data type: `String`
 A comment that will be added to the ferm config and to ip{,6}tables
 
 Default value: $name
+
+##### `action`
+
+Data type: `Optional[Ferm::Actions]`
+
+Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name)
+Default value: undef
+Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
+
+Default value: `undef`
+
+##### `policy`
+
+Data type: `Optional[Ferm::Policies]`
+
+Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name) [DEPRECATED]
+Default value: undef
+Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
+
+Default value: `undef`
 
 ##### `dport`
 
@@ -315,17 +384,39 @@ Set the rule to present or absent
 
 Default value: 'present'
 
+##### `table`
+
+Data type: `Ferm::Tables`
+
+Select the target table (filter/raw/mangle/nat)
+Default value: filter
+Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
+
+Default value: 'filter'
+
 ## Data types
+
+### Ferm::Actions
+
+As you can also *jump* to other chains, each chain-name is also a valid action/target
+
+Alias of `Variant[Enum['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'], String[1]]`
 
 ### Ferm::Policies
 
-a list of allowed default policies for a chain
+a list of allowed policies for a chain
 
-Alias of `Enum['ACCEPT', 'DROP', 'REJECT']`
+Alias of `Enum['ACCEPT', 'DROP']`
 
 ### Ferm::Protocols
 
 a list of allowed protocolls to match
 
 Alias of `Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']`
+
+### Ferm::Tables
+
+a list of available tables
+
+Alias of `Enum['raw', 'mangle', 'nat', 'filter']`
 

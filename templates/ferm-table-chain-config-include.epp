@@ -1,0 +1,14 @@
+<%- | String[1] $ip,
+Ferm::Tables $table,
+String[1] $chain,
+Stdlib::Absolutepath $filename,
+| -%>
+
+domain (<%= $ip %>) table <%= $table %> {
+    chain <%= $chain %> {
+        <%- if $table == 'filter' and $chain == 'INPUT' { -%>
+        interface lo ACCEPT;
+        <%- } -%>
+        @include '<%= $filename %>';
+    }
+}

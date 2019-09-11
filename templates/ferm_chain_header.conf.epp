@@ -1,12 +1,14 @@
-<%- | Ferm::Policies $policy,
+<%- | Optional[Ferm::Policies] $policy,
       Boolean $disable_conntrack,
 | -%>
 # THIS FILE IS MANAGED BY PUPPET
+<%- if $policy { -%>
 # Default policy for this chain
 policy <%= $policy %>;
+<%- } -%>
 
 <% unless $disable_conntrack { -%>
 # connection tracking
-mod state state INVALID DROP;
-mod state state (ESTABLISHED RELATED) ACCEPT;
+mod conntrack ctstate (ESTABLISHED RELATED) ACCEPT;
+mod conntrack ctstate INVALID DROP;
 <% } -%>

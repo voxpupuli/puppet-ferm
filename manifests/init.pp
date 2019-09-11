@@ -45,13 +45,13 @@
 #   Allowed values: (true|false)
 # @param forward_policy Default policy for the FORWARD chain
 #   Default value: DROP
-#   Allowed values: (ACCEPT|DROP|REJECT)
+#   Allowed values: (ACCEPT|DROP)
 # @param output_policy Default policy for the OUTPUT chain
 #   Default value: ACCEPT
-#   Allowed values: (ACCEPT|DROP|REJECT)
+#   Allowed values: (ACCEPT|DROP)
 # @param input_policy Default policy for the INPUT chain
 #   Default value: DROP
-#   Allowed values: (ACCEPT|DROP|REJECT)
+#   Allowed values: (ACCEPT|DROP)
 # @param rules A hash that holds all data for ferm::rule
 #   Default value: Empty Hash
 #   Allowed value: Any Hash
@@ -93,6 +93,9 @@ class ferm (
 
   Class['ferm::install']
   -> Class['ferm::config']
+  ~> Class['ferm::service']
+
+  Ferm::Chain <| |>
   ~> Class['ferm::service']
 
   $rules.each |$rulename, $attributes| {
