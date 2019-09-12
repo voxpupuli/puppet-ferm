@@ -161,7 +161,7 @@ describe 'ferm::rule', type: :define do
             that_requires('Ferm::Chain[check-ssh]')
         end
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
-        if facts[:os]['release']['major'].to_i == 10
+        if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-SSH.conf') }
         else
           it { is_expected.to contain_concat('/etc/ferm.d/chains/filter-SSH.conf') }

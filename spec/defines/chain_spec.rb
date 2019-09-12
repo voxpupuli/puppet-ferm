@@ -30,7 +30,7 @@ describe 'ferm::chain', type: :define do
           is_expected.to contain_concat__fragment('filter-INPUT2-footer'). \
             with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
-        if facts[:os]['release']['major'].to_i == 10
+        if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-INPUT2.conf') }
         else
           it { is_expected.to contain_concat('/etc/ferm.d/chains/filter-INPUT2.conf') }
