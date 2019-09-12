@@ -412,7 +412,7 @@ Alias of `Enum['ACCEPT', 'DROP']`
 
 a list of allowed protocolls to match
 
-Alias of `Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']`
+Alias of `Variant[Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all'], Array[Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']]]`
 
 ### Ferm::Tables
 

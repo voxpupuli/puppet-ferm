@@ -73,8 +73,10 @@ define ferm::rule (
     Ferm::Chain <| chain == $action_temp and table == $table |> -> Ferm::Rule[$name]
   }
 
-
-  $proto_real = "proto ${proto}"
+  $proto_real = $proto ? {
+    Array  => "proto (${join($proto, ' ')})",
+    String => "proto ${proto}",
+  }
 
   $dport_real = $dport ? {
     undef   => '',
