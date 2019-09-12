@@ -10,6 +10,7 @@ ferm::forward_policy: DROP
 ferm::output_policy: ACCEPT
 ferm::preserve_chains_in_tables: {}
 ferm::rules: {}
+ferm::chains: {}
 ferm::input_log_dropped_packets: false
 ferm::forward_log_dropped_packets: false
 ferm::output_log_dropped_packets: false
