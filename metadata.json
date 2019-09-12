@@ -46,6 +46,13 @@
       ]
     },
     {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "9",
+        "10"
+      ]
+    },
+    {
       "operatingsystem": "Archlinux"
     }
   ],

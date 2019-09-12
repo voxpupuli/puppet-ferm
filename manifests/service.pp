@@ -12,7 +12,7 @@ class ferm::service {
     }
 
     # on Ubuntu, we can't start the service, unless we set ENABLED=true in /etc/default/ferm...
-    if ($facts['os']['name'] == 'Ubuntu') {
+    if ($facts['os']['name'] in ['Ubuntu', 'Debian']) {
       file_line{'enable_ferm':
         path  => '/etc/default/ferm',
         line  => 'ENABLED="yes"',

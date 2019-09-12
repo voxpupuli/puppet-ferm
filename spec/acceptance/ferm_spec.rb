@@ -12,6 +12,20 @@ manage_initfile = case sut_os
                     false
                   end
 
+iptables_output = case sut_os
+                  when 'Debian-10'
+                    [
+                      '-A INPUT -p tcp -m tcp --dport 22 -m comment --comment allow_acceptance_tests -j ACCEPT',
+                      '-A INPUT -p tcp -m tcp --dport 80 -m comment --comment jump_http -j HTTP',
+                      '-A HTTP -s 127.0.0.1/32 -p tcp -m tcp --dport 80 -m comment --comment allow_http_localhost -j ACCEPT'
+                    ]
+                  else
+                    [
+                      '-A INPUT -p tcp -m comment --comment ["]*allow_acceptance_tests["]* -m tcp --dport 22 -j ACCEPT',
+                      '-A INPUT -p tcp -m comment --comment ["]*jump_http["]* -m tcp --dport 80 -j HTTP',
+                      '-A HTTP -s 127.0.0.1/32 -p tcp -m comment --comment ["]*allow_http_localhost["]* -m tcp --dport 80 -j ACCEPT'
+                    ]
+                  end
 basic_manifest = %(
   class { 'ferm':
     manage_service    => true,
@@ -57,7 +71,7 @@ describe 'ferm' do
 
     describe iptables do
       it do
-        is_expected.to have_rule('-A INPUT -p tcp -m comment --comment ["]*allow_acceptance_tests["]* -m tcp --dport 22 -j ACCEPT'). \
+        is_expected.to have_rule(iptables_output[0]). \
           with_table('filter'). \
           with_chain('INPUT')
       end
@@ -97,12 +111,12 @@ describe 'ferm' do
 
       describe iptables do
         it do
-          is_expected.to have_rule('-A INPUT -p tcp -m comment --comment ["]*jump_http["]* -m tcp --dport 80 -j HTTP'). \
+          is_expected.to have_rule(iptables_output[1]). \
             with_table('filter'). \
             with_chain('INPUT')
         end
         it do
-          is_expected.to have_rule('-A HTTP -s 127.0.0.1/32 -p tcp -m comment --comment ["]*allow_http_localhost["]* -m tcp --dport 80 -j ACCEPT'). \
+          is_expected.to have_rule(iptables_output[2]). \
             with_table('filter'). \
             with_chain('HTTP')
         end

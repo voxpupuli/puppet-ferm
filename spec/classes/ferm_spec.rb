@@ -17,7 +17,7 @@ describe 'ferm' do
         it { is_expected.to contain_class('ferm::service') }
         it { is_expected.to contain_class('ferm::install') }
         it { is_expected.to contain_package('ferm') }
-        if facts[:os]['release']['major'].to_i == 10
+        if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_file('/etc/ferm/ferm.d') }
           it { is_expected.to contain_file('/etc/ferm/ferm.d/definitions') }
           it { is_expected.to contain_file('/etc/ferm/ferm.d/chains') }
@@ -51,7 +51,7 @@ describe 'ferm' do
           { manage_configfile: true }
         end
 
-        if facts[:os]['name'] == 'Ubuntu' || facts[:os]['release']['major'].to_i == 10
+        if facts[:os]['family'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.conf') }
         else
           it { is_expected.to contain_concat('/etc/ferm.conf') }
@@ -102,7 +102,7 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('filter-INPUT-policy') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-policy') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-policy') }
-        if facts[:os]['release']['major'].to_i == 10
+        if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-PREROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-OUTPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-PREROUTING.conf') }
