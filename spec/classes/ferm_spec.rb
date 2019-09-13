@@ -67,7 +67,7 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-config-include') }
         it { is_expected.to contain_concat__fragment('raw-OUTPUT-config-include') }
         it { is_expected.to contain_concat__fragment('nat-PREROUTING-config-include') }
-        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
+        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.35')
           it { is_expected.to contain_concat__fragment('nat-INPUT-config-include') }
         else
           it { is_expected.not_to contain_concat__fragment('nat-INPUT-config-include') }
@@ -95,7 +95,7 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-policy') }
         it { is_expected.to contain_concat__fragment('raw-OUTPUT-policy') }
         it { is_expected.to contain_concat__fragment('nat-PREROUTING-policy') }
-        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
+        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.35')
           it { is_expected.to contain_concat__fragment('nat-INPUT-policy') }
         else
           it { is_expected.not_to contain_concat__fragment('nat-INPUT-policy') }
@@ -114,7 +114,7 @@ describe 'ferm' do
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-PREROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-OUTPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-PREROUTING.conf') }
-          if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
+          if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.35')
             it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-INPUT.conf') }
           else
             it { is_expected.not_to contain_concat('/etc/ferm/ferm.d/chains/nat-INPUT.conf') }
@@ -133,7 +133,7 @@ describe 'ferm' do
           it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-PREROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-OUTPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-PREROUTING.conf') }
-          if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
+          if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.35')
             it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-INPUT.conf') }
           else
             it { is_expected.not_to contain_concat('/etc/ferm.d/chains/nat-INPUT.conf') }
@@ -152,7 +152,7 @@ describe 'ferm' do
         it { is_expected.to contain_ferm__chain('raw-PREROUTING') }
         it { is_expected.to contain_ferm__chain('raw-OUTPUT') }
         it { is_expected.to contain_ferm__chain('nat-PREROUTING') }
-        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
+        if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.35')
           it { is_expected.to contain_ferm__chain('nat-INPUT') }
         else
           it { is_expected.not_to contain_ferm__chain('nat-INPUT') }

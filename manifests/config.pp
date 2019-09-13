@@ -75,7 +75,7 @@ class ferm::config {
     if versioncmp($kver, '3.17.0') >= 0 {
       # supports both nat INPUT chain and ip6table_nat
       $domains = $ferm::ip_versions
-    } elsif versioncmp($kver, '2.6.36') >= 0 {
+    } elsif versioncmp($kver, '2.6.35') >= 0 {
       # supports nat INPUT chain, but not ip6table_nat
       if ('ip6' in $ferm::ip_versions and 'ip' in $ferm::ip_versions) {
         $domains = ['ip']
