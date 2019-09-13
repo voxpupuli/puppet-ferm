@@ -18,12 +18,15 @@
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: 'filter'
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
+# @param ip_versions Set list of versions of ip we want ot use.
+#   Default value: $ferm::ip_versions
 define ferm::chain (
   Boolean $disable_conntrack,
   Boolean $log_dropped_packets,
-  String[1] $chain                 = $name,
-  Optional[Ferm::Policies] $policy = undef,
-  Ferm::Tables $table              = 'filter',
+  String[1] $chain                     = $name,
+  Optional[Ferm::Policies] $policy     = undef,
+  Ferm::Tables $table                  = 'filter',
+  Array[Enum['ip','ip6']] $ip_versions = $ferm::ip_versions,
 ) {
   # prevent unmanaged files due to new naming schema
   # keep the default "filter" chains in the original location
@@ -74,7 +77,7 @@ define ferm::chain (
     target  => $ferm::configfile,
     content => epp(
       "${module_name}/ferm-table-chain-config-include.epp", {
-        'ip'       => join($ferm::ip_versions, ' '),
+        'ip'       => join($ip_versions, ' '),
         'table'    => $table,
         'chain'    => $chain,
         'filename' => $filename,

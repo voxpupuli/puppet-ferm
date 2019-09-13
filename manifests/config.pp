@@ -58,6 +58,9 @@ class ferm::config {
     log_dropped_packets => $ferm::output_log_dropped_packets,
   }
 
+  # some default chains and features depend on support from the kernel
+  $kver = $facts['kernelversion']
+
   # initialize default tables and chains
   ['PREROUTING', 'OUTPUT'].each |$raw_chain| {
     ferm::chain{"raw-${raw_chain}":
@@ -69,12 +72,28 @@ class ferm::config {
     }
   }
   ['PREROUTING', 'INPUT', 'OUTPUT', 'POSTROUTING'].each |$nat_chain| {
+    if versioncmp($kver, '3.17.0') >= 0 {
+      # supports both nat INPUT chain and ip6table_nat
+      $domains = $ferm::ip_versions
+    } elsif versioncmp($kver, '2.6.36') >= 0 {
+      # supports nat INPUT chain, but not ip6table_nat
+      if ('ip6' in $ferm::ip_versions and 'ip' in $ferm::ip_versions) {
+        $domains = ['ip']
+      }
+    } else {
+      # supports neither nat INPUT nor ip6table_nat
+      if $nat_chain == 'INPUT' { next() }
+      if ('ip6' in $ferm::ip_versions and 'ip' in $ferm::ip_versions) {
+        $domains = ['ip']
+      }
+    }
     ferm::chain{"nat-${nat_chain}":
       chain               => $nat_chain,
       policy              => 'ACCEPT',
       disable_conntrack   => true,
       log_dropped_packets => false,
       table               => 'nat',
+      ip_versions         => $domains,
     }
   }
   ['PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING'].each |$mangle_chain| {

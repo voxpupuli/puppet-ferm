@@ -263,6 +263,15 @@ Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 
 Default value: 'filter'
 
+##### `ip_versions`
+
+Data type: `Array[Enum['ip','ip6']]`
+
+Set list of versions of ip we want ot use.
+Default value: $ferm::ip_versions
+
+Default value: $ferm::ip_versions
+
 ### ferm::rule
 
 This defined resource manages a single rule in a specific chain
