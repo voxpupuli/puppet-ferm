@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.5.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.5.0) (2019-09-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.4.0...v2.5.0)
+
+**Implemented enhancements:**
+
+- Add more examples [\#73](https://github.com/voxpupuli/puppet-ferm/pull/73) ([foxxx0](https://github.com/foxxx0))
+- expose parameter to initialize custom chains [\#68](https://github.com/voxpupuli/puppet-ferm/pull/68) ([foxxx0](https://github.com/foxxx0))
+- allow using an array for $proto [\#67](https://github.com/voxpupuli/puppet-ferm/pull/67) ([foxxx0](https://github.com/foxxx0))
+- add ability to configure rules in tables other than the default "filter" table [\#58](https://github.com/voxpupuli/puppet-ferm/pull/58) ([foxxx0](https://github.com/foxxx0))
+
+**Fixed bugs:**
+
+- idempotency issue with CentOS6 since module version 2.2.0 [\#63](https://github.com/voxpupuli/puppet-ferm/issues/63)
+- unable to configure Debian OSes [\#60](https://github.com/voxpupuli/puppet-ferm/issues/60)
+- fix kernel incompatibilities [\#72](https://github.com/voxpupuli/puppet-ferm/pull/72) ([foxxx0](https://github.com/foxxx0))
+- Fix config handling and caching on Debian [\#69](https://github.com/voxpupuli/puppet-ferm/pull/69) ([bastelfreak](https://github.com/bastelfreak))
+- add missing status option for CentOS 6 init script [\#65](https://github.com/voxpupuli/puppet-ferm/pull/65) ([Dan33l](https://github.com/Dan33l))
+
+**Closed issues:**
+
+- Please support JUMP. [\#61](https://github.com/voxpupuli/puppet-ferm/issues/61)
+
+**Merged pull requests:**
+
+- enhance puppet-strings documentation [\#71](https://github.com/voxpupuli/puppet-ferm/pull/71) ([bastelfreak](https://github.com/bastelfreak))
+- drop Debian from supported OSes [\#62](https://github.com/voxpupuli/puppet-ferm/pull/62) ([Dan33l](https://github.com/Dan33l))
+- enable acceptance and drop EOL ubuntu1404 [\#59](https://github.com/voxpupuli/puppet-ferm/pull/59) ([Dan33l](https://github.com/Dan33l))
+
 ## [v2.4.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.4.0) (2019-09-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.3.0...v2.4.0)
