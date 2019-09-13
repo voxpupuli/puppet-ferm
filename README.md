@@ -13,6 +13,7 @@
 * [Overview](#overview)
 * [What happened to older releases?](#what-happenend-to-older-releases)
 * [Setup](#setup)
+* [Examples](#examples)
 * [Support](#support)
 * [Reference](#reference)
 * [Development](#development)
@@ -92,6 +93,44 @@ ferm::rules is a hash. configured for deep merge. Hiera will collect all
 defined hashes and hand them over to the class. The main class will create
 rules for all of them. It also collects all exported resources that are tagged
 with the FQDN of a box.
+
+
+## Examples
+
+### disable conntrack for all non-local destinations (e.g. for hypervisors)
+
+General best practices for firewalling recommend that you use explicit whitelisting.
+Usually this boils down to configuring your firewall in a stateful manner, i.e. allowing `ESTABLISHED` and `RELATED` connections in addition to some whitelisted ports (i.e. TCP/22 for SSHD, likely limited to certain source addresses).
+For this to work you need connection tracking, provided by the `nf_conntrack` kernel module and configurable via the iptables `conntrack` module.
+However, especially in virtualization environments, you do not want to track *every* connection being routed through the hypervisor.
+You only want to track connections directly addressed to the hypervisor itself, i.e. traffic ending up in the `filter/INPUT` chain, but not traffic that is later going through `filter/FORWARD` to guest systems.
+Unfortunately the `ferm` tool does not allow negating lists (i.e. `@ipfilter()`) and thus we cannot easily negate `saddr` or `daddr` params, which forces us to configure two rules instead of one.
+
+Connection tracking can only be controlled in the `PREROUTING` chain of the `raw` table.
+
+```yaml
+ferm::rules:
+  'allow_conntrack_local':
+    chain: 'PREROUTING'
+    table: 'raw'
+    proto: 'all'
+    daddr:
+      - "%{facts.ipaddress}"
+      - "%{facts.ipaddress6}"
+    action: 'RETURN'
+  'disable_conntrack_nonlocal':
+    chain: 'PREROUTING'
+    table: 'raw'
+    proto: 'all'
+    action: 'NOTRACK'
+    interface: "%{facts.networking.primary}"
+```
+
+The upper `RETURN` rule will stop evaluating further rules in the `PREROUTING` chain of the `raw` table if the traffic is addressed directly to the current node applying the catalogue.
+The second rule will disable connection tracking for all other traffic coming in over the primary network interface, that is not addressed directly to the current node, i.e. guest systems hosted on it.
+
+This will prevent your conntrack table from overflowing, tracking only the relevant connections and allowing you to use a stateful ruleset.
+
 
 ## Reference
 
