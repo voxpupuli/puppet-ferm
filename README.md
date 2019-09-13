@@ -95,119 +95,9 @@ with the FQDN of a box.
 
 ## Reference
 
-### Main class
-
-The main class has the following parameters:
-
-#### `manage_service`
-
-[Boolean] disable/enable the management of the ferm daemon
-
-#### `manage_configfile`
-
-[Boolean] disable/enable the management of the ferm default config
-
-#### `manage_initfile`
-
-[Boolean] disable/enable the management of the ferm init script for RedHat-based OS
-
-#### `configfile`
-
-[Stdlib::Absolutepath] path to the config file
-
-#### `forward_policy`
-
-[Ferm::Policies] default policy for the FORWARD chain
-
-#### `output_policy`
-
-[Ferm::Policies] default policy for the OUTPUT chain
-
-#### `input_policy`
-
-[Ferm::Policies] default policy for the INPUT chain
-
-#### `rules`
-
-A hash that holds all data for ferm::rule
-
-### rule defined resource
-
-This creates an entry in the correct chain file for ferm.
-
-#### `chain`
-
-The chain where we place this rule
-
-#### `policy`
-
-The desired policy. Allowed values are Enum['ACCEPT','DROP', 'REJECT']
-
-#### `protocol`
-
-the protocol we would like to filter. Allowed values are Enum['icmp', 'tcp', 'udp']
-
-### `proto_options`
-
-The protocol options we would like to add.
-The following example will suppress the hostname in programs like `traceroute`:
-
-```yaml
----
-ferm::rules:
-  'drop_output_traceroute':
-    chain: 'OUTPUT'
-    policy: 'DROP'
-    proto: 'icmp'
-    proto_options: 'icmp-type time-exceeded'
-```
-
-#### `comment`
-
-A comment that will be written into the file and into ip(6)tables
-
-#### `dport`
-
-The destination port we want to filter for. Can be any string from
-/etc/services or an integer
-
-#### `sport`
-
-Like the destination port above, just for the source port
-
-#### `saddr`
-
-Source IPv4/IPv6 address. Can be one or many of them. Multiple addresses are
-always encapsulated in braces:
-'(127.0.0.1 2003::)'
-
-IPv4 and IPv6 addresses can be mixed. CIDR notation is possible if you want to
-block networks, otherwise /32 or /128 is assumed by ferm/ip(6)tables
-
-#### `daddr`
-
-Same as above, just for the destination IP address
-
-#### `ensure`
-
-Add or remove it from the ruleset
-
-#### `interface`
-
-If set, this rule only applies to this specific interface
-
-### chain defined resource
-
-The module defines the three default chains for you, INPUT, FORWARD and OUTPUT.
-You're able to define own chains if you want to
-
-#### `policy`
-
-The desired default policy for the chain
-
-#### `chain`
-
-The name of the chain
+All parameters are documented within the classes. We generate markdown
+documentation. It's available in the [REFERENCE.md](REFERENCE.md). It also
+contains many examples.
 
 ## Development
 
@@ -220,6 +110,10 @@ bundle install --path .vendor/ --without system_tests --without development --wi
 bundle exec rake test
 ```
 
+For more details about the development workflow and on how to contribute,
+please check the [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+
 ## Authors
 
-puppet-ferm is maintained by [Vox Pupuli](https://voxpupuli.org), it was written by [Tim 'bastelfreak' Meusel](https://github.com/bastelfreak).
+puppet-ferm is maintained by [Vox Pupuli](https://voxpupuli.org), it was written
+by [Tim 'bastelfreak' Meusel](https://github.com/bastelfreak).

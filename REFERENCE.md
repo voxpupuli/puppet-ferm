@@ -292,6 +292,28 @@ ferm::rule{'allow-ssh-localhost':
 }
 ```
 
+##### Confuse people that do a traceroute/mtr/ping to your system
+
+```puppet
+ferm::rule{'drop-icmp-time-exceeded':
+  chain         => 'OUTPUT',
+  policy        => 'DROP',
+  proto         => 'icmp',
+  proto_options => 'icmp-type time-exceeded',
+}
+```
+
+##### allow multiple protocols
+
+```puppet
+ferm::rule{'allow_consul':
+  chain  => 'INPUT',
+  policy => 'ACCEPT',
+  proto  => ['udp', 'tcp'],
+  dport  => 8301,
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `ferm::rule` defined type.

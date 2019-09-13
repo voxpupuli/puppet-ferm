@@ -17,6 +17,23 @@
 #     saddr  => '127.0.0.1',
 #   }
 #
+#
+# @example Confuse people that do a traceroute/mtr/ping to your system
+#   ferm::rule{'drop-icmp-time-exceeded':
+#     chain         => 'OUTPUT',
+#     policy        => 'DROP',
+#     proto         => 'icmp',
+#     proto_options => 'icmp-type time-exceeded',
+#   }
+#
+# @example allow multiple protocols
+#   ferm::rule{'allow_consul':
+#     chain  => 'INPUT',
+#     policy => 'ACCEPT',
+#     proto  => ['udp', 'tcp'],
+#     dport  => 8301,
+#   }
+#
 # @param chain Configure the chain where we want to add the rule
 # @param proto Which protocol do we want to match, typically UDP or TCP
 # @param comment A comment that will be added to the ferm config and to ip{,6}tables
