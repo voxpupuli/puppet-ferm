@@ -128,6 +128,11 @@ define ferm::rule (
     String  => "daddr @ipfilter((${daddr}))",
     default => '',
   }
+  $outerface_real = $outerface ? {
+    undef   => '',
+    String  => "outerface ${outerface}",
+    default => '',
+  }
   $proto_options_real = $proto_options ? {
     undef   =>  '',
     default => $proto_options
@@ -143,7 +148,7 @@ define ferm::rule (
     $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
   }
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${outerface} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
+  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${outerface_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
