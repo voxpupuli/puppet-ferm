@@ -49,7 +49,7 @@
 # @param daddr The destination address we want to match
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
-# @param ensure Set the rule to present or absent
+# @param outerface an Optional Outerface to match egress packets
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
@@ -65,6 +65,7 @@ define ferm::rule (
   Optional[Variant[Array, String[1]]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
+  Optional[String[1]] $outerface = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
 ){
@@ -142,7 +143,7 @@ define ferm::rule (
     $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
   }
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
+  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${outerface} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
