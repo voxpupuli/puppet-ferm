@@ -50,6 +50,7 @@
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
 # @param outerface an Optional Outerface to match egress packets
+# @param ensure Set the rule to present or absent
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
