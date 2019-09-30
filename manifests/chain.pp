@@ -73,6 +73,10 @@ define ferm::chain (
   }
 
   # make sure the generated snippet is actually included
+  # the ordering here is hacked. We might end up with multiple blocks for the same filter+chain.
+  # This happens if we add ipset matches. We suffix this ordering with `bbb`. This allows us to
+  # insert ipset matches before other rules by adding `-aaa` or
+  # insert them at the end by ordering them with `-ccc`.
   concat::fragment{"${table}-${chain}-config-include":
     target  => $ferm::configfile,
     content => epp(
@@ -83,7 +87,7 @@ define ferm::chain (
         'filename' => $filename,
       }
     ),
-    order   => "${table}-${chain}",
+    order   => "${table}-${chain}-bbb",
     require => Concat[$filename],
   }
 }

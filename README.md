@@ -64,7 +64,8 @@ You can collect them like this:
 Ferm::Rule <<| tag == 'allow_kafka_server2server' |>>
 ```
 
-You can also define rules in Hiera. Make sure to use `alias()` as interpolation function, because `hiera()` will always return a string.
+You can also define rules in Hiera. Make sure to use `alias()` as interpolation
+function, because `hiera()` will always return a string.
 
 ```yaml
 ---
@@ -94,6 +95,20 @@ defined hashes and hand them over to the class. The main class will create
 rules for all of them. It also collects all exported resources that are tagged
 with the FQDN of a box.
 
+It's also possible to match against [ipsets](http://ipset.netfilter.org/). This
+allows to easily match against a huge amount of IP addresses or network ranges.
+You can use this as follows:
+
+```puppet
+ferm::ipset { 'INPUT':
+  sets => {
+   'office'   => 'ACCPET',
+   'internet' => 'DROP',
+  }
+}
+```
+
+please see the [references](#reference) section for more examples.
 
 ## Examples
 
@@ -130,7 +145,6 @@ The upper `RETURN` rule will stop evaluating further rules in the `PREROUTING` c
 The second rule will disable connection tracking for all other traffic coming in over the primary network interface, that is not addressed directly to the current node, i.e. guest systems hosted on it.
 
 This will prevent your conntrack table from overflowing, tracking only the relevant connections and allowing you to use a stateful ruleset.
-
 
 ## Reference
 
