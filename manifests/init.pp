@@ -21,8 +21,12 @@
 #         'DOCKER-ISOLATION-STAGE-1',
 #         'DOCKER-ISOLATION-STAGE-2',
 #         'DOCKER-USER',
-#       ]
-#     }
+#         'FORWARD',
+#       ],
+#       'nat' => [
+#         'DOCKER',
+#       ],
+#     },
 #   }
 #
 # @param manage_service Disable/Enable the management of the ferm daemon
