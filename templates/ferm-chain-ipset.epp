@@ -1,0 +1,13 @@
+<%- | String[1] $ip,
+Ferm::Tables $table,
+String[1] $chain,
+Hash[String[1], Ferm::Actions] $sets,
+| -%>
+
+domain (<%= $ip %>) table <%= $table %> {
+    chain <%= $chain %> {
+      <%- $sets.each |$ipset, $action| { -%>
+      mod set set <%= $ipset %> src <%= $action %>;
+      <%- } -%>
+    }
+}
