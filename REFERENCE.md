@@ -62,8 +62,12 @@ class{'ferm':
       'DOCKER-ISOLATION-STAGE-1',
       'DOCKER-ISOLATION-STAGE-2',
       'DOCKER-USER',
-    ]
-  }
+      'FORWARD',
+    ],
+    'nat' => [
+      'DOCKER',
+    ],
+  },
 }
 ```
 
