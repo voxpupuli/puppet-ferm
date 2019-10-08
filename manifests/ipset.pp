@@ -47,7 +47,7 @@ define ferm::ipset (
   }
 
   # make sure the generated snippet is actually included
-  concat::fragment{"${table}-${chain}-ipset":
+  concat::fragment{"${table}-${chain}-${name}":
     target  => $ferm::configfile,
     content => epp(
       "${module_name}/ferm-chain-ipset.epp", {
