@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.6.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.6.0) (2019-10-08)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.5.0...v2.6.0)
+
+**Implemented enhancements:**
+
+- implement ipset support [\#80](https://github.com/voxpupuli/puppet-ferm/pull/80) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- ipset: allow multiple instances of defined resource [\#85](https://github.com/voxpupuli/puppet-ferm/pull/85) ([bastelfreak](https://github.com/bastelfreak))
+- disable conntrack filtering in FORWARD/OUTPUT [\#81](https://github.com/voxpupuli/puppet-ferm/pull/81) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- update docker firewalling example [\#84](https://github.com/voxpupuli/puppet-ferm/pull/84) ([bastelfreak](https://github.com/bastelfreak))
+- delete legacy docs/ folder [\#83](https://github.com/voxpupuli/puppet-ferm/pull/83) ([bastelfreak](https://github.com/bastelfreak))
+- move common from hiera data values to init.pp [\#75](https://github.com/voxpupuli/puppet-ferm/pull/75) ([Dan33l](https://github.com/Dan33l))
+
 ## [v2.5.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.5.0) (2019-09-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.4.0...v2.5.0)
