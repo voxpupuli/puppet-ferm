@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.7.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.7.0) (2019-10-29)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.6.0...v2.7.0)
+
+**Merged pull requests:**
+
+- revert PR81 [\#88](https://github.com/voxpupuli/puppet-ferm/pull/88) ([Dan33l](https://github.com/Dan33l))
+
 ## [v2.6.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.6.0) (2019-10-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.5.0...v2.6.0)
