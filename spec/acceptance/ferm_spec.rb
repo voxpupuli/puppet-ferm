@@ -32,7 +32,7 @@ basic_manifest = %(
     manage_configfile => true,
     manage_initfile   => #{manage_initfile}, # CentOS-6 does not provide init script
     forward_policy    => 'DROP',
-    output_policy     => 'ACCEPT',
+    output_policy     => 'DROP',
     input_policy      => 'DROP',
     rules             => {
       'allow_acceptance_tests' => {
@@ -66,7 +66,7 @@ describe 'ferm' do
     end
 
     describe command('iptables-save') do
-      its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
+      its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT DROP.*}m }
     end
 
     describe iptables do

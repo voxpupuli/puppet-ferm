@@ -49,12 +49,12 @@ class ferm::config {
   }
   ferm::chain{'FORWARD':
     policy              => $ferm::forward_policy,
-    disable_conntrack   => true,
+    disable_conntrack   => $ferm::disable_conntrack,
     log_dropped_packets => $ferm::forward_log_dropped_packets,
   }
   ferm::chain{'OUTPUT':
     policy              => $ferm::output_policy,
-    disable_conntrack   => true,
+    disable_conntrack   => $ferm::disable_conntrack,
     log_dropped_packets => $ferm::output_log_dropped_packets,
   }
 
