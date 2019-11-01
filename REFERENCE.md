@@ -112,11 +112,27 @@ Data type: `Stdlib::Absolutepath`
 
 Path to the directory where the module stores ferm configuration files
 
-##### `disable_conntrack`
+##### `forward_disable_conntrack`
 
 Data type: `Boolean`
 
-Disable/Enable the generation of conntrack rules
+Enable/Disable the generation of conntrack rules for the FORWARD chain
+
+Default value: `true`
+
+##### `output_disable_conntrack`
+
+Data type: `Boolean`
+
+Enable/Disable the generation of conntrack rules for the OUTPUT chain
+
+Default value: `true`
+
+##### `input_disable_conntrack`
+
+Data type: `Boolean`
+
+Enable/Disable the generation of conntrack rules for the INPUT chain
 
 Default value: `false`
 
@@ -227,7 +243,9 @@ The following parameters are available in the `ferm::chain` defined type.
 
 Data type: `Boolean`
 
-Disable/Enable usage of conntrack
+Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
+
+Default value: `true`
 
 ##### `log_dropped_packets`
 

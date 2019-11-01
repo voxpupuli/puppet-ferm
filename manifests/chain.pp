@@ -7,7 +7,7 @@
 #     log_dropped_packets => true,
 #   }
 #
-# @param disable_conntrack Disable/Enable usage of conntrack
+# @param disable_conntrack Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
 # @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 # @param policy Set the default policy for CHAIN (works only for builtin chains)
 #   Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
@@ -18,8 +18,8 @@
 # @param ip_versions Set list of versions of ip we want ot use.
 #
 define ferm::chain (
-  Boolean $disable_conntrack,
   Boolean $log_dropped_packets,
+  Boolean $disable_conntrack           = true,
   String[1] $chain                     = $name,
   Optional[Ferm::Policies] $policy     = undef,
   Ferm::Tables $table                  = 'filter',
