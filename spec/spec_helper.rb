@@ -4,9 +4,7 @@
 
 # puppetlabs_spec_helper will set up coverage if the env variable is set.
 # We want to do this if lib exists and it hasn't been explicitly set.
-if Dir.exist?(File.expand_path('../../lib', __FILE__))
-  ENV['COVERAGE'] ||= 'yes'
-end
+ENV['COVERAGE'] ||= 'yes' if Dir.exist?(File.expand_path('../../lib', __FILE__))
 
 require 'voxpupuli/test/spec_helper'
 
@@ -18,4 +16,3 @@ if File.exist?(File.join(__dir__, 'default_module_facts.yml'))
     end
   end
 end
-
