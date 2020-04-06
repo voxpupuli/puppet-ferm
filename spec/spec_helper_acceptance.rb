@@ -11,7 +11,7 @@ RSpec.configure do |c|
   # Configure all nodes in nodeset
   c.before :suite do
     # ferm is into epel with RedHat like OSes
-    install_module_from_forge('stahnma-epel', '>= 1.3.1 < 2.0.0') if fact('os.family') == 'RedHat'
+    install_module_from_forge('puppet-epel', '>= 3.0.0 < 4.0.0') if fact('os.family') == 'RedHat'
 
     pp = %(
       include epel
