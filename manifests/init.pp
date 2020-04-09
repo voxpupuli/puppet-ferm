@@ -1,5 +1,3 @@
-# Class: ferm
-#
 # @summary This class manages ferm installation and rule generation on modern linux systems
 #
 # @example deploy ferm without any configured rules, but also don't start the service or modify existing config files

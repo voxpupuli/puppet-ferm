@@ -10,16 +10,13 @@
 # @param disable_conntrack Disable/Enable usage of conntrack
 # @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 # @param policy Set the default policy for CHAIN (works only for builtin chains)
-#   Default value: undef
 #   Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
 # @param chain Name of the chain that should be managed
-#   Default value: $name (resource name)
 #   Allowed values: String[1]
 # @param table Select the target table (filter/raw/mangle/nat)
-#   Default value: 'filter'
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 # @param ip_versions Set list of versions of ip we want ot use.
-#   Default value: $ferm::ip_versions
+#
 define ferm::chain (
   Boolean $disable_conntrack,
   Boolean $log_dropped_packets,
