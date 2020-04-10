@@ -1,5 +1,8 @@
+#
 # @api private
-# This class handles the configuration file. Avoid modifying private classes.
+#
+# @summary This class handles the configuration file. Avoid modifying private classes.
+#
 class ferm::install {
 
   # this is a private class

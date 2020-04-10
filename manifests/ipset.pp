@@ -3,14 +3,14 @@
 #
 # @see http://ferm.foo-projects.org/download/2.1/ferm.html#set
 #
-# @example
+# @example Create an iptables rule that allows traffic that matches the ipset `internet`
 #   ferm::ipset { 'CONSUL':
 #     sets => {
 #       'internet' => 'ACCEPT'
 #     },
 #   }
 #
-# @example create to matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
+# @example create two matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
 #   ferm::ipset { 'INPUT':
 #     prepend_to_chain => false,
 #     table            => 'filter',
@@ -21,6 +21,8 @@
 #     },
 #   }
 #
+# @param sets
+#   A hash with multiple sets. For each hash you can provide an action like `DROP` or `ACCEPT`.
 # @param chain
 #   name of the chain we want to apply those rules to. The name of the defined resource will be used as default value for this.
 #
@@ -30,8 +32,8 @@
 # @param ip_version
 #   sadly, ip sets are version specific. You cannot mix IPv4 and IPv6 addresses. Because of this you need to provide the version.
 #
-# @param sets
-#   A hash with multiple sets. For each hash you can provide an action like `DROP` or `ACCEPT`.
+# @param prepend_to_chain
+#   By default, ipset rules are added to the top of the chain. Set this to false to append them to the end instead.
 #
 define ferm::ipset (
   Hash[String[1], Ferm::Actions] $sets,

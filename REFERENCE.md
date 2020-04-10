@@ -32,7 +32,7 @@ _Private Classes_
 
 ### ferm
 
-Class: ferm
+This class manages ferm installation and rule generation on modern linux systems
 
 #### Examples
 
@@ -240,7 +240,6 @@ Enable/Disable logging of packets to the kernel log, if no explicit chain matche
 Data type: `Optional[Ferm::Policies]`
 
 Set the default policy for CHAIN (works only for builtin chains)
-Default value: undef
 Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
 
 Default value: `undef`
@@ -250,7 +249,6 @@ Default value: `undef`
 Data type: `String[1]`
 
 Name of the chain that should be managed
-Default value: $name (resource name)
 Allowed values: String[1]
 
 Default value: $name
@@ -260,7 +258,6 @@ Default value: $name
 Data type: `Ferm::Tables`
 
 Select the target table (filter/raw/mangle/nat)
-Default value: 'filter'
 Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 
 Default value: 'filter'
@@ -270,7 +267,6 @@ Default value: 'filter'
 Data type: `Array[Enum['ip','ip6']]`
 
 Set list of versions of ip we want ot use.
-Default value: $ferm::ip_versions
 
 Default value: $ferm::ip_versions
 
@@ -283,7 +279,7 @@ http://ferm.foo-projects.org/download/2.1/ferm.html#set
 
 #### Examples
 
-##### 
+##### Create an iptables rule that allows traffic that matches the ipset `internet`
 
 ```puppet
 ferm::ipset { 'CONSUL':
@@ -293,7 +289,7 @@ ferm::ipset { 'CONSUL':
 }
 ```
 
-##### create to matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
+##### create two matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
 
 ```puppet
 ferm::ipset { 'INPUT':
@@ -310,6 +306,12 @@ ferm::ipset { 'INPUT':
 #### Parameters
 
 The following parameters are available in the `ferm::ipset` defined type.
+
+##### `sets`
+
+Data type: `Hash[String[1], Ferm::Actions]`
+
+A hash with multiple sets. For each hash you can provide an action like `DROP` or `ACCEPT`.
 
 ##### `chain`
 
@@ -335,17 +337,11 @@ sadly, ip sets are version specific. You cannot mix IPv4 and IPv6 addresses. Bec
 
 Default value: 'ip'
 
-##### `sets`
-
-Data type: `Hash[String[1], Ferm::Actions]`
-
-A hash with multiple sets. For each hash you can provide an action like `DROP` or `ACCEPT`.
-
 ##### `prepend_to_chain`
 
 Data type: `Boolean`
 
-
+By default, ipset rules are added to the top of the chain. Set this to false to append them to the end instead.
 
 Default value: `true`
 
