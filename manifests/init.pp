@@ -38,6 +38,7 @@
 # @param forward_policy Default policy for the FORWARD chain
 # @param output_policy Default policy for the OUTPUT chain
 # @param input_policy Default policy for the INPUT chain
+# @param input_drop_invalid_packets_with_conntrack Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false`. You can set this to false if your policy is DROP. This only effects the INPUT chain.
 # @param rules A hash that holds all data for ferm::rule
 # @param chains A hash that holds all data for ferm::chain
 # @param forward_log_dropped_packets Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no explicit chain matched
@@ -61,6 +62,7 @@ class ferm (
   Boolean $forward_log_dropped_packets = false,
   Boolean $output_log_dropped_packets = false,
   Boolean $input_log_dropped_packets = false,
+  Boolean $input_drop_invalid_packets_with_conntrack = false,
   Hash $rules = {},
   Hash $chains = {},
   Array[Enum['ip','ip6']] $ip_versions = ['ip','ip6'],

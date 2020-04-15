@@ -160,6 +160,14 @@ Default policy for the INPUT chain
 
 Default value: 'DROP'
 
+##### `input_drop_invalid_packets_with_conntrack`
+
+Data type: `Boolean`
+
+Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false`. You can set this to false if your policy is DROP. This only effects the INPUT chain.
+
+Default value: `false`
+
 ##### `rules`
 
 Data type: `Hash`
@@ -246,6 +254,14 @@ Data type: `Boolean`
 Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
 
 Default value: `true`
+
+##### `drop_invalid_packets_with_conntrack`
+
+Data type: `Boolean`
+
+Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false` in this chain. You can set this to false if your policy is DROP.
+
+Default value: `false`
 
 ##### `log_dropped_packets`
 
