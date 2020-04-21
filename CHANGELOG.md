@@ -4,12 +4,33 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v3.0.0) (2020-04-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.7.0...v3.0.0)
+
+**Breaking changes:**
+
+- by default dont log dropped packets [\#101](https://github.com/voxpupuli/puppet-ferm/pull/101) ([bastelfreak](https://github.com/bastelfreak))
+- use dedicated conntrack parameters / by default disable conntrack for new chains /  by default enable conntrack for filter INPUT chain [\#90](https://github.com/voxpupuli/puppet-ferm/pull/90) ([Dan33l](https://github.com/Dan33l))
+
+**Implemented enhancements:**
+
+- make dropping of invalid pakets optional [\#100](https://github.com/voxpupuli/puppet-ferm/pull/100) ([bastelfreak](https://github.com/bastelfreak))
+- Add VZ 6/7 to metadata.json [\#95](https://github.com/voxpupuli/puppet-ferm/pull/95) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- cleanup puppet-strings documentation [\#99](https://github.com/voxpupuli/puppet-ferm/pull/99) ([bastelfreak](https://github.com/bastelfreak))
+- Use voxpupuli-acceptance [\#97](https://github.com/voxpupuli/puppet-ferm/pull/97) ([ekohl](https://github.com/ekohl))
+- delete legacy travis directory [\#92](https://github.com/voxpupuli/puppet-ferm/pull/92) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.7.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.7.0) (2019-10-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.6.0...v2.7.0)
 
 **Merged pull requests:**
 
+- release 2.7.0 [\#89](https://github.com/voxpupuli/puppet-ferm/pull/89) ([Dan33l](https://github.com/Dan33l))
 - revert PR81 [\#88](https://github.com/voxpupuli/puppet-ferm/pull/88) ([Dan33l](https://github.com/Dan33l))
 
 ## [v2.6.0](https://github.com/voxpupuli/puppet-ferm/tree/v2.6.0) (2019-10-08)
@@ -150,7 +171,7 @@ These should not affect the functionality of the module.
 
 **Implemented enhancements:**
 
-- Add `proto\_options` to enable usage of icmp types [\#20](https://github.com/voxpupuli/puppet-ferm/pull/20) ([kBite](https://github.com/kBite))
+- Add `proto_options` to enable usage of icmp types [\#20](https://github.com/voxpupuli/puppet-ferm/pull/20) ([kBite](https://github.com/kBite))
 - Add official ubuntu support [\#17](https://github.com/voxpupuli/puppet-ferm/pull/17) ([bastelfreak](https://github.com/bastelfreak))
 
 **Fixed bugs:**
