@@ -1,5 +1,6 @@
 <%- | Optional[Ferm::Policies] $policy,
       Boolean $disable_conntrack,
+      Boolean $drop_invalid_packets_with_conntrack,
 | -%>
 # THIS FILE IS MANAGED BY PUPPET
 <%- if $policy { -%>
@@ -10,5 +11,7 @@ policy <%= $policy %>;
 <% unless $disable_conntrack { -%>
 # connection tracking
 mod conntrack ctstate (ESTABLISHED RELATED) ACCEPT;
+<% if $drop_invalid_packets_with_conntrack { -%>
 mod conntrack ctstate INVALID DROP;
+<% } -%>
 <% } -%>

@@ -46,9 +46,10 @@ class ferm::config {
   }
 
   ferm::chain{'INPUT':
-    policy              => $ferm::input_policy,
-    disable_conntrack   => $ferm::input_disable_conntrack,
-    log_dropped_packets => $ferm::input_log_dropped_packets,
+    policy                              => $ferm::input_policy,
+    disable_conntrack                   => $ferm::input_disable_conntrack,
+    log_dropped_packets                 => $ferm::input_log_dropped_packets,
+    drop_invalid_packets_with_conntrack => $ferm::input_drop_invalid_packets_with_conntrack,
   }
   ferm::chain{'FORWARD':
     policy              => $ferm::forward_policy,

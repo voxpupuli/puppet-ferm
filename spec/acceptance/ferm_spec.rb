@@ -67,6 +67,7 @@ describe 'ferm' do
 
     describe command('iptables-save') do
       its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
+      its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
     end
 
     describe iptables do
@@ -120,6 +121,44 @@ describe 'ferm' do
             with_table('filter'). \
             with_chain('HTTP')
         end
+      end
+    end
+
+    context 'with dropping INVALID pakets' do
+      pp2 = %(
+        class { 'ferm':
+          manage_service                            => true,
+          manage_configfile                         => true,
+          manage_initfile                           => #{manage_initfile}, # CentOS-6 does not provide init script
+          forward_policy                            => 'DROP',
+          output_policy                             => 'ACCEPT',
+          input_policy                              => 'DROP',
+          input_drop_invalid_packets_with_conntrack => true,
+          rules             => {
+            'allow_acceptance_tests' => {
+              chain  => 'INPUT',
+              action => 'ACCEPT',
+              proto  => tcp,
+              dport  => 22,
+            },
+          },
+          ip_versions      => ['ip'], #only ipv4 available with CI
+        }
+      )
+
+      it 'works with no error' do
+        apply_manifest(pp2, catch_failures: true)
+      end
+      it 'works idempotently' do
+        apply_manifest(pp2, catch_changes: true)
+      end
+
+      describe service('ferm') do
+        it { is_expected.to be_running }
+      end
+
+      describe command('iptables-save') do
+        its(:stdout) { is_expected.to match %r{INPUT.*state INVALID -j DROP} }
       end
     end
   end

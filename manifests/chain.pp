@@ -8,6 +8,7 @@
 #   }
 #
 # @param disable_conntrack Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
+# @param drop_invalid_packets_with_conntrack Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false` in this chain. You can set this to false if your policy is DROP.
 # @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 # @param policy Set the default policy for CHAIN (works only for builtin chains)
 #   Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
@@ -19,11 +20,12 @@
 #
 define ferm::chain (
   Boolean $log_dropped_packets,
-  Boolean $disable_conntrack           = true,
-  String[1] $chain                     = $name,
-  Optional[Ferm::Policies] $policy     = undef,
-  Ferm::Tables $table                  = 'filter',
-  Array[Enum['ip','ip6']] $ip_versions = $ferm::ip_versions,
+  Boolean $drop_invalid_packets_with_conntrack = false,
+  Boolean $disable_conntrack                   = true,
+  String[1] $chain                             = $name,
+  Optional[Ferm::Policies] $policy             = undef,
+  Ferm::Tables $table                          = 'filter',
+  Array[Enum['ip','ip6']] $ip_versions         = $ferm::ip_versions,
 ) {
   # prevent unmanaged files due to new naming schema
   # keep the default "filter" chains in the original location
@@ -54,8 +56,9 @@ define ferm::chain (
     target  => $filename,
     content => epp(
       "${module_name}/ferm_chain_header.conf.epp", {
-        'policy'            => $policy,
-        'disable_conntrack' => $disable_conntrack,
+        'policy'                              => $policy,
+        'disable_conntrack'                   => $disable_conntrack,
+        'drop_invalid_packets_with_conntrack' => $drop_invalid_packets_with_conntrack,
       }
     ),
     order   => '01',
