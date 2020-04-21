@@ -19,7 +19,7 @@
 # @param ip_versions Set list of versions of ip we want ot use.
 #
 define ferm::chain (
-  Boolean $log_dropped_packets,
+  Boolean $log_dropped_packets                 = false,
   Boolean $drop_invalid_packets_with_conntrack = false,
   Boolean $disable_conntrack                   = true,
   String[1] $chain                             = $name,
