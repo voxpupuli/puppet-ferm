@@ -269,6 +269,8 @@ Data type: `Boolean`
 
 Enable/Disable logging of packets to the kernel log, if no explicit chain matched
 
+Default value: `false`
+
 ##### `policy`
 
 Data type: `Optional[Ferm::Policies]`
