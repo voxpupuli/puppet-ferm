@@ -15,7 +15,7 @@ class ferm::service {
     }
 
     # on Ubuntu, we can't start the service, unless we set ENABLED=true in /etc/default/ferm...
-    if ($facts['os']['name'] in ['Ubuntu', 'Debian']) {
+    if ($facts['os']['name'] in ['Ubuntu', 'Debian']) and ($ferm::install_method == 'package') {
       file_line{'enable_ferm':
         path   => '/etc/default/ferm',
         line   => 'ENABLED="yes"',

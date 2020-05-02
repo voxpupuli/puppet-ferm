@@ -1,0 +1,6 @@
+# THIS SNIPPET IS MANAGED BY PUPPET
+[Service]
+ExecStart=
+ExecStart=/usr/sbin/ferm <%= $ferm::configfile %>
+ExecStop=
+ExecStop=/usr/sbin/ferm -F <%= $ferm::configfile %>

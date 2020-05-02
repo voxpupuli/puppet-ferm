@@ -220,10 +220,34 @@ Default value: ['ip','ip6']
 
 Data type: `Hash[String[1],Array[String[1]]]`
 
-Hash with table:chains[] to use ferm @preserve for
+Hash with table:chains[] to use ferm @preserve for (since ferm v2.4)
 Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 
 Default value: {}
+
+##### `install_method`
+
+Data type: `Enum['package','vcsrepo']`
+
+method used to install ferm
+
+Default value: 'package'
+
+##### `vcsrepo`
+
+Data type: `Stdlib::HTTPSUrl`
+
+git repository where ferm sources are hosted
+
+Default value: 'https://github.com/MaxKellermann/ferm.git'
+
+##### `vcstag`
+
+Data type: `String[1]`
+
+git tag used when install_method is vcsrepo
+
+Default value: 'v2.5.1'
 
 ## Defined types
 
