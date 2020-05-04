@@ -243,6 +243,34 @@ ferm::chain{'check-ssh':
 }
 ```
 
+##### create a custom chain, e.g. for managing custom FORWARD chain rule for OpenVPN using custom ferm DSL.
+
+```puppet
+$my_rules = @(EOT)
+chain OPENVPN_FORWORD_RULES {
+  proto udp {
+    interface tun0 {
+      outerface enp4s0 {
+        mod conntrack ctstate (NEW) saddr @ipfilter((10.8.0.0/24)) ACCEPT;
+      }
+    }
+  }
+}
+| EOT
+
+ferm::chain{'OPENVPN_FORWORD_RULES':
+  chain   => 'OPENVPN_FORWORD_RULES',
+  content => $my_rules,
+}
+
+ferm::rule { "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES":
+  chain     => 'FORWARD',
+  action    => 'OPENVPN_FORWORD_RULES',
+  saddr     => '10.8.0.0/24',
+  proto     => 'udp',
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `ferm::chain` defined type.
@@ -305,6 +333,14 @@ Data type: `Array[Enum['ip','ip6']]`
 Set list of versions of ip we want ot use.
 
 Default value: $ferm::ip_versions
+
+##### `content`
+
+Data type: `Optional[String]`
+
+Can only be used for custom chains. It allows you to provide your own ferm rules for this chain. Sets the contents of this custom chain to provided value.
+
+Default value: undef
 
 ### ferm::ipset
 

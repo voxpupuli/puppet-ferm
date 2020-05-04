@@ -70,6 +70,34 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.and_raise_error(%r{Can only set a default policy for builtin chains}) }
       end
+
+      context 'with custom chain FERM-DSL using content parameter' do
+        let(:title) { 'FERM-DSL' }
+        let :params do
+          {
+            content: 'mod rpfilter invert DROP;'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('filter-FERM-DSL-config-include') }
+        it do
+          is_expected.to contain_concat__fragment('filter-FERM-DSL-custom-content'). \
+            with_content(%r{mod rpfilter invert DROP;})
+        end
+        it do
+          is_expected.not_to contain_concat__fragment('filter-FERM-DSL-policy')
+        end
+        it do
+          is_expected.not_to contain_concat__fragment('filter-FERM-DSL-footer')
+        end
+        if facts[:os]['name'] == 'Debian'
+          it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-FERM-DSL.conf') }
+        else
+          it { is_expected.to contain_concat('/etc/ferm.d/chains/filter-FERM-DSL.conf') }
+        end
+        it { is_expected.to contain_ferm__chain('FERM-DSL') }
+      end
     end
   end
 end
