@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.0.1](https://github.com/voxpupuli/puppet-ferm/tree/v3.0.1) (2020-05-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v3.0.0...v3.0.1)
+
+**Fixed bugs:**
+
+- Ubuntu/Debian: Notify service on config changes [\#107](https://github.com/voxpupuli/puppet-ferm/pull/107) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- Add missing os key in travis config [\#106](https://github.com/voxpupuli/puppet-ferm/pull/106) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v3.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v3.0.0) (2020-04-21)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v2.7.0...v3.0.0)
