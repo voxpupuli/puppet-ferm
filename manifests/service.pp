@@ -17,14 +17,16 @@ class ferm::service {
     # on Ubuntu, we can't start the service, unless we set ENABLED=true in /etc/default/ferm...
     if ($facts['os']['name'] in ['Ubuntu', 'Debian']) {
       file_line{'enable_ferm':
-        path  => '/etc/default/ferm',
-        line  => 'ENABLED="yes"',
-        match => 'ENABLED=',
+        path   => '/etc/default/ferm',
+        line   => 'ENABLED="yes"',
+        match  => 'ENABLED=',
+        notify => Service['ferm'],
       }
       file_line{'disable_ferm_cache':
-        path  => '/etc/default/ferm',
-        line  => 'CACHE="no"',
-        match => 'CACHE=',
+        path   => '/etc/default/ferm',
+        line   => 'CACHE="no"',
+        match  => 'CACHE=',
+        notify => Service['ferm'],
       }
     }
   }
