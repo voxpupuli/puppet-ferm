@@ -10,6 +10,16 @@ class ferm::config {
 
   $_ip = join($ferm::ip_versions, ' ')
 
+  if $facts['systemd'] { #fact provided by systemd module
+    if $ferm::install_method == 'vcsrepo' and $ferm::manage_service {
+      systemd::dropin_file { 'ferm.conf':
+        unit    => 'ferm.service',
+        content => epp("${module_name}/dropin_ferm.conf.epp"),
+        before  => Service['ferm'],
+      }
+    }
+  }
+
   # copy static files to ferm
   # on a long term point of view, we want to package this
   file{$ferm::configdirectory:

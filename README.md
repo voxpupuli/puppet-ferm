@@ -44,6 +44,17 @@ This will install the package, but nothing more. It won't explicitly enable it
 or write any rules. Be careful here: The default Debian package enabled
 autostart for the service and only allows incoming SSH/IPSec connections.
 
+It is also possible to install ferm from sources:
+```puppet
+class {'ferm':
+  install_method = 'vcsrepo',
+}
+```
+
+When `install_method` is `vcsrepo`, the `git` binary is required, this module should handle Git installation.
+
+When `install_method` is `vcsrepo` with `vcstag` >= `v2.5` ferm call "legacy" xtables tools because nft based tools are incompatible.
+
 You can easily define rules in Puppet (they don't need to be exported resources):
 
 ```puppet

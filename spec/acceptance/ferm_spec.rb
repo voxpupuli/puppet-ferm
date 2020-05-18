@@ -30,6 +30,15 @@ iptables_output = case sut_os
 iptables_output_custom = ['-A FORWARD -s 10.8.0.0/24 -p udp -m comment --comment "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES" -j OPENVPN_FORWORD_RULES',
                           '-A OPENVPN_FORWORD_RULES -s 10.8.0.0/24 -i tun0 -o enp4s0 -p udp -m conntrack --ctstate NEW -j ACCEPT']
 
+# When `install_method` is `vcsrepo` with `vcstag` >= `v2.5` ferm call "legacy"
+# xtables tools because nft based tools are incompatible.
+iptables_save_cmd = case sut_os
+                    when 'Debian-10'
+                      'iptables-legacy-save'
+                    else
+                      'iptables-save'
+                    end
+
 basic_manifest = %(
   class { 'ferm':
     manage_service    => true,
@@ -47,12 +56,36 @@ basic_manifest = %(
       },
     },
     ip_versions      => ['ip'], #only ipv4 available with CI
-  }
 )
 
 describe 'ferm' do
-  context 'with basics settings' do
-    pp = basic_manifest
+  context 'with basics settings and vcsrepo install_method' do
+    pp = [basic_manifest, "install_method => 'vcsrepo',}"].join("\n")
+
+    it 'works with no error' do
+      apply_manifest(pp, catch_failures: true)
+    end
+    it 'works idempotently' do
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe package('ferm') do
+      it { is_expected.not_to be_installed }
+    end
+
+    describe service('ferm') do
+      it { is_expected.to be_running }
+    end
+
+    describe command("#{iptables_save_cmd} -t filter") do
+      its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
+      its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
+      its(:stdout) { is_expected.to match %r{allow_acceptance_tests.*-j ACCEPT}m }
+    end
+  end
+
+  context 'with basics settings and default install_method' do
+    pp = [basic_manifest, '}'].join("\n")
 
     it 'works with no error' do
       apply_manifest(pp, catch_failures: true)
@@ -105,7 +138,7 @@ describe 'ferm' do
           require           => Ferm::Chain['check-http'],
         }
       )
-      pp = [basic_manifest, advanced_manifest].join("\n")
+      pp = [basic_manifest, '}', advanced_manifest].join("\n")
 
       it 'works with no error' do
         apply_manifest(pp, catch_failures: true)
@@ -193,7 +226,8 @@ describe 'ferm' do
         proto     => 'udp',
       }
     )
-    pp = [basic_manifest, advanced_manifest].join("\n")
+
+    pp = [basic_manifest, '}', advanced_manifest].join("\n")
 
     it 'works with no error' do
       apply_manifest(pp, catch_failures: true)
