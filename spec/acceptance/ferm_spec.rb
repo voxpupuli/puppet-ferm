@@ -26,6 +26,10 @@ iptables_output = case sut_os
                       '-A HTTP -s 127.0.0.1/32 -p tcp -m comment --comment ["]*allow_http_localhost["]* -m tcp --dport 80 -j ACCEPT'
                     ]
                   end
+
+iptables_output_custom = ['-A FORWARD -s 10.8.0.0/24 -p udp -m comment --comment "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES" -j OPENVPN_FORWORD_RULES',
+                          '-A OPENVPN_FORWORD_RULES -s 10.8.0.0/24 -i tun0 -o enp4s0 -p udp -m conntrack --ctstate NEW -j ACCEPT']
+
 basic_manifest = %(
   class { 'ferm':
     manage_service    => true,
@@ -124,7 +128,7 @@ describe 'ferm' do
       end
     end
 
-    context 'with dropping INVALID pakets' do
+    context 'with dropping INVALID packets' do
       pp2 = %(
         class { 'ferm':
           manage_service                            => true,
@@ -160,6 +164,63 @@ describe 'ferm' do
       describe command('iptables-save') do
         its(:stdout) { is_expected.to match %r{INPUT.*state INVALID -j DROP} }
       end
+    end
+  end
+
+  context 'with custom chain using ferm DSL as content' do
+    advanced_manifest = %(
+      $my_rules = @(EOT)
+      chain OPENVPN_FORWORD_RULES {
+        proto udp {
+          interface tun0 {
+            outerface enp4s0 {
+              mod conntrack ctstate (NEW) saddr @ipfilter((10.8.0.0/24)) ACCEPT;
+            }
+          }
+        }
+      }
+      | EOT
+
+      ferm::chain{'OPENVPN_FORWORD_RULES':
+        chain   => 'OPENVPN_FORWORD_RULES',
+        content => $my_rules,
+      }
+
+      ferm::rule { "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES":
+        chain     => 'FORWARD',
+        action    => 'OPENVPN_FORWORD_RULES',
+        saddr     => '10.8.0.0/24',
+        proto     => 'udp',
+      }
+    )
+    pp = [basic_manifest, advanced_manifest].join("\n")
+
+    it 'works with no error' do
+      apply_manifest(pp, catch_failures: true)
+    end
+    it 'works idempotently' do
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe iptables do
+      it do
+        is_expected.to have_rule(iptables_output_custom[0]). \
+          with_table('filter'). \
+          with_chain('FORWARD')
+      end
+      it do
+        is_expected.to have_rule(iptables_output_custom[1]). \
+          with_table('filter'). \
+          with_chain('OPENVPN_FORWORD_RULES')
+      end
+    end
+
+    describe service('ferm') do
+      it { is_expected.to be_running }
+    end
+
+    describe command('iptables-save') do
+      its(:stdout) { is_expected.to match %r{FORWARD.*-j OPENVPN_FORWORD_RULES} }
     end
   end
 end

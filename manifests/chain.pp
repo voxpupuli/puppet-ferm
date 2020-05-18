@@ -25,7 +25,8 @@ define ferm::chain (
   String[1] $chain                             = $name,
   Optional[Ferm::Policies] $policy             = undef,
   Ferm::Tables $table                          = 'filter',
-  Array[Enum['ip','ip6']] $ip_versions         = $ferm::ip_versions,
+  Array[Enum['ip', 'ip6']] $ip_versions        = $ferm::ip_versions,
+  Optional[String[1]] $content                 = undef,
 ) {
   # prevent unmanaged files due to new naming schema
   # keep the default "filter" chains in the original location
@@ -43,32 +44,43 @@ define ferm::chain (
     'filter' => ['INPUT', 'FORWARD', 'OUTPUT'],
   }
 
-  if $policy and ! ($chain in $builtin_chains[$table]) {
+  if $policy and !($chain in $builtin_chains[$table]) {
     fail("Can only set a default policy for builtin chains. '${chain}' is not a builtin chain.")
   }
 
   # concat resource for the chain
-  concat{$filename:
-    ensure  => 'present',
+  concat { $filename:
+    ensure => 'present',
   }
 
-  concat::fragment{"${table}-${chain}-policy":
-    target  => $filename,
-    content => epp(
-      "${module_name}/ferm_chain_header.conf.epp", {
-        'policy'                              => $policy,
-        'disable_conntrack'                   => $disable_conntrack,
-        'drop_invalid_packets_with_conntrack' => $drop_invalid_packets_with_conntrack,
-      }
-    ),
-    order   => '01',
-  }
-
-  if $log_dropped_packets {
-    concat::fragment{"${table}-${chain}-footer":
+  if $content {
+    concat::fragment { "${table}-${chain}-custom-content":
       target  => $filename,
-      content => epp("${module_name}/ferm_chain_footer.conf.epp", { 'chain' => $chain }),
-      order   => 'zzzzzzzzzzzzzzzzzzzzz',
+      content => epp(
+        "${module_name}/ferm_chain_custom.conf.epp", {
+          'content' => $content,
+        },
+      ),
+    }
+  } else {
+    concat::fragment { "${table}-${chain}-policy":
+      target  => $filename,
+      content => epp(
+        "${module_name}/ferm_chain_header.conf.epp", {
+          'policy'                              => $policy,
+          'disable_conntrack'                   => $disable_conntrack,
+          'drop_invalid_packets_with_conntrack' => $drop_invalid_packets_with_conntrack,
+        }
+      ),
+      order   => '01',
+    }
+
+    if $log_dropped_packets {
+      concat::fragment { "${table}-${chain}-footer":
+        target  => $filename,
+        content => epp("${module_name}/ferm_chain_footer.conf.epp", { 'chain' => $chain }),
+        order   => 'zzzzzzzzzzzzzzzzzzzzz',
+      }
     }
   }
 
@@ -77,7 +89,7 @@ define ferm::chain (
   # This happens if we add ipset matches. We suffix this ordering with `bbb`. This allows us to
   # insert ipset matches before other rules by adding `-aaa` or
   # insert them at the end by ordering them with `-ccc`.
-  concat::fragment{"${table}-${chain}-config-include":
+  concat::fragment { "${table}-${chain}-config-include":
     target  => $ferm::configfile,
     content => epp(
       "${module_name}/ferm-table-chain-config-include.epp", {
