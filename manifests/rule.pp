@@ -49,6 +49,8 @@
 # @param daddr The destination address we want to match
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
+# @param outerface an Optional interface via which a packet is going to be sent
+# @param to_source Optional new source address of translated packets when using SNAT
 # @param ensure Set the rule to present or absent
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
@@ -65,6 +67,8 @@ define ferm::rule (
   Optional[Variant[Array, String[1]]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
+  Optional[String[1]] $outerface = undef,
+  Optional[String[1]] $to_source = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
 ){
@@ -78,6 +82,26 @@ define ferm::rule (
     $action_temp = $action
   } else {
     fail('Exactly one of "action" or the deprecated "policy" param is required.')
+  }
+
+  if $action_temp == 'SNAT' and ($chain != 'POSTROUTING' or $table != 'nat') {
+    fail('"SNAT" is only valid in the "POSTROUTING" chain of the "nat" table.')
+  }
+
+  if $outerface and !($chain in ['FORWARD', 'OUTPUT', 'POSTROUTING']) {
+    fail('Outgoing interface can only be set in the "FORWARD", "OUTPUT" and "POSTROUTING" chains.')
+  } elsif $outerface {
+    $outerface_real = "outerface ${outerface}"
+  } else {
+    $outerface_real = ''
+  }
+
+  if $to_source and $action_temp != 'SNAT' {
+    fail('Setting new source address is only valid with the "SNAT" action.')
+  } elsif $to_source {
+    $to_source_real = "to @ipfilter((${$to_source}))"
+  } else {
+    $to_source_real = ''
   }
 
   if $action_temp in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG',
@@ -142,7 +166,7 @@ define ferm::rule (
     $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
   }
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
+  $rule = regsubst(squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${outerface_real} ${action_real} ${to_source_real}", ' '), '\s?$', ';')
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {

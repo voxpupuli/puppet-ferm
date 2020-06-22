@@ -41,6 +41,38 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to compile.and_raise_error(%r{Cannot specify both policy and action}) }
       end
 
+      context 'with outerface on input chain' do
+        let(:title) { 'filter-ssh' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '22',
+            saddr: '127.0.0.1',
+            outerface: 'eth1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Outgoing interface can only be set in the "FORWARD", "OUTPUT" and "POSTROUTING" chains}) }
+      end
+
+      context 'with to_source when action is not SNAT' do
+        let(:title) { 'snat-ssh' }
+        let :params do
+          {
+            chain: 'POSTROUTING',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '22',
+            saddr: '127.0.0.1',
+            to_source: '192.168.1.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Setting new source address is only valid with the "SNAT" action}) }
+      end
+
       context 'without a specific interface using legacy policy param' do
         let(:title) { 'filter-ssh' }
         let :params do
@@ -193,6 +225,25 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('SSH-allow-ssh-localhost').with_content("mod comment comment 'allow-ssh-localhost' proto tcp dport 22 saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-SSH-config-include') }
+      end
+
+      context 'source nat with outerface and to_source' do
+        let(:title) { 'source-nat' }
+        let :params do
+          {
+            chain: 'POSTROUTING',
+            action: 'SNAT',
+            proto: 'all',
+            saddr: '172.16.0.0/24',
+            outerface: 'eth1',
+            to_source: '192.168.1.1',
+            table: 'nat'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('POSTROUTING-source-nat').with_content("mod comment comment 'source-nat' proto all saddr @ipfilter((172.16.0.0/24)) outerface eth1 SNAT to @ipfilter((192.168.1.1));\n") }
+        it { is_expected.to contain_concat__fragment('nat-POSTROUTING-config-include') }
       end
     end
   end
