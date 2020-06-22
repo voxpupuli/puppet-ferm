@@ -17,7 +17,7 @@ describe 'ferm::rule', type: :define do
           {
             chain: 'INPUT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -33,7 +33,7 @@ describe 'ferm::rule', type: :define do
             policy: 'ACCEPT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -48,7 +48,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             policy: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -64,7 +64,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -83,7 +83,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1',
             interface: 'eth0'
           }
@@ -102,7 +102,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],
             interface: 'eth0'
           }
@@ -121,13 +121,13 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: %w[tcp udp],
-            dport: '(8301 8302)',
+            dport: [8301, 8302],
             saddr: '127.0.0.1'
           }
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) dport (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) dports (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
@@ -149,7 +149,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'SSH',
             proto: 'tcp',
-            dport: '22'
+            dport: 22
           }
         end
 
@@ -184,7 +184,7 @@ describe 'ferm::rule', type: :define do
             chain: 'SSH',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end

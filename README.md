@@ -62,7 +62,7 @@ You can easily define rules in Puppet (they don't need to be exported resources)
     chain  => 'INPUT',
     policy => 'ACCEPT',
     proto  => 'tcp',
-    dport  => '(9092 9093)',
+    dport  => [9092, 9093],
     saddr  => "(${facts['networking']['ip6']}/128 ${facts['networking']['ip']}/32)",
     tag    => 'allow_kafka_server2server',
   }
@@ -97,7 +97,9 @@ ferm::rules:
     chain: 'INPUT'
     policy: 'ACCEPT'
     proto: 'tcp'
-    dport: '(80 443)'
+    dport:
+      - 80
+      - 443
     saddr: "%{alias('subnets')}"
 ```
 
@@ -156,6 +158,34 @@ The upper `RETURN` rule will stop evaluating further rules in the `PREROUTING` c
 The second rule will disable connection tracking for all other traffic coming in over the primary network interface, that is not addressed directly to the current node, i.e. guest systems hosted on it.
 
 This will prevent your conntrack table from overflowing, tracking only the relevant connections and allowing you to use a stateful ruleset.
+
+#### create a custom chain, e.g. for managing custom FORWARD chain rule for OpenVPN using custom ferm DSL.
+
+```puppet
+$my_rules = @(EOT)
+chain OPENVPN_FORWORD_RULES {
+  proto udp {
+    interface tun0 {
+      outerface enp4s0 {
+        mod conntrack ctstate (NEW) saddr @ipfilter((10.8.0.0/24)) ACCEPT;
+      }
+    }
+  }
+}
+| EOT
+
+ferm::chain{'OPENVPN_FORWORD_RULES':
+  chain   => 'OPENVPN_FORWORD_RULES',
+  content => $my_rules,
+}
+
+ferm::rule { "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES":
+  chain     => 'FORWARD',
+  action    => 'OPENVPN_FORWORD_RULES',
+  saddr     => '10.8.0.0/24',
+  proto     => 'udp',
+}
+```
 
 ## Reference
 
