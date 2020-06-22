@@ -62,7 +62,7 @@ You can easily define rules in Puppet (they don't need to be exported resources)
     chain  => 'INPUT',
     policy => 'ACCEPT',
     proto  => 'tcp',
-    dport  => '(9092 9093)',
+    dport  => [9092, 9093],
     saddr  => "(${facts['networking']['ip6']}/128 ${facts['networking']['ip']}/32)",
     tag    => 'allow_kafka_server2server',
   }
@@ -97,7 +97,9 @@ ferm::rules:
     chain: 'INPUT'
     policy: 'ACCEPT'
     proto: 'tcp'
-    dport: '(80 443)'
+    dport:
+      - 80
+      - 443
     saddr: "%{alias('subnets')}"
 ```
 
