@@ -73,6 +73,22 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to compile.and_raise_error(%r{Setting new source address is only valid with the "SNAT" action}) }
       end
 
+      context 'with to_destination when action is not DNAT' do
+        let(:title) { 'dnat-ssh' }
+        let :params do
+          {
+            chain: 'PREROUTING',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '22',
+            daddr: '172.16.0.1',
+            to_destination: '192.168.1.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Setting new destination address is only valid with the "DNAT" action}) }
+      end
+
       context 'without a specific interface using legacy policy param' do
         let(:title) { 'filter-ssh' }
         let :params do
@@ -244,6 +260,24 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('POSTROUTING-source-nat').with_content("mod comment comment 'source-nat' proto all saddr @ipfilter((172.16.0.0/24)) outerface eth1 SNAT to @ipfilter((192.168.1.1));\n") }
         it { is_expected.to contain_concat__fragment('nat-POSTROUTING-config-include') }
+      end
+
+      context 'destination nat with to_destination' do
+        let(:title) { 'destination-nat' }
+        let :params do
+          {
+            chain: 'PREROUTING',
+            action: 'DNAT',
+            proto: 'tcp',
+            daddr: '172.16.0.1',
+            to_destination: '192.168.1.1',
+            table: 'nat'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('PREROUTING-destination-nat').with_content("mod comment comment 'destination-nat' proto tcp daddr @ipfilter((172.16.0.1)) DNAT to-destination @ipfilter((192.168.1.1));\n") }
+        it { is_expected.to contain_concat__fragment('nat-PREROUTING-config-include') }
       end
     end
   end
