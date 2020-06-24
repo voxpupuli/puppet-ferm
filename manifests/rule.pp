@@ -84,8 +84,8 @@ define ferm::rule (
     fail('Exactly one of "action" or the deprecated "policy" param is required.')
   }
 
-  if $action_temp == 'SNAT' and ($chain != 'POSTROUTING' or $table != 'nat') {
-    fail('"SNAT" is only valid in the "POSTROUTING" chain of the "nat" table.')
+  if $action_temp == 'SNAT' and !($chain in ['POSTROUTING', 'INPUT'] and $table == 'nat') {
+    fail('"SNAT" is only valid in the "POSTROUTING" and "INPUT" chains of the "nat" table.')
   }
 
   if $outerface and !($chain in ['FORWARD', 'OUTPUT', 'POSTROUTING']) {
