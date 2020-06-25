@@ -59,8 +59,8 @@ define ferm::rule (
   String $comment = $name,
   Optional[Ferm::Actions] $action = undef,
   Optional[Ferm::Policies] $policy = undef,
-  Optional[Variant[Stdlib::Port,Array[Stdlib::Port]]] $dport = undef,
-  Optional[Variant[Stdlib::Port,Array[Stdlib::Port]]] $sport = undef,
+  Optional[Ferm::Port] $dport = undef,
+  Optional[Ferm::Port] $sport = undef,
   Optional[Variant[Array, String[1]]] $saddr = undef,
   Optional[Variant[Array, String[1]]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
@@ -95,25 +95,59 @@ define ferm::rule (
     String => "proto ${proto}",
   }
 
-  # ferm supports implicit multiport using the "dports" shortcut
+
   if $dport =~ Array {
     $dports = join($dport, ' ')
     $dport_real = "mod multiport destination-ports (${dports})"
   } elsif $dport =~ Integer {
     $dport_real = "dport ${dport}"
-  } else {
+  } elsif String($dport) =~ /^\d*:\d+$/ {
+    $portrange = split($dport, /:/)
+    $lower = $portrange[0] ? {
+      ''      => 0,
+      default => Integer($portrange[0]),
+    }
+    $upper = Integer($portrange[1])
+    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+        ''
+    }
+    if $lower > $upper {
+      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    }
+    $dport_real = "dport ${lower}:${upper}"
+  } elsif String($dport) == '' {
     $dport_real = ''
+  } else {
+    fail("invalid destination-port: ${dport}")
   }
 
-  # ferm supports implicit multiport using the "sports" shortcut
   if $sport =~ Array {
     $sports = join($sport, ' ')
     $sport_real = "mod multiport source-ports (${sports})"
   } elsif $sport =~ Integer {
     $sport_real = "sport ${sport}"
-  } else {
+  } elsif String($sport) =~ /^\d*:\d+$/ {
+    $portrange = split($sport, /:/)
+    $lower = $portrange[0] ? {
+      ''      => 0,
+      default => Integer($portrange[0]),
+    }
+    $upper = Integer($portrange[1])
+    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+        ''
+    }
+    if $lower > $upper {
+      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    }
+    $sport_real = "sport ${lower}:${upper}"
+  } elsif String($sport) == '' {
     $sport_real = ''
+  } else {
+    fail("invalid source-port: ${sport}")
   }
+
 
   if $saddr =~ Array {
     assert_type(Array[Stdlib::IP::Address], flatten($saddr)) |$expected, $actual| {
