@@ -98,7 +98,7 @@ define ferm::rule (
   # ferm supports implicit multiport using the "dports" shortcut
   if $dport =~ Array {
     $dports = join($dport, ' ')
-    $dport_real = "dports (${dports})"
+    $dport_real = "mod multiport destination-ports (${dports})"
   } elsif $dport =~ Integer {
     $dport_real = "dport ${dport}"
   } else {
@@ -108,7 +108,7 @@ define ferm::rule (
   # ferm supports implicit multiport using the "sports" shortcut
   if $sport =~ Array {
     $sports = join($sport, ' ')
-    $sport_real = "sports (${sports})"
+    $sport_real = "mod multiport source-ports (${sports})"
   } elsif $sport =~ Integer {
     $sport_real = "sport ${sport}"
   } else {

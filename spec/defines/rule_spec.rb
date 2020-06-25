@@ -127,7 +127,7 @@ describe 'ferm::rule', type: :define do
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) dports (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) mod multiport destination-ports (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
