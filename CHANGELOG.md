@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v5.0.0) (2020-07-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v4.0.0...v5.0.0)
+
+**Implemented enhancements:**
+
+- implement proper sport/dport types, validate port ranges, fix some minor regressions [\#114](https://github.com/voxpupuli/puppet-ferm/pull/114) ([foxxx0](https://github.com/foxxx0))
+
 ## [v4.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v4.0.0) (2020-06-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v3.0.1...v4.0.0)
