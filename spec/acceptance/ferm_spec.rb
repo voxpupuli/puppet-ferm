@@ -126,14 +126,14 @@ describe 'ferm' do
           chain             => 'INPUT',
           action            => 'HTTP',
           proto             => 'tcp',
-          dport             => '80',
+          dport             => 80,
           require           => Ferm::Chain['check-http'],
         }
         ferm::rule { 'allow_http_localhost':
           chain             => 'HTTP',
           action            => 'ACCEPT',
           proto             => 'tcp',
-          dport             => '80',
+          dport             => 80,
           saddr             => '127.0.0.1',
           require           => Ferm::Chain['check-http'],
         }

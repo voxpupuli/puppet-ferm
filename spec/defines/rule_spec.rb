@@ -17,7 +17,7 @@ describe 'ferm::rule', type: :define do
           {
             chain: 'INPUT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -33,7 +33,7 @@ describe 'ferm::rule', type: :define do
             policy: 'ACCEPT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -48,7 +48,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             policy: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -64,7 +64,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end
@@ -83,7 +83,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1',
             interface: 'eth0'
           }
@@ -102,7 +102,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],
             interface: 'eth0'
           }
@@ -121,16 +121,95 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'ACCEPT',
             proto: %w[tcp udp],
-            dport: '(8301 8302)',
+            dport: [8301, 8302],
             saddr: '127.0.0.1'
           }
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) dport (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-consul').with_content("mod comment comment 'filter-consul' proto (tcp udp) mod multiport destination-ports (8301 8302) saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
+      end
+
+      context 'with a valid destination-port range' do
+        let(:title) { 'filter-portrange' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '20000:25000',
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-portrange').with_content("mod comment comment 'filter-portrange' proto tcp dport 20000:25000 saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
+      end
+
+      context 'with a malformed source-port range' do
+        let(:title) { 'filter-malformed-portrange' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            sport: '25000:20000',
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Lower port number of the port range is larger than upper. 25000:20000}) }
+      end
+
+      context 'with an invalid destination-port range' do
+        let(:title) { 'filter-invalid-portrange' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '50000:65538',
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{The data type should be 'Tuple\[Stdlib::Port, Stdlib::Port\]', not 'Tuple\[Integer\[50000, 50000\], Integer\[65538, 65538\]\]'. The data is \[50000, 65538\]}) }
+      end
+
+      context 'with an invalid destination-port string' do
+        let(:title) { 'filter-invalid-portnumber' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '65538',
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{parameter 'dport' expects a Ferm::Port .* value, got String}) }
+      end
+
+      context 'with an invalid source-port number' do
+        let(:title) { 'filter-invalid-portnumber' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            sport: 65_538,
+            saddr: '127.0.0.1'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{parameter 'sport' expects a Ferm::Port .* value, got Integer}) }
       end
 
       context 'with jumping to custom chains' do
@@ -149,7 +228,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'SSH',
             proto: 'tcp',
-            dport: '22'
+            dport: 22
           }
         end
 
@@ -184,7 +263,7 @@ describe 'ferm::rule', type: :define do
             chain: 'SSH',
             action: 'ACCEPT',
             proto: 'tcp',
-            dport: '22',
+            dport: 22,
             saddr: '127.0.0.1'
           }
         end

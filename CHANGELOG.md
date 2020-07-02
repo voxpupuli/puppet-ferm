@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v5.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v5.0.0) (2020-07-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v4.0.0...v5.0.0)
+
+**Implemented enhancements:**
+
+- implement proper sport/dport types, validate port ranges, fix some minor regressions [\#114](https://github.com/voxpupuli/puppet-ferm/pull/114) ([foxxx0](https://github.com/foxxx0))
+
+## [v4.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v4.0.0) (2020-06-22)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v3.0.1...v4.0.0)
+
+**Breaking changes:**
+
+- implement multiport support for dport/sport / drop string support for sport/dport [\#112](https://github.com/voxpupuli/puppet-ferm/pull/112) ([foxxx0](https://github.com/foxxx0))
+
+**Implemented enhancements:**
+
+- Add Ubuntu 20.04 support [\#109](https://github.com/voxpupuli/puppet-ferm/pull/109) ([bastelfreak](https://github.com/bastelfreak))
+- Allow adding custom ferm dsl for subchains. This is important for usi… [\#105](https://github.com/voxpupuli/puppet-ferm/pull/105) ([rehanone](https://github.com/rehanone))
+- add install\_method parameter [\#104](https://github.com/voxpupuli/puppet-ferm/pull/104) ([Dan33l](https://github.com/Dan33l))
+
+**Closed issues:**
+
+- Unrecognized keyword: @preserve with ubuntu1604 [\#103](https://github.com/voxpupuli/puppet-ferm/issues/103)
+- feature: include custom ferm files? [\#76](https://github.com/voxpupuli/puppet-ferm/issues/76)
+
 ## [v3.0.1](https://github.com/voxpupuli/puppet-ferm/tree/v3.0.1) (2020-05-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v3.0.0...v3.0.1)
