@@ -5,7 +5,7 @@
 #     chain  => 'INPUT',
 #     action => 'SSH',
 #     proto  => 'tcp',
-#     dport  => '22',
+#     dport  => 22,
 #   }
 #
 # @example Create a rule in the 'SSH' chain to allow connections from localhost
@@ -13,7 +13,7 @@
 #     chain  => 'SSH',
 #     action => 'ACCEPT',
 #     proto  => 'tcp',
-#     dport  => '22',
+#     dport  => 22,
 #     saddr  => '127.0.0.1',
 #   }
 #
@@ -43,8 +43,8 @@
 # @param policy Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name) [DEPRECATED]
 #   Default value: undef
 #   Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-# @param dport The destination port, can be a range as string or a single port number as integer
-# @param sport The source port, can be a range as string or a single port number as integer
+# @param dport The destination port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
+# @param sport The source port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param saddr The source address we want to match
 # @param daddr The destination address we want to match
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
@@ -62,8 +62,8 @@ define ferm::rule (
   String $comment = $name,
   Optional[Ferm::Actions] $action = undef,
   Optional[Ferm::Policies] $policy = undef,
-  Optional[Variant[Stdlib::Port,String[1]]] $dport = undef,
-  Optional[Variant[Stdlib::Port,String[1]]] $sport = undef,
+  Optional[Ferm::Port] $dport = undef,
+  Optional[Ferm::Port] $sport = undef,
   Optional[Variant[Array, String[1]]] $saddr = undef,
   Optional[Variant[Array, String[1]]] $daddr = undef,
   Optional[String[1]] $proto_options = undef,
@@ -129,14 +129,60 @@ define ferm::rule (
     String => "proto ${proto}",
   }
 
-  $dport_real = $dport ? {
-    undef   => '',
-    default => "dport ${dport}",
+
+  if $dport =~ Array {
+    $dports = join($dport, ' ')
+    $dport_real = "mod multiport destination-ports (${dports})"
+  } elsif $dport =~ Integer {
+    $dport_real = "dport ${dport}"
+  } elsif String($dport) =~ /^\d*:\d+$/ {
+    $portrange = split($dport, /:/)
+    $lower = $portrange[0] ? {
+      ''      => 0,
+      default => Integer($portrange[0]),
+    }
+    $upper = Integer($portrange[1])
+    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+        ''
+    }
+    if $lower > $upper {
+      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    }
+    $dport_real = "dport ${lower}:${upper}"
+  } elsif String($dport) == '' {
+    $dport_real = ''
+  } else {
+    fail("invalid destination-port: ${dport}")
   }
-  $sport_real = $sport ? {
-    undef   => '',
-    default => "sport ${sport}",
+
+  if $sport =~ Array {
+    $sports = join($sport, ' ')
+    $sport_real = "mod multiport source-ports (${sports})"
+  } elsif $sport =~ Integer {
+    $sport_real = "sport ${sport}"
+  } elsif String($sport) =~ /^\d*:\d+$/ {
+    $portrange = split($sport, /:/)
+    $lower = $portrange[0] ? {
+      ''      => 0,
+      default => Integer($portrange[0]),
+    }
+    $upper = Integer($portrange[1])
+    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+        ''
+    }
+    if $lower > $upper {
+      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    }
+    $sport_real = "sport ${lower}:${upper}"
+  } elsif String($sport) == '' {
+    $sport_real = ''
+  } else {
+    fail("invalid source-port: ${sport}")
   }
+
+
   if $saddr =~ Array {
     assert_type(Array[Stdlib::IP::Address], flatten($saddr)) |$expected, $actual| {
       fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($saddr)}." )
