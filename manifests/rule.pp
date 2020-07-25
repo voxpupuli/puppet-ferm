@@ -67,8 +67,7 @@ define ferm::rule (
   Optional[String[1]] $interface = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
-){
-
+) {
   if $policy and $action {
     fail('Cannot specify both policy and action. Do not provide policy when using the new action param.')
   } elsif $policy and ! $action {
@@ -80,8 +79,7 @@ define ferm::rule (
     fail('Exactly one of "action" or the deprecated "policy" param is required.')
   }
 
-  if $action_temp in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG',
-                      'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
+  if $action_temp in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
     $action_real = $action_temp
   } else {
     # assume the action contains a target chain, so prefix it with the "jump" statement
@@ -94,7 +92,6 @@ define ferm::rule (
     Array  => "proto (${join($proto, ' ')})",
     String => "proto ${proto}",
   }
-
 
   if $dport =~ Array {
     $dports = join($dport, ' ')
@@ -110,7 +107,7 @@ define ferm::rule (
     $upper = Integer($portrange[1])
     assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
       fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-        ''
+      ''
     }
     if $lower > $upper {
       fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
@@ -136,7 +133,7 @@ define ferm::rule (
     $upper = Integer($portrange[1])
     assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
       fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-        ''
+      ''
     }
     if $lower > $upper {
       fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
@@ -148,11 +145,10 @@ define ferm::rule (
     fail("invalid source-port: ${sport}")
   }
 
-
   if $saddr =~ Array {
     assert_type(Array[Stdlib::IP::Address], flatten($saddr)) |$expected, $actual| {
       fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($saddr)}." )
-        ''
+      ''
     }
   }
   $saddr_real = $saddr ? {
@@ -164,7 +160,7 @@ define ferm::rule (
   if $daddr =~ Array {
     assert_type(Array[Stdlib::IP::Address], flatten($daddr)) |$expected, $actual| {
       fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($daddr)}." )
-        ''
+      ''
     }
   }
   $daddr_real = $daddr ? {
@@ -174,7 +170,7 @@ define ferm::rule (
     default => '',
   }
   $proto_options_real = $proto_options ? {
-    undef   =>  '',
+    undef   => '',
     default => $proto_options
   }
   $comment_real = "mod comment comment '${comment}'"
@@ -192,28 +188,28 @@ define ferm::rule (
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
-        concat::fragment{"${chain}-${interface}-aaa":
+        concat::fragment { "${chain}-${interface}-aaa":
           target  => $filename,
           content => "interface ${interface} {\n",
           order   => $interface,
         }
       }
 
-      concat::fragment{"${chain}-${interface}-${name}":
+      concat::fragment { "${chain}-${interface}-${name}":
         target  => $filename,
         content => "  ${rule}\n",
         order   => $interface,
       }
 
       unless defined(Concat::Fragment["${chain}-${interface}-zzz"]) {
-        concat::fragment{"${chain}-${interface}-zzz":
+        concat::fragment { "${chain}-${interface}-zzz":
           target  => $filename,
           content => "}\n",
           order   => $interface,
         }
       }
     } else {
-      concat::fragment{"${chain}-${name}":
+      concat::fragment { "${chain}-${name}":
         target  => $filename,
         content => "${rule}\n",
       }

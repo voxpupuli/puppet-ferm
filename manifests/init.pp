@@ -86,13 +86,13 @@ class ferm (
   ~> Class['ferm::service']
 
   $chains.each |$chainname, $attributes| {
-    ferm::chain{$chainname:
+    ferm::chain { $chainname:
       * => $attributes,
     }
   }
 
   $rules.each |$rulename, $attributes| {
-    ferm::rule{$rulename:
+    ferm::rule { $rulename:
       * => $attributes,
     }
   }

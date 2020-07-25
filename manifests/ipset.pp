@@ -42,14 +42,13 @@ define ferm::ipset (
   Enum['ip','ip6']               $ip_version       = 'ip',
   Boolean                        $prepend_to_chain = true,
 ) {
-
   $suffix = $prepend_to_chain ? {
     true  => 'aaa',
     false => 'ccc',
   }
 
   # make sure the generated snippet is actually included
-  concat::fragment{"${table}-${chain}-${name}":
+  concat::fragment { "${table}-${chain}-${name}":
     target  => $ferm::configfile,
     content => epp(
       "${module_name}/ferm-chain-ipset.epp", {
