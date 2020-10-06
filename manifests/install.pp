@@ -4,13 +4,12 @@
 # @summary This class handles the configuration file. Avoid modifying private classes.
 #
 class ferm::install {
-
   # this is a private class
   assert_private("You're not supposed to do that!")
 
   case $ferm::install_method {
     'package': {
-      package{'ferm':
+      package { 'ferm':
         ensure => 'latest',
       }
     }
@@ -18,7 +17,7 @@ class ferm::install {
       $_source_path = '/opt/ferm'
       ensure_packages (['git', 'iptables', 'perl', 'make'], { ensure => present })
 
-      package{'ferm':
+      package { 'ferm':
         ensure => absent,
       }
       -> vcsrepo { $_source_path :
@@ -46,8 +45,8 @@ class ferm::install {
 
   if $ferm::manage_initfile {
     if $facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['major'], '6') <= 0 {
-      file{'/etc/init.d/ferm':
-        ensure => 'present',
+      file { '/etc/init.d/ferm':
+        ensure => 'file',
         mode   => '0755',
         source => "puppet:///modules/${module_name}/ferm",
       }
