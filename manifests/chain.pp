@@ -17,6 +17,7 @@
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 # @param ip_versions Set list of versions of ip we want ot use.
+# @param content custom string that will be written into th chain file
 #
 define ferm::chain (
   Boolean $log_dropped_packets                 = false,
