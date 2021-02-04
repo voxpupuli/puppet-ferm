@@ -89,8 +89,9 @@ define ferm::rule (
   }
 
   $proto_real = $proto ? {
-    Array  => "proto (${join($proto, ' ')})",
-    String => "proto ${proto}",
+    Array   => "proto (${join($proto, ' ')})",
+    String  => "proto ${proto}",
+    Integer => "proto ${proto}",
   }
 
   if $dport =~ Array {
