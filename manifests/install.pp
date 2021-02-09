@@ -42,14 +42,4 @@ class ferm::install {
       fail("unexpected install_method ${ferm::install_method}")
     }
   }
-
-  if $ferm::manage_initfile {
-    if $facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['major'], '6') <= 0 {
-      file { '/etc/init.d/ferm':
-        ensure => 'file',
-        mode   => '0755',
-        source => "puppet:///modules/${module_name}/ferm",
-      }
-    }
-  }
 }
