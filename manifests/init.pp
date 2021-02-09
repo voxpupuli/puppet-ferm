@@ -29,7 +29,6 @@
 #
 # @param manage_service Disable/Enable the management of the ferm daemon
 # @param manage_configfile Disable/Enable the management of the ferm default config
-# @param manage_initfile Disable/Enable the management of the ferm init script for RedHat-based OS
 # @param configfile Path to the config file
 # @param configdirectory Path to the directory where the module stores ferm configuration files
 # @param forward_disable_conntrack Enable/Disable the generation of conntrack rules for the FORWARD chain
@@ -55,7 +54,6 @@ class ferm (
   Stdlib::Absolutepath $configdirectory,
   Boolean $manage_service = false,
   Boolean $manage_configfile = false,
-  Boolean $manage_initfile = false,
   Boolean $forward_disable_conntrack = true,
   Boolean $output_disable_conntrack = true,
   Boolean $input_disable_conntrack = false,

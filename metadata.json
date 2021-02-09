@@ -29,14 +29,12 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
@@ -46,12 +44,6 @@
         "16.04",
         "18.04",
         "20.04"
-      ]
-    },
-    {
-      "operatingsystem": "Fedora",
-      "operatingsystemrelease": [
-        "26"
       ]
     },
     {
@@ -67,7 +59,6 @@
     {
       "operatingsystem": "VirtuozzoLinux",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     }
@@ -75,7 +66,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.5.8 < 7.0.0"
+      "version_requirement": ">= 6.1.0 < 8.0.0"
     }
   ]
 }

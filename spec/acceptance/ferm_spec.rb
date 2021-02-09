@@ -5,13 +5,6 @@ os_release = fact('os.release.major')
 
 sut_os = "#{os_name}-#{os_release}"
 
-manage_initfile = case sut_os
-                  when 'CentOS-6'
-                    true
-                  else
-                    false
-                  end
-
 iptables_output = case sut_os
                   when 'Debian-10'
                     [
@@ -43,7 +36,6 @@ basic_manifest = %(
   class { 'ferm':
     manage_service    => true,
     manage_configfile => true,
-    manage_initfile   => #{manage_initfile}, # CentOS-6 does not provide init script
     forward_policy    => 'DROP',
     output_policy     => 'ACCEPT',
     input_policy      => 'DROP',
@@ -166,7 +158,6 @@ describe 'ferm' do
         class { 'ferm':
           manage_service                            => true,
           manage_configfile                         => true,
-          manage_initfile                           => #{manage_initfile}, # CentOS-6 does not provide init script
           forward_policy                            => 'DROP',
           output_policy                             => 'ACCEPT',
           input_policy                              => 'DROP',

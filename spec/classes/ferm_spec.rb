@@ -80,17 +80,7 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('mangle-OUTPUT-config-include') }
         it { is_expected.to contain_concat__fragment('mangle-POSTROUTING-config-include') }
       end
-      context 'with managed initfile' do
-        let :params do
-          { manage_initfile: true }
-        end
 
-        if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
-          it { is_expected.to contain_file('/etc/init.d/ferm') }
-        else
-          it { is_expected.not_to contain_file('/etc/init.d/ferm') }
-        end
-      end
       context 'it creates chains' do
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-policy') }
         it { is_expected.to contain_concat__fragment('raw-OUTPUT-policy') }
