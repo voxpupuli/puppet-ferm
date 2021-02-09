@@ -49,12 +49,6 @@
       ]
     },
     {
-      "operatingsystem": "Fedora",
-      "operatingsystemrelease": [
-        "26"
-      ]
-    },
-    {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
         "9",
