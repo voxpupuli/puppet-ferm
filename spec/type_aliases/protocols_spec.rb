@@ -15,6 +15,8 @@ describe 'Ferm::Protocols' do
       'mh',
       'all',
       ['icmp', 'tcp', 'udp'],
+      0,
+      [0, 4],
     ].each do |value|
       describe value.inspect do
         it { is_expected.to allow_value(value) }
@@ -36,6 +38,8 @@ describe 'Ferm::Protocols' do
         [95_000, 67_000],
         {},
         { 'foo' => 'bar' },
+        256,
+        ['icmp', 256],
       ].each do |value|
         describe value.inspect do
           it { is_expected.not_to allow_value(value) }
