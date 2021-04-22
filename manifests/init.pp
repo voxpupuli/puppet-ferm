@@ -41,6 +41,7 @@
 # @param input_drop_invalid_packets_with_conntrack Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false`. You can set this to false if your policy is DROP. This only effects the INPUT chain.
 # @param rules A hash that holds all data for ferm::rule
 # @param chains A hash that holds all data for ferm::chain
+# @param ipsets A hash that holds all data for ferm::ipset
 # @param forward_log_dropped_packets Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no explicit chain matched
 # @param output_log_dropped_packets Enable/Disable logging in the OUTPUT chain of packets to the kernel log, if no explicit chain matched
 # @param input_log_dropped_packets Enable/Disable logging in the INPUT chain of packets to the kernel log, if no explicit chain matched
@@ -69,6 +70,7 @@ class ferm (
   Boolean $input_drop_invalid_packets_with_conntrack = false,
   Hash $rules = {},
   Hash $chains = {},
+  Hash $ipsets = {},
   Array[Enum['ip','ip6']] $ip_versions = ['ip','ip6'],
   Hash[String[1],Array[String[1]]] $preserve_chains_in_tables = {},
   Enum['package','vcsrepo'] $install_method = 'package',
@@ -89,6 +91,12 @@ class ferm (
 
   $chains.each |$chainname, $attributes| {
     ferm::chain { $chainname:
+      * => $attributes,
+    }
+  }
+
+  $ipsets.each |$ipsetname, $attributes| {
+    ferm::ipset { $ipsetname:
       * => $attributes,
     }
   }
