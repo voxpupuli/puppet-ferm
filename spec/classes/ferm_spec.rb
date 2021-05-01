@@ -16,7 +16,6 @@ describe 'ferm' do
         it { is_expected.to contain_class('ferm::config') }
         it { is_expected.to contain_class('ferm::service') }
         it { is_expected.to contain_class('ferm::install') }
-        it { is_expected.to contain_package('ferm').with_ensure('latest') }
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_file('/etc/ferm/ferm.d') }
           it { is_expected.to contain_file('/etc/ferm/ferm.d/definitions') }
@@ -25,6 +24,13 @@ describe 'ferm' do
           it { is_expected.to contain_file('/etc/ferm.d') }
           it { is_expected.to contain_file('/etc/ferm.d/definitions') }
           it { is_expected.to contain_file('/etc/ferm.d/chains') }
+        end
+        if facts[:os]['name'] == 'SLES'
+          it { is_expected.to contain_package('ferm').with_ensure('absent') }
+          it { is_expected.to contain_vcsrepo('/opt/ferm') }
+        else
+          it { is_expected.to contain_package('ferm').with_ensure('latest') }
+          it { is_expected.not_to contain_vcsrepo('/opt/ferm') }
         end
 
         it { is_expected.not_to contain_service('ferm') }
@@ -193,6 +199,9 @@ describe 'ferm' do
         it { is_expected.to contain_package('perl').with_ensure('present') }
         it { is_expected.to contain_package('make').with_ensure('present') }
         it { is_expected.to contain_package('ferm').with_ensure('absent') }
+        it { is_expected.to contain_exec('make install') }
+        it { is_expected.to contain_file('/etc/ferm') }
+        it { is_expected.to contain_vcsrepo('/opt/ferm') }
       end
     end
   end
