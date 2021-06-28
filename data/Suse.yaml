@@ -1,0 +1,4 @@
+---
+ferm::configfile: /etc/ferm.conf
+ferm::configdirectory: /etc/ferm.d
+ferm::install_method: 'vcsrepo'
