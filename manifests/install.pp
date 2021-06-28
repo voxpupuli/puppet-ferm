@@ -10,7 +10,7 @@ class ferm::install {
   case $ferm::install_method {
     'package': {
       package { 'ferm':
-        ensure => 'latest',
+        ensure => $ferm::package_ensure,
       }
     }
     'vcsrepo': {

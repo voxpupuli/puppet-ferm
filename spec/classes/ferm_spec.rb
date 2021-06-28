@@ -29,7 +29,7 @@ describe 'ferm' do
           it { is_expected.to contain_package('ferm').with_ensure('absent') }
           it { is_expected.to contain_vcsrepo('/opt/ferm') }
         else
-          it { is_expected.to contain_package('ferm').with_ensure('latest') }
+          it { is_expected.to contain_package('ferm').with_ensure('installed') }
           it { is_expected.not_to contain_vcsrepo('/opt/ferm') }
         end
 
@@ -202,6 +202,17 @@ describe 'ferm' do
         it { is_expected.to contain_exec('make install') }
         it { is_expected.to contain_file('/etc/ferm') }
         it { is_expected.to contain_vcsrepo('/opt/ferm') }
+      end
+      context 'it works with ensure latest' do
+        let :params do
+          {
+            package_ensure: 'latest',
+            install_method: 'package',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_package('ferm').with_ensure('latest') }
       end
     end
   end

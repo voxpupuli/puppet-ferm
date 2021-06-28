@@ -47,6 +47,7 @@
 # @param preserve_chains_in_tables Hash with table:chains[] to use ferm @preserve for (since ferm v2.4)
 #   Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 # @param install_method method used to install ferm
+# @param package_ensure sets the ensure parameter for the package resource
 # @param vcsrepo git repository where ferm sources are hosted
 # @param vcstag git tag used when install_method is vcsrepo
 class ferm (
@@ -69,6 +70,7 @@ class ferm (
   Array[Enum['ip','ip6']] $ip_versions = ['ip','ip6'],
   Hash[String[1],Array[String[1]]] $preserve_chains_in_tables = {},
   Enum['package','vcsrepo'] $install_method = 'package',
+  String[1] $package_ensure = 'installed',
   Stdlib::HTTPSUrl $vcsrepo = 'https://github.com/MaxKellermann/ferm.git',
   String[1] $vcstag = 'v2.5.1',
 ) {

@@ -32,7 +32,7 @@
 
 ## Classes
 
-### `ferm`
+### <a name="ferm"></a>`ferm`
 
 This class manages ferm installation and rule generation on modern linux systems
 
@@ -76,9 +76,32 @@ class{'ferm':
 
 #### Parameters
 
-The following parameters are available in the `ferm` class.
+The following parameters are available in the `ferm` class:
 
-##### `manage_service`
+* [`manage_service`](#manage_service)
+* [`manage_configfile`](#manage_configfile)
+* [`configfile`](#configfile)
+* [`configdirectory`](#configdirectory)
+* [`forward_disable_conntrack`](#forward_disable_conntrack)
+* [`output_disable_conntrack`](#output_disable_conntrack)
+* [`input_disable_conntrack`](#input_disable_conntrack)
+* [`forward_policy`](#forward_policy)
+* [`output_policy`](#output_policy)
+* [`input_policy`](#input_policy)
+* [`input_drop_invalid_packets_with_conntrack`](#input_drop_invalid_packets_with_conntrack)
+* [`rules`](#rules)
+* [`chains`](#chains)
+* [`forward_log_dropped_packets`](#forward_log_dropped_packets)
+* [`output_log_dropped_packets`](#output_log_dropped_packets)
+* [`input_log_dropped_packets`](#input_log_dropped_packets)
+* [`ip_versions`](#ip_versions)
+* [`preserve_chains_in_tables`](#preserve_chains_in_tables)
+* [`install_method`](#install_method)
+* [`package_ensure`](#package_ensure)
+* [`vcsrepo`](#vcsrepo)
+* [`vcstag`](#vcstag)
+
+##### <a name="manage_service"></a>`manage_service`
 
 Data type: `Boolean`
 
@@ -86,7 +109,7 @@ Disable/Enable the management of the ferm daemon
 
 Default value: ``false``
 
-##### `manage_configfile`
+##### <a name="manage_configfile"></a>`manage_configfile`
 
 Data type: `Boolean`
 
@@ -94,19 +117,19 @@ Disable/Enable the management of the ferm default config
 
 Default value: ``false``
 
-##### `configfile`
+##### <a name="configfile"></a>`configfile`
 
 Data type: `Stdlib::Absolutepath`
 
 Path to the config file
 
-##### `configdirectory`
+##### <a name="configdirectory"></a>`configdirectory`
 
 Data type: `Stdlib::Absolutepath`
 
 Path to the directory where the module stores ferm configuration files
 
-##### `forward_disable_conntrack`
+##### <a name="forward_disable_conntrack"></a>`forward_disable_conntrack`
 
 Data type: `Boolean`
 
@@ -114,7 +137,7 @@ Enable/Disable the generation of conntrack rules for the FORWARD chain
 
 Default value: ``true``
 
-##### `output_disable_conntrack`
+##### <a name="output_disable_conntrack"></a>`output_disable_conntrack`
 
 Data type: `Boolean`
 
@@ -122,7 +145,7 @@ Enable/Disable the generation of conntrack rules for the OUTPUT chain
 
 Default value: ``true``
 
-##### `input_disable_conntrack`
+##### <a name="input_disable_conntrack"></a>`input_disable_conntrack`
 
 Data type: `Boolean`
 
@@ -130,7 +153,7 @@ Enable/Disable the generation of conntrack rules for the INPUT chain
 
 Default value: ``false``
 
-##### `forward_policy`
+##### <a name="forward_policy"></a>`forward_policy`
 
 Data type: `Ferm::Policies`
 
@@ -138,7 +161,7 @@ Default policy for the FORWARD chain
 
 Default value: `'DROP'`
 
-##### `output_policy`
+##### <a name="output_policy"></a>`output_policy`
 
 Data type: `Ferm::Policies`
 
@@ -146,7 +169,7 @@ Default policy for the OUTPUT chain
 
 Default value: `'ACCEPT'`
 
-##### `input_policy`
+##### <a name="input_policy"></a>`input_policy`
 
 Data type: `Ferm::Policies`
 
@@ -154,7 +177,7 @@ Default policy for the INPUT chain
 
 Default value: `'DROP'`
 
-##### `input_drop_invalid_packets_with_conntrack`
+##### <a name="input_drop_invalid_packets_with_conntrack"></a>`input_drop_invalid_packets_with_conntrack`
 
 Data type: `Boolean`
 
@@ -162,7 +185,7 @@ Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if
 
 Default value: ``false``
 
-##### `rules`
+##### <a name="rules"></a>`rules`
 
 Data type: `Hash`
 
@@ -170,7 +193,7 @@ A hash that holds all data for ferm::rule
 
 Default value: `{}`
 
-##### `chains`
+##### <a name="chains"></a>`chains`
 
 Data type: `Hash`
 
@@ -178,7 +201,7 @@ A hash that holds all data for ferm::chain
 
 Default value: `{}`
 
-##### `forward_log_dropped_packets`
+##### <a name="forward_log_dropped_packets"></a>`forward_log_dropped_packets`
 
 Data type: `Boolean`
 
@@ -186,7 +209,7 @@ Enable/Disable logging in the FORWARD chain of packets to the kernel log, if no 
 
 Default value: ``false``
 
-##### `output_log_dropped_packets`
+##### <a name="output_log_dropped_packets"></a>`output_log_dropped_packets`
 
 Data type: `Boolean`
 
@@ -194,7 +217,7 @@ Enable/Disable logging in the OUTPUT chain of packets to the kernel log, if no e
 
 Default value: ``false``
 
-##### `input_log_dropped_packets`
+##### <a name="input_log_dropped_packets"></a>`input_log_dropped_packets`
 
 Data type: `Boolean`
 
@@ -202,7 +225,7 @@ Enable/Disable logging in the INPUT chain of packets to the kernel log, if no ex
 
 Default value: ``false``
 
-##### `ip_versions`
+##### <a name="ip_versions"></a>`ip_versions`
 
 Data type: `Array[Enum['ip','ip6']]`
 
@@ -210,7 +233,7 @@ Set list of versions of ip we want ot use.
 
 Default value: `['ip','ip6']`
 
-##### `preserve_chains_in_tables`
+##### <a name="preserve_chains_in_tables"></a>`preserve_chains_in_tables`
 
 Data type: `Hash[String[1],Array[String[1]]]`
 
@@ -219,7 +242,7 @@ Example: {'nat' => ['PREROUTING', 'POSTROUTING']}
 
 Default value: `{}`
 
-##### `install_method`
+##### <a name="install_method"></a>`install_method`
 
 Data type: `Enum['package','vcsrepo']`
 
@@ -227,7 +250,15 @@ method used to install ferm
 
 Default value: `'package'`
 
-##### `vcsrepo`
+##### <a name="package_ensure"></a>`package_ensure`
+
+Data type: `Enum['installed', 'latest', 'absent']`
+
+sets the ensure parameter for the package resource
+
+Default value: `'latest'`
+
+##### <a name="vcsrepo"></a>`vcsrepo`
 
 Data type: `Stdlib::HTTPSUrl`
 
@@ -235,7 +266,7 @@ git repository where ferm sources are hosted
 
 Default value: `'https://github.com/MaxKellermann/ferm.git'`
 
-##### `vcstag`
+##### <a name="vcstag"></a>`vcstag`
 
 Data type: `String[1]`
 
@@ -245,7 +276,7 @@ Default value: `'v2.5.1'`
 
 ## Defined types
 
-### `ferm::chain`
+### <a name="fermchain"></a>`ferm::chain`
 
 This defined resource manages ferm/iptables chains
 
@@ -263,9 +294,18 @@ ferm::chain{'check-ssh':
 
 #### Parameters
 
-The following parameters are available in the `ferm::chain` defined type.
+The following parameters are available in the `ferm::chain` defined type:
 
-##### `disable_conntrack`
+* [`disable_conntrack`](#disable_conntrack)
+* [`drop_invalid_packets_with_conntrack`](#drop_invalid_packets_with_conntrack)
+* [`log_dropped_packets`](#log_dropped_packets)
+* [`policy`](#policy)
+* [`chain`](#chain)
+* [`table`](#table)
+* [`ip_versions`](#ip_versions)
+* [`content`](#content)
+
+##### <a name="disable_conntrack"></a>`disable_conntrack`
 
 Data type: `Boolean`
 
@@ -273,7 +313,7 @@ Disable/Enable usage of conntrack. By default, we enable conntrack only for the 
 
 Default value: ``true``
 
-##### `drop_invalid_packets_with_conntrack`
+##### <a name="drop_invalid_packets_with_conntrack"></a>`drop_invalid_packets_with_conntrack`
 
 Data type: `Boolean`
 
@@ -281,7 +321,7 @@ Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if
 
 Default value: ``false``
 
-##### `log_dropped_packets`
+##### <a name="log_dropped_packets"></a>`log_dropped_packets`
 
 Data type: `Boolean`
 
@@ -289,7 +329,7 @@ Enable/Disable logging of packets to the kernel log, if no explicit chain matche
 
 Default value: ``false``
 
-##### `policy`
+##### <a name="policy"></a>`policy`
 
 Data type: `Optional[Ferm::Policies]`
 
@@ -298,7 +338,7 @@ Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
 
 Default value: ``undef``
 
-##### `chain`
+##### <a name="chain"></a>`chain`
 
 Data type: `String[1]`
 
@@ -307,7 +347,7 @@ Allowed values: String[1]
 
 Default value: `$name`
 
-##### `table`
+##### <a name="table"></a>`table`
 
 Data type: `Ferm::Tables`
 
@@ -316,7 +356,7 @@ Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
 
 Default value: `'filter'`
 
-##### `ip_versions`
+##### <a name="ip_versions"></a>`ip_versions`
 
 Data type: `Array[Enum['ip', 'ip6']]`
 
@@ -324,7 +364,7 @@ Set list of versions of ip we want ot use.
 
 Default value: `$ferm::ip_versions`
 
-##### `content`
+##### <a name="content"></a>`content`
 
 Data type: `Optional[String[1]]`
 
@@ -332,7 +372,7 @@ custom string that will be written into th chain file
 
 Default value: ``undef``
 
-### `ferm::ipset`
+### <a name="fermipset"></a>`ferm::ipset`
 
 a defined resource that can match for ipsets at the top of a chain. This is a per-chain resource. You cannot mix IPv4 and IPv6 sets.
 
@@ -367,15 +407,21 @@ ferm::ipset { 'INPUT':
 
 #### Parameters
 
-The following parameters are available in the `ferm::ipset` defined type.
+The following parameters are available in the `ferm::ipset` defined type:
 
-##### `sets`
+* [`sets`](#sets)
+* [`chain`](#chain)
+* [`table`](#table)
+* [`ip_version`](#ip_version)
+* [`prepend_to_chain`](#prepend_to_chain)
+
+##### <a name="sets"></a>`sets`
 
 Data type: `Hash[String[1], Ferm::Actions]`
 
 A hash with multiple sets. For each hash you can provide an action like `DROP` or `ACCEPT`.
 
-##### `chain`
+##### <a name="chain"></a>`chain`
 
 Data type: `String[1]`
 
@@ -383,7 +429,7 @@ name of the chain we want to apply those rules to. The name of the defined resou
 
 Default value: `$name`
 
-##### `table`
+##### <a name="table"></a>`table`
 
 Data type: `Ferm::Tables`
 
@@ -391,7 +437,7 @@ name of the table where we want to apply  this. Defaults to `filter` because tha
 
 Default value: `'filter'`
 
-##### `ip_version`
+##### <a name="ip_version"></a>`ip_version`
 
 Data type: `Enum['ip','ip6']`
 
@@ -399,7 +445,7 @@ sadly, ip sets are version specific. You cannot mix IPv4 and IPv6 addresses. Bec
 
 Default value: `'ip'`
 
-##### `prepend_to_chain`
+##### <a name="prepend_to_chain"></a>`prepend_to_chain`
 
 Data type: `Boolean`
 
@@ -407,7 +453,7 @@ By default, ipset rules are added to the top of the chain. Set this to false to 
 
 Default value: ``true``
 
-### `ferm::rule`
+### <a name="fermrule"></a>`ferm::rule`
 
 This defined resource manages a single rule in a specific chain
 
@@ -460,21 +506,35 @@ ferm::rule{'allow_consul':
 
 #### Parameters
 
-The following parameters are available in the `ferm::rule` defined type.
+The following parameters are available in the `ferm::rule` defined type:
 
-##### `chain`
+* [`chain`](#chain)
+* [`proto`](#proto)
+* [`comment`](#comment)
+* [`action`](#action)
+* [`policy`](#policy)
+* [`dport`](#dport)
+* [`sport`](#sport)
+* [`saddr`](#saddr)
+* [`daddr`](#daddr)
+* [`proto_options`](#proto_options)
+* [`interface`](#interface)
+* [`ensure`](#ensure)
+* [`table`](#table)
+
+##### <a name="chain"></a>`chain`
 
 Data type: `String[1]`
 
 Configure the chain where we want to add the rule
 
-##### `proto`
+##### <a name="proto"></a>`proto`
 
 Data type: `Ferm::Protocols`
 
 Which protocol do we want to match, typically UDP or TCP
 
-##### `comment`
+##### <a name="comment"></a>`comment`
 
 Data type: `String`
 
@@ -482,7 +542,7 @@ A comment that will be added to the ferm config and to ip{,6}tables
 
 Default value: `$name`
 
-##### `action`
+##### <a name="action"></a>`action`
 
 Data type: `Optional[Ferm::Actions]`
 
@@ -492,7 +552,7 @@ Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE
 
 Default value: ``undef``
 
-##### `policy`
+##### <a name="policy"></a>`policy`
 
 Data type: `Optional[Ferm::Policies]`
 
@@ -502,7 +562,7 @@ Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE
 
 Default value: ``undef``
 
-##### `dport`
+##### <a name="dport"></a>`dport`
 
 Data type: `Optional[Ferm::Port]`
 
@@ -510,7 +570,7 @@ The destination port, can be a single port number as integer or an Array of inte
 
 Default value: ``undef``
 
-##### `sport`
+##### <a name="sport"></a>`sport`
 
 Data type: `Optional[Ferm::Port]`
 
@@ -518,7 +578,7 @@ The source port, can be a single port number as integer or an Array of integers 
 
 Default value: ``undef``
 
-##### `saddr`
+##### <a name="saddr"></a>`saddr`
 
 Data type: `Optional[Variant[Array, String[1]]]`
 
@@ -526,7 +586,7 @@ The source address we want to match
 
 Default value: ``undef``
 
-##### `daddr`
+##### <a name="daddr"></a>`daddr`
 
 Data type: `Optional[Variant[Array, String[1]]]`
 
@@ -534,7 +594,7 @@ The destination address we want to match
 
 Default value: ``undef``
 
-##### `proto_options`
+##### <a name="proto_options"></a>`proto_options`
 
 Data type: `Optional[String[1]]`
 
@@ -542,7 +602,7 @@ Optional parameters that will be passed to the protocol (for example to match sp
 
 Default value: ``undef``
 
-##### `interface`
+##### <a name="interface"></a>`interface`
 
 Data type: `Optional[String[1]]`
 
@@ -550,7 +610,7 @@ an Optional interface where this rule should be applied
 
 Default value: ``undef``
 
-##### `ensure`
+##### <a name="ensure"></a>`ensure`
 
 Data type: `Enum['absent','present']`
 
@@ -558,7 +618,7 @@ Set the rule to present or absent
 
 Default value: `'present'`
 
-##### `table`
+##### <a name="table"></a>`table`
 
 Data type: `Ferm::Tables`
 
@@ -570,19 +630,27 @@ Default value: `'filter'`
 
 ## Data types
 
-### `Ferm::Actions`
+### <a name="fermactions"></a>`Ferm::Actions`
 
 As you can also *jump* to other chains, each chain-name is also a valid action/target
 
-Alias of `Variant[Enum['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'], String[1]]`
+Alias of
 
-### `Ferm::Policies`
+```puppet
+Variant[Enum['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'], String[1]]
+```
+
+### <a name="fermpolicies"></a>`Ferm::Policies`
 
 a list of allowed policies for a chain
 
-Alias of `Enum['ACCEPT', 'DROP']`
+Alias of
 
-### `Ferm::Port`
+```puppet
+Enum['ACCEPT', 'DROP']
+```
+
+### <a name="fermport"></a>`Ferm::Port`
 
 allowed variants:
 -----------------
@@ -590,17 +658,29 @@ allowed variants:
 + Array of Integers (creates a multiport matcher)
 + ferm range port-spec (pair of colon-separated integer, assumes 0 if first is omitted)
 
-Alias of `Variant[Stdlib::Port, Array[Stdlib::Port], Pattern['^\d*:\d+$']]`
+Alias of
 
-### `Ferm::Protocols`
+```puppet
+Variant[Stdlib::Port, Array[Stdlib::Port], Pattern['^\d*:\d+$']]
+```
+
+### <a name="fermprotocols"></a>`Ferm::Protocols`
 
 a list of allowed protocolls to match
 
-Alias of `Variant[Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all'], Array[Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']]]`
+Alias of
 
-### `Ferm::Tables`
+```puppet
+Variant[Integer[0, 255], Array[Integer[0, 255]], Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all'], Array[Enum['icmp', 'tcp', 'udp', 'udplite', 'icmpv6', 'esp', 'ah', 'sctp', 'mh', 'all']]]
+```
+
+### <a name="fermtables"></a>`Ferm::Tables`
 
 a list of available tables
 
-Alias of `Enum['raw', 'mangle', 'nat', 'filter']`
+Alias of
+
+```puppet
+Enum['raw', 'mangle', 'nat', 'filter']
+```
 
