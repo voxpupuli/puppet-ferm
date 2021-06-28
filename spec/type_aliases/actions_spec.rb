@@ -1,4 +1,4 @@
-# rubocop:disable Style/WordArray, Style/TrailingCommaInLiteral
+# rubocop:disable Style/WordArray
 require 'spec_helper'
 
 describe 'Ferm::Actions' do
