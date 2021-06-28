@@ -16,7 +16,7 @@ describe 'ferm' do
         it { is_expected.to contain_class('ferm::config') }
         it { is_expected.to contain_class('ferm::service') }
         it { is_expected.to contain_class('ferm::install') }
-        it { is_expected.to contain_package('ferm') }
+        it { is_expected.to contain_package('ferm').with_ensure('latest') }
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_file('/etc/ferm/ferm.d') }
           it { is_expected.to contain_file('/etc/ferm/ferm.d/definitions') }
@@ -158,7 +158,6 @@ describe 'ferm' do
         it { is_expected.to contain_ferm__chain('OUTPUT') }
         it { is_expected.to contain_ferm__chain('INPUT') }
       end
-
       context 'it preserves chains' do
         let :params do
           {
@@ -180,6 +179,20 @@ describe 'ferm' do
           is_expected.to contain_concat__fragment('ferm.conf'). \
             with_content(%r{chain POSTROUTING @preserve;})
         end
+      end
+      context 'it works with git clone' do
+        let :params do
+          {
+            install_method: 'vcsrepo',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_package('git').with_ensure('present') }
+        it { is_expected.to contain_package('iptables').with_ensure('present') }
+        it { is_expected.to contain_package('perl').with_ensure('present') }
+        it { is_expected.to contain_package('make').with_ensure('present') }
+        it { is_expected.to contain_package('ferm').with_ensure('absent') }
       end
     end
   end
