@@ -252,11 +252,11 @@ Default value: `'package'`
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
-Data type: `Enum['installed', 'latest', 'absent']`
+Data type: `String[1]`
 
 sets the ensure parameter for the package resource
 
-Default value: `'latest'`
+Default value: `'installed'`
 
 ##### <a name="vcsrepo"></a>`vcsrepo`
 
