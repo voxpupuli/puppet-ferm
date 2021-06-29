@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v6.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v6.0.0) (2021-06-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v5.0.0...v6.0.0)
+
+**Breaking changes:**
+
+- Drop EoL CentOS 6 support [\#124](https://github.com/voxpupuli/puppet-ferm/pull/124) ([bastelfreak](https://github.com/bastelfreak))
+- Drop Puppet 5; enable Puppet 7 support [\#123](https://github.com/voxpupuli/puppet-ferm/pull/123) ([bastelfreak](https://github.com/bastelfreak))
+- Drop Fedora support \(they dont support ferm anymore\) [\#122](https://github.com/voxpupuli/puppet-ferm/pull/122) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Enable users to the package ensure [\#132](https://github.com/voxpupuli/puppet-ferm/pull/132) ([bastelfreak](https://github.com/bastelfreak))
+- Add support for opensuse [\#127](https://github.com/voxpupuli/puppet-ferm/pull/127) ([rehanone](https://github.com/rehanone))
+
+**Merged pull requests:**
+
+- puppetlabs\_spec\_helper: Allow 3.x [\#130](https://github.com/voxpupuli/puppet-ferm/pull/130) ([bastelfreak](https://github.com/bastelfreak))
+- enhance spec coverage [\#129](https://github.com/voxpupuli/puppet-ferm/pull/129) ([bastelfreak](https://github.com/bastelfreak))
+- Allow numeric values as protocol references [\#121](https://github.com/voxpupuli/puppet-ferm/pull/121) ([kBite](https://github.com/kBite))
+- Add puppet-lint-param-docs linter / fix typos in puppet-strings documentation [\#117](https://github.com/voxpupuli/puppet-ferm/pull/117) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v5.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v5.0.0) (2020-07-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v4.0.0...v5.0.0)
