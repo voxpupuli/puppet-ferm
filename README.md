@@ -60,7 +60,7 @@ You can easily define rules in Puppet (they don't need to be exported resources)
 ```puppet
   @@ferm::rule{"allow_kafka_server2server-${trusted['certname']}":
     chain  => 'INPUT',
-    policy => 'ACCEPT',
+    action => 'ACCEPT',
     proto  => 'tcp',
     dport  => [9092, 9093],
     saddr  => "(${facts['networking']['ip6']}/128 ${facts['networking']['ip']}/32)",
@@ -95,7 +95,7 @@ subnets:
 ferm::rules:
   'allow_http_https':
     chain: 'INPUT'
-    policy: 'ACCEPT'
+    action: 'ACCEPT'
     proto: 'tcp'
     dport:
       - 80

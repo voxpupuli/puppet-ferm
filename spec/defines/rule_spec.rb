@@ -11,7 +11,7 @@ describe 'ferm::rule', type: :define do
         'include ferm'
       end
 
-      context 'without policy or action' do
+      context 'without action' do
         let(:title) { 'filter-ssh' }
         let :params do
           {
@@ -22,39 +22,7 @@ describe 'ferm::rule', type: :define do
           }
         end
 
-        it { is_expected.to compile.and_raise_error(%r{Exactly one of "action" or the deprecated "policy" param is required}) }
-      end
-
-      context 'with both policy and action' do
-        let(:title) { 'filter-ssh' }
-        let :params do
-          {
-            chain: 'INPUT',
-            policy: 'ACCEPT',
-            action: 'ACCEPT',
-            proto: 'tcp',
-            dport: 22,
-            saddr: '127.0.0.1'
-          }
-        end
-
-        it { is_expected.to compile.and_raise_error(%r{Cannot specify both policy and action}) }
-      end
-
-      context 'without a specific interface using legacy policy param' do
-        let(:title) { 'filter-ssh' }
-        let :params do
-          {
-            chain: 'INPUT',
-            policy: 'ACCEPT',
-            proto: 'tcp',
-            dport: 22,
-            saddr: '127.0.0.1'
-          }
-        end
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_concat__fragment('INPUT-filter-ssh').with_content("mod comment comment 'filter-ssh' proto tcp dport 22 saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.not_to compile }
       end
 
       context 'without a specific interface' do

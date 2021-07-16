@@ -487,7 +487,7 @@ ferm::rule{'allow-ssh-localhost':
 ```puppet
 ferm::rule{'drop-icmp-time-exceeded':
   chain         => 'OUTPUT',
-  policy        => 'DROP',
+  action        => 'DROP',
   proto         => 'icmp',
   proto_options => 'icmp-type time-exceeded',
 }
@@ -498,7 +498,7 @@ ferm::rule{'drop-icmp-time-exceeded':
 ```puppet
 ferm::rule{'allow_consul':
   chain  => 'INPUT',
-  policy => 'ACCEPT',
+  action => 'ACCEPT',
   proto  => ['udp', 'tcp'],
   dport  => 8301,
 }
@@ -512,7 +512,6 @@ The following parameters are available in the `ferm::rule` defined type:
 * [`proto`](#proto)
 * [`comment`](#comment)
 * [`action`](#action)
-* [`policy`](#policy)
 * [`dport`](#dport)
 * [`sport`](#sport)
 * [`saddr`](#saddr)
@@ -544,23 +543,10 @@ Default value: `$name`
 
 ##### <a name="action"></a>`action`
 
-Data type: `Optional[Ferm::Actions]`
+Data type: `Ferm::Actions`
 
-Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name)
-Default value: undef
+Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name). The parameter is mandatory.
 Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-
-Default value: ``undef``
-
-##### <a name="policy"></a>`policy`
-
-Data type: `Optional[Ferm::Policies]`
-
-Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name) [DEPRECATED]
-Default value: undef
-Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-
-Default value: ``undef``
 
 ##### <a name="dport"></a>`dport`
 

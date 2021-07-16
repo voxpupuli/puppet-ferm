@@ -21,7 +21,7 @@
 # @example Confuse people that do a traceroute/mtr/ping to your system
 #   ferm::rule{'drop-icmp-time-exceeded':
 #     chain         => 'OUTPUT',
-#     policy        => 'DROP',
+#     action        => 'DROP',
 #     proto         => 'icmp',
 #     proto_options => 'icmp-type time-exceeded',
 #   }
@@ -29,7 +29,7 @@
 # @example allow multiple protocols
 #   ferm::rule{'allow_consul':
 #     chain  => 'INPUT',
-#     policy => 'ACCEPT',
+#     action => 'ACCEPT',
 #     proto  => ['udp', 'tcp'],
 #     dport  => 8301,
 #   }
@@ -37,11 +37,7 @@
 # @param chain Configure the chain where we want to add the rule
 # @param proto Which protocol do we want to match, typically UDP or TCP
 # @param comment A comment that will be added to the ferm config and to ip{,6}tables
-# @param action Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name)
-#   Default value: undef
-#   Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-# @param policy Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name) [DEPRECATED]
-#   Default value: undef
+# @param action Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name). The parameter is mandatory.
 #   Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
 # @param dport The destination port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param sport The source port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
@@ -56,9 +52,8 @@
 define ferm::rule (
   String[1] $chain,
   Ferm::Protocols $proto,
+  Ferm::Actions $action,
   String $comment = $name,
-  Optional[Ferm::Actions] $action = undef,
-  Optional[Ferm::Policies] $policy = undef,
   Optional[Ferm::Port] $dport = undef,
   Optional[Ferm::Port] $sport = undef,
   Optional[Variant[Array, String[1]]] $saddr = undef,
@@ -68,24 +63,13 @@ define ferm::rule (
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
 ) {
-  if $policy and $action {
-    fail('Cannot specify both policy and action. Do not provide policy when using the new action param.')
-  } elsif $policy and ! $action {
-    warning('The param "policy" is deprecated (superseded by "action") and will be dropped in a future release.')
-    $action_temp = $policy
-  } elsif $action and ! $policy {
-    $action_temp = $action
-  } else {
-    fail('Exactly one of "action" or the deprecated "policy" param is required.')
-  }
-
-  if $action_temp in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
-    $action_real = $action_temp
+  if $action in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
+    $action_real = $action
   } else {
     # assume the action contains a target chain, so prefix it with the "jump" statement
-    $action_real = "jump ${action_temp}"
+    $action_real = "jump ${action}"
     # make sure the target chain is created before we try to add rules to it
-    Ferm::Chain <| chain == $action_temp and table == $table |> -> Ferm::Rule[$name]
+    Ferm::Chain <| chain == $action and table == $table |> -> Ferm::Rule[$name]
   }
 
   $proto_real = $proto ? {
