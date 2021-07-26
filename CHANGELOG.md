@@ -4,7 +4,20 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v6.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v6.0.0) (2021-06-28)
+## [v7.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v7.0.0) (2021-07-26)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v6.0.0...v7.0.0)
+
+**Breaking changes:**
+
+- delete legacy `policy` param in ferm::rule [\#134](https://github.com/voxpupuli/puppet-ferm/pull/134) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- allow latest dependencies [\#136](https://github.com/voxpupuli/puppet-ferm/pull/136) ([bastelfreak](https://github.com/bastelfreak))
+- allow switch from camptocamp/systemd to voxpupuli/systemd [\#135](https://github.com/voxpupuli/puppet-ferm/pull/135) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v6.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v6.0.0) (2021-06-29)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v5.0.0...v6.0.0)
 
