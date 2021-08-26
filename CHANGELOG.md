@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.0.1](https://github.com/voxpupuli/puppet-ferm/tree/v7.0.1) (2021-08-26)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v7.0.0...v7.0.1)
+
+**Merged pull requests:**
+
+- Allow stdlib 8.0.0 [\#138](https://github.com/voxpupuli/puppet-ferm/pull/138) ([smortex](https://github.com/smortex))
+
 ## [v7.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v7.0.0) (2021-07-26)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v6.0.0...v7.0.0)
