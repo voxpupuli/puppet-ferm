@@ -194,10 +194,10 @@ describe 'ferm' do
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_package('git').with_ensure('present') }
-        it { is_expected.to contain_package('iptables').with_ensure('present') }
-        it { is_expected.to contain_package('perl').with_ensure('present') }
-        it { is_expected.to contain_package('make').with_ensure('present') }
+        it { is_expected.to contain_package('git').with_ensure('installed') }
+        it { is_expected.to contain_package('iptables').with_ensure('installed') }
+        it { is_expected.to contain_package('perl').with_ensure('installed') }
+        it { is_expected.to contain_package('make').with_ensure('installed') }
         it { is_expected.to contain_package('ferm').with_ensure('absent') }
         it { is_expected.to contain_exec('make install') }
         it { is_expected.to contain_file('/etc/ferm') }
