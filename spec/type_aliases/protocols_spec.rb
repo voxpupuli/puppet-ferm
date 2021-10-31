@@ -1,4 +1,5 @@
-# rubocop:disable Style/WordArray
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Ferm::Protocols' do
@@ -14,7 +15,7 @@ describe 'Ferm::Protocols' do
       'sctp',
       'mh',
       'all',
-      ['icmp', 'tcp', 'udp'],
+      %w[icmp tcp udp],
       0,
       [0, 4],
     ].each do |value|
@@ -33,7 +34,7 @@ describe 'Ferm::Protocols' do
         '',
         true,
         false,
-        ['meep', 'meep'],
+        %w[meep meep],
         65_538,
         [95_000, 67_000],
         {},

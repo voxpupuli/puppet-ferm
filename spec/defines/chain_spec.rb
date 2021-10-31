@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'ferm::chain', type: :define do
   on_supported_os.each do |os, facts|
-    context "on #{os} " do
+    context "on #{os}" do
       let :facts do
         facts
       end
@@ -22,14 +24,17 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('filter-INPUT2-config-include') }
+
         it do
-          is_expected.to contain_concat__fragment('filter-INPUT2-policy'). \
+          expect(subject).to contain_concat__fragment('filter-INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
+
         it do
-          is_expected.to contain_concat__fragment('filter-INPUT2-footer'). \
+          expect(subject).to contain_concat__fragment('filter-INPUT2-footer'). \
             with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
+
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-INPUT2.conf') }
         else
@@ -47,13 +52,15 @@ describe 'ferm::chain', type: :define do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it do
-          is_expected.to contain_concat__fragment('filter-INPUT2-policy')
-          is_expected.not_to contain_concat__fragment('filter-INPUT2-policy'). \
+          expect(subject).to contain_concat__fragment('filter-INPUT2-policy')
+          expect(subject).not_to contain_concat__fragment('filter-INPUT2-policy'). \
             with_content(%r{ESTABLISHED RELATED})
         end
+
         it do
-          is_expected.not_to contain_concat__fragment('filter-INPUT2-footer'). \
+          expect(subject).not_to contain_concat__fragment('filter-INPUT2-footer'). \
             with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
       end
@@ -81,16 +88,20 @@ describe 'ferm::chain', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('filter-FERM-DSL-config-include') }
+
         it do
-          is_expected.to contain_concat__fragment('filter-FERM-DSL-custom-content'). \
+          expect(subject).to contain_concat__fragment('filter-FERM-DSL-custom-content'). \
             with_content(%r{mod rpfilter invert DROP;})
         end
+
         it do
-          is_expected.not_to contain_concat__fragment('filter-FERM-DSL-policy')
+          expect(subject).not_to contain_concat__fragment('filter-FERM-DSL-policy')
         end
+
         it do
-          is_expected.not_to contain_concat__fragment('filter-FERM-DSL-footer')
+          expect(subject).not_to contain_concat__fragment('filter-FERM-DSL-footer')
         end
+
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/filter-FERM-DSL.conf') }
         else

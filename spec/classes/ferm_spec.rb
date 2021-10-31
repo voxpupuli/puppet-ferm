@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'ferm' do
@@ -6,7 +8,7 @@ describe 'ferm' do
   end
 
   on_supported_os.each do |os, facts|
-    context "on #{os} " do
+    context "on #{os}" do
       let :facts do
         facts
       end
@@ -16,6 +18,7 @@ describe 'ferm' do
         it { is_expected.to contain_class('ferm::config') }
         it { is_expected.to contain_class('ferm::service') }
         it { is_expected.to contain_class('ferm::install') }
+
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_file('/etc/ferm/ferm.d') }
           it { is_expected.to contain_file('/etc/ferm/ferm.d/definitions') }
@@ -35,9 +38,8 @@ describe 'ferm' do
 
         it { is_expected.not_to contain_service('ferm') }
         it { is_expected.not_to contain_file('/etc/ferm.conf') }
-        if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
-          it { is_expected.not_to contain_file('/etc/init.d/ferm') }
-        end
+
+        it { is_expected.not_to contain_file('/etc/init.d/ferm') } if facts[:os]['family'] == 'RedHat' && facts[:os]['release']['major'].to_i <= 6
       end
 
       context 'with managed service' do
@@ -47,11 +49,13 @@ describe 'ferm' do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_service('ferm') }
+
         if facts[:os]['name'] == 'Ubuntu'
           it { is_expected.to contain_file_line('enable_ferm') }
           it { is_expected.to contain_file_line('disable_ferm_cache') }
         end
       end
+
       context 'with managed configfile' do
         let :params do
           { manage_configfile: true }
@@ -66,13 +70,16 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('ferm_header.conf') }
         it { is_expected.to contain_concat__fragment('ferm.conf') }
         # the following string exists only if we preserve chains
+
         it do
-          is_expected.to contain_concat__fragment('ferm.conf'). \
+          expect(subject).to contain_concat__fragment('ferm.conf'). \
             without_content(%r{@preserve;})
         end
+
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-config-include') }
         it { is_expected.to contain_concat__fragment('raw-OUTPUT-config-include') }
         it { is_expected.to contain_concat__fragment('nat-PREROUTING-config-include') }
+
         if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
           it { is_expected.to contain_concat__fragment('nat-INPUT-config-include') }
         else
@@ -91,6 +98,7 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-policy') }
         it { is_expected.to contain_concat__fragment('raw-OUTPUT-policy') }
         it { is_expected.to contain_concat__fragment('nat-PREROUTING-policy') }
+
         if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
           it { is_expected.to contain_concat__fragment('nat-INPUT-policy') }
         else
@@ -106,10 +114,12 @@ describe 'ferm' do
         it { is_expected.to contain_concat__fragment('filter-INPUT-policy') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-policy') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-policy') }
+
         if facts[:os]['name'] == 'Debian'
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-PREROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/raw-OUTPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-PREROUTING.conf') }
+
           if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
             it { is_expected.to contain_concat('/etc/ferm/ferm.d/chains/nat-INPUT.conf') }
           else
@@ -129,6 +139,7 @@ describe 'ferm' do
           it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-PREROUTING.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/raw-OUTPUT.conf') }
           it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-PREROUTING.conf') }
+
           if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
             it { is_expected.to contain_concat('/etc/ferm.d/chains/nat-INPUT.conf') }
           else
@@ -148,6 +159,7 @@ describe 'ferm' do
         it { is_expected.to contain_ferm__chain('raw-PREROUTING') }
         it { is_expected.to contain_ferm__chain('raw-OUTPUT') }
         it { is_expected.to contain_ferm__chain('nat-PREROUTING') }
+
         if Gem::Version.new(facts[:kernelversion]) >= Gem::Version.new('2.6.36')
           it { is_expected.to contain_ferm__chain('nat-INPUT') }
         else
@@ -164,6 +176,7 @@ describe 'ferm' do
         it { is_expected.to contain_ferm__chain('OUTPUT') }
         it { is_expected.to contain_ferm__chain('INPUT') }
       end
+
       context 'it preserves chains' do
         let :params do
           {
@@ -173,19 +186,23 @@ describe 'ferm' do
         end
 
         it { is_expected.to compile.with_all_deps }
+
         it do
-          is_expected.to contain_concat__fragment('ferm.conf'). \
+          expect(subject).to contain_concat__fragment('ferm.conf'). \
             with_content(%r{domain \(ip ip6\) table nat \{})
         end
+
         it do
-          is_expected.to contain_concat__fragment('ferm.conf'). \
+          expect(subject).to contain_concat__fragment('ferm.conf'). \
             with_content(%r{chain PREROUTING @preserve;})
         end
+
         it do
-          is_expected.to contain_concat__fragment('ferm.conf'). \
+          expect(subject).to contain_concat__fragment('ferm.conf'). \
             with_content(%r{chain POSTROUTING @preserve;})
         end
       end
+
       context 'it works with git clone' do
         let :params do
           {
@@ -203,6 +220,7 @@ describe 'ferm' do
         it { is_expected.to contain_file('/etc/ferm') }
         it { is_expected.to contain_vcsrepo('/opt/ferm') }
       end
+
       context 'it works with ensure latest' do
         let :params do
           {
