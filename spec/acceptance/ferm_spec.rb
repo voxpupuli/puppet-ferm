@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 os_name = fact('os.name')
@@ -57,6 +59,7 @@ describe 'ferm' do
     it 'works with no error' do
       apply_manifest(pp, catch_failures: true)
     end
+
     it 'works idempotently' do
       apply_manifest(pp, catch_changes: true)
     end
@@ -82,6 +85,7 @@ describe 'ferm' do
     it 'works with no error' do
       apply_manifest(pp, catch_failures: true)
     end
+
     it 'works idempotently' do
       apply_manifest(pp, catch_changes: true)
     end
@@ -101,7 +105,7 @@ describe 'ferm' do
 
     describe iptables do
       it do
-        is_expected.to have_rule(iptables_output[0]). \
+        expect(subject).to have_rule(iptables_output[0]). \
           with_table('filter'). \
           with_chain('INPUT')
       end
@@ -135,18 +139,20 @@ describe 'ferm' do
       it 'works with no error' do
         apply_manifest(pp, catch_failures: true)
       end
+
       it 'works idempotently' do
         apply_manifest(pp, catch_changes: true)
       end
 
       describe iptables do
         it do
-          is_expected.to have_rule(iptables_output[1]). \
+          expect(subject).to have_rule(iptables_output[1]). \
             with_table('filter'). \
             with_chain('INPUT')
         end
+
         it do
-          is_expected.to have_rule(iptables_output[2]). \
+          expect(subject).to have_rule(iptables_output[2]). \
             with_table('filter'). \
             with_chain('HTTP')
         end
@@ -177,6 +183,7 @@ describe 'ferm' do
       it 'works with no error' do
         apply_manifest(pp2, catch_failures: true)
       end
+
       it 'works idempotently' do
         apply_manifest(pp2, catch_changes: true)
       end
@@ -223,18 +230,20 @@ describe 'ferm' do
     it 'works with no error' do
       apply_manifest(pp, catch_failures: true)
     end
+
     it 'works idempotently' do
       apply_manifest(pp, catch_changes: true)
     end
 
     describe iptables do
       it do
-        is_expected.to have_rule(iptables_output_custom[0]). \
+        expect(subject).to have_rule(iptables_output_custom[0]). \
           with_table('filter'). \
           with_chain('FORWARD')
       end
+
       it do
-        is_expected.to have_rule(iptables_output_custom[1]). \
+        expect(subject).to have_rule(iptables_output_custom[1]). \
           with_table('filter'). \
           with_chain('OPENVPN_FORWORD_RULES')
       end

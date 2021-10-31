@@ -1,21 +1,22 @@
-# rubocop:disable Style/WordArray
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Ferm::Actions' do
   describe 'valid values' do
-    [
-      'RETURN',
-      'ACCEPT',
-      'DROP',
-      'REJECT',
-      'NOTRACK',
-      'LOG',
-      'MARK',
-      'DNAT',
-      'SNAT',
-      'MASQUERADE',
-      'REDIRECT',
-      'MYFANCYCUSTOMCHAINNAMEISALSOVALID',
+    %w[
+      RETURN
+      ACCEPT
+      DROP
+      REJECT
+      NOTRACK
+      LOG
+      MARK
+      DNAT
+      SNAT
+      MASQUERADE
+      REDIRECT
+      MYFANCYCUSTOMCHAINNAMEISALSOVALID
     ].each do |value|
       describe value.inspect do
         it { is_expected.to allow_value(value) }
@@ -31,7 +32,7 @@ describe 'Ferm::Actions' do
         '',
         true,
         false,
-        ['meep', 'meep'],
+        %w[meep meep],
         65_538,
         [95_000, 67_000],
         {},

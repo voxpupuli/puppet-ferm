@@ -1,4 +1,5 @@
-# rubocop:disable Style/WordArray
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Ferm::Port' do
@@ -23,7 +24,7 @@ describe 'Ferm::Port' do
         true,
         false,
         :symbol,
-        ['meep', 'meep'],
+        %w[meep meep],
         65_538,
         [95_000, 67_000],
         '12345',
