@@ -1,5 +1,6 @@
 # puppet-ferm
 
+[![Puppet Forge modules by Vox Pupuli](https://img.shields.io/puppetforge/mc/puppet.svg)](https://forge.puppetlabs.com/puppet)
 [![Build Status](https://travis-ci.org/voxpupuli/puppet-ferm.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-ferm)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/ferm.svg)](https://forge.puppetlabs.com/puppet/ferm)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/ferm.svg)](https://forge.puppetlabs.com/puppet/ferm)
