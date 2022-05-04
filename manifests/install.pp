@@ -15,7 +15,7 @@ class ferm::install {
     }
     'vcsrepo': {
       $_source_path = '/opt/ferm'
-      ensure_packages (['git', 'iptables', 'perl', 'make'], { ensure => present })
+      ensure_packages (['git', 'iptables', 'perl', 'make'], { ensure => present, before => Exec['make install'] })
 
       package { 'ferm':
         ensure => absent,
