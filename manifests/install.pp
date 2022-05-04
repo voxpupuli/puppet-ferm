@@ -15,7 +15,7 @@ class ferm::install {
     }
     'vcsrepo': {
       $_source_path = '/opt/ferm'
-      ensure_packages (['git', 'iptables', 'perl', 'make'], { ensure => present })
+      ensure_packages (['git', 'iptables', 'perl', 'make'], { ensure => present, before => Exec['make install'] })
 
       package { 'ferm':
         ensure => absent,
@@ -28,7 +28,7 @@ class ferm::install {
       }
       -> exec { 'make install':
         cwd     => $_source_path,
-        path    => '/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/core_perl/pod2text', # pod2text on arch is in a subdir
+        path    => '/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/core_perl', # pod2text on arch is in a subdir
         creates => '/usr/sbin/ferm',
       }
       -> file { '/etc/ferm':
