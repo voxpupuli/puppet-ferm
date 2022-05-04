@@ -232,6 +232,17 @@ describe 'ferm' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_package('ferm').with_ensure('latest') }
       end
+
+      context 'it does not install package' do
+        let :params do
+          {
+            manage_package: false,
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_package('ferm') }
+      end
     end
   end
 end
