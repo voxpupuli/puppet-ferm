@@ -8,7 +8,7 @@ os_release = fact('os.release.major')
 sut_os = "#{os_name}-#{os_release}"
 
 iptables_output = case sut_os
-                  when 'Debian-10'
+                  when 'Debian-10', 'Debian-11'
                     [
                       '-A INPUT -p tcp -m tcp --dport 22 -m comment --comment allow_acceptance_tests -j ACCEPT',
                       '-A INPUT -p tcp -m tcp --dport 80 -m comment --comment jump_http -j HTTP',
@@ -27,13 +27,13 @@ iptables_output = case sut_os
 #
 # And on Debian-10, it causes iptables rules inconsistency depending on used command
 iptables_save_cmd = case sut_os
-                    when 'Ubuntu-22.04'
+                    when 'Debian-11', 'Ubuntu-22.04'
                       'iptables-legacy-save'
                     else
                       'iptables-save'
                     end
 iptables_save_filter_cmd = case sut_os
-                           when 'Debian-10', 'Ubuntu-22.04'
+                           when 'Debian-10', 'Debian-11', 'Ubuntu-22.04'
                              'iptables-legacy-save -t filter'
                            else
                              'iptables-save -t filter'
@@ -103,7 +103,7 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command(iptables_save_cmd.to_s) do
+    describe command(iptables_save_cmd) do
       its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
       its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
       its(:stdout) { is_expected.not_to match %r{.*filter.*#{iptables_output[0]}} }
@@ -181,8 +181,8 @@ describe 'ferm' do
         it { is_expected.to be_running }
       end
 
-      describe command(iptables_save_cmd.to_s) do
-        its(:stdout) { is_expected.to match %r{-A INPUT -m conntrack --ctstate INVALID -j DROP} }
+      describe command(iptables_save_cmd) do
+        its(:stdout) { is_expected.to match %r{INPUT.*state INVALID -j DROP} }
       end
     end
   end
@@ -228,8 +228,8 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command(iptables_save_cmd.to_s) do
-      its(:stdout) { is_expected.to match %r{-A FORWARD.*-j OPENVPN_FORWORD_RULES} }
+    describe command(iptables_save_cmd) do
+      its(:stdout) { is_expected.to match %r{FORWARD.*-j OPENVPN_FORWORD_RULES} }
       its(:stdout) { is_expected.to match %r{-A OPENVPN_FORWORD_RULES.*-i tun0 -o enp4s0 -p udp -m conntrack --ctstate NEW -j ACCEPT} }
     end
   end
