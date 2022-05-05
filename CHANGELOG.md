@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v8.0.0) (2022-05-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v7.0.1...v8.0.0)
+
+**Breaking changes:**
+
+- ferm vcs install: Update 2.5.1-\>2.6 [\#154](https://github.com/voxpupuli/puppet-ferm/pull/154) ([bastelfreak](https://github.com/bastelfreak))
+- Drop Arch Linux support [\#149](https://github.com/voxpupuli/puppet-ferm/pull/149) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Add parameter `manage_package` to enable managing ferm package outside of this module [\#146](https://github.com/voxpupuli/puppet-ferm/pull/146) ([kBite](https://github.com/kBite))
+
+**Fixed bugs:**
+
+- Exec: Adjust PATH during ferm installation [\#151](https://github.com/voxpupuli/puppet-ferm/pull/151) ([bastelfreak](https://github.com/bastelfreak))
+- Packages: Install packages before ferm install [\#150](https://github.com/voxpupuli/puppet-ferm/pull/150) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v7.0.1](https://github.com/voxpupuli/puppet-ferm/tree/v7.0.1) (2021-08-26)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v7.0.0...v7.0.1)

@@ -80,6 +80,7 @@ The following parameters are available in the `ferm` class:
 
 * [`manage_service`](#manage_service)
 * [`manage_configfile`](#manage_configfile)
+* [`manage_package`](#manage_package)
 * [`configfile`](#configfile)
 * [`configdirectory`](#configdirectory)
 * [`forward_disable_conntrack`](#forward_disable_conntrack)
@@ -116,6 +117,14 @@ Data type: `Boolean`
 Disable/Enable the management of the ferm default config
 
 Default value: ``false``
+
+##### <a name="manage_package"></a>`manage_package`
+
+Data type: `Boolean`
+
+Disable/Enable the management of the ferm package
+
+Default value: ``true``
 
 ##### <a name="configfile"></a>`configfile`
 
@@ -272,7 +281,7 @@ Data type: `String[1]`
 
 git tag used when install_method is vcsrepo
 
-Default value: `'v2.5.1'`
+Default value: `'v2.6'`
 
 ## Defined types
 
