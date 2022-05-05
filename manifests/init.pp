@@ -72,7 +72,7 @@ class ferm (
   Enum['package','vcsrepo'] $install_method = 'package',
   String[1] $package_ensure = 'installed',
   Stdlib::HTTPSUrl $vcsrepo = 'https://github.com/MaxKellermann/ferm.git',
-  String[1] $vcstag = 'v2.5.1',
+  String[1] $vcstag = 'v2.6',
 ) {
   contain ferm::install
   contain ferm::config
