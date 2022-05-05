@@ -28,7 +28,7 @@ class ferm::install {
       }
       -> exec { 'make install':
         cwd     => $_source_path,
-        path    => '/usr/sbin:/usr/bin:/sbin:/bin',
+        path    => '/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/core_perl',
         creates => '/usr/sbin/ferm',
       }
       -> file { '/etc/ferm':
