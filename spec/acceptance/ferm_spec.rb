@@ -8,7 +8,7 @@ os_release = fact('os.release.major')
 sut_os = "#{os_name}-#{os_release}"
 
 iptables_output = case sut_os
-                  when 'Debian-10'
+                  when 'Debian-10', 'Debian-11'
                     [
                       '-A INPUT -p tcp -m tcp --dport 22 -m comment --comment allow_acceptance_tests -j ACCEPT',
                       '-A INPUT -p tcp -m tcp --dport 80 -m comment --comment jump_http -j HTTP',
@@ -28,7 +28,7 @@ iptables_output_custom = ['-A FORWARD -s 10.8.0.0/24 -p udp -m comment --comment
 # When `install_method` is `vcsrepo` with `vcstag` >= `v2.5` ferm call "legacy"
 # xtables tools because nft based tools are incompatible.
 iptables_save_cmd = case sut_os
-                    when 'Debian-10'
+                    when 'Debian-10', 'Debian-11'
                       'iptables-legacy-save'
                     else
                       'iptables-save'
@@ -98,7 +98,7 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command('iptables-save') do
+    describe command(iptables_save_cmd) do
       its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
       its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
     end
@@ -192,7 +192,7 @@ describe 'ferm' do
         it { is_expected.to be_running }
       end
 
-      describe command('iptables-save') do
+      describe command(iptables_save_cmd) do
         its(:stdout) { is_expected.to match %r{INPUT.*state INVALID -j DROP} }
       end
     end
@@ -253,7 +253,7 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command('iptables-save') do
+    describe command(iptables_save_cmd) do
       its(:stdout) { is_expected.to match %r{FORWARD.*-j OPENVPN_FORWORD_RULES} }
     end
   end
