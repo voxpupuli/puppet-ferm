@@ -60,9 +60,6 @@
       ]
     },
     {
-      "operatingsystem": "Archlinux"
-    },
-    {
       "operatingsystem": "VirtuozzoLinux",
       "operatingsystemrelease": [
         "7"
