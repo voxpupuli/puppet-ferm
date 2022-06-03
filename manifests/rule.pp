@@ -49,6 +49,9 @@
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
+# @param negate Single keyword or array of keywords to negate
+#   Default value: undef
+#   Allowed values: (saddr|daddr|sport|dport) (see Ferm::Negation type)
 define ferm::rule (
   String[1] $chain,
   Ferm::Protocols $proto,
@@ -62,6 +65,7 @@ define ferm::rule (
   Optional[String[1]] $interface = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
+  Optional[Ferm::Negation] $negate = undef,
 ) {
   if $action in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
     $action_real = $action
@@ -78,11 +82,19 @@ define ferm::rule (
     Integer => "proto ${proto}",
   }
 
+  # convert String to Array to equally handle both cases
+  $_negate = [$negate].flatten.unique
+
+  $negate_saddr = 'saddr' in $_negate ? { true => '!', false => '', }
+  $negate_daddr = 'daddr' in $_negate ? { true => '!', false => '', }
+  $negate_sport = 'sport' in $_negate ? { true => '!', false => '', }
+  $negate_dport = 'dport' in $_negate ? { true => '!', false => '', }
+
   if $dport =~ Array {
     $dports = join($dport, ' ')
-    $dport_real = "mod multiport destination-ports (${dports})"
+    $dport_real = "mod multiport destination-ports ${negate_dport}(${dports})"
   } elsif $dport =~ Integer {
-    $dport_real = "dport ${dport}"
+    $dport_real = "dport ${negate_dport}${dport}"
   } elsif String($dport) =~ /^\d*:\d+$/ {
     $portrange = split($dport, /:/)
     $lower = $portrange[0] ? {
@@ -97,18 +109,18 @@ define ferm::rule (
     if $lower > $upper {
       fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
     }
-    $dport_real = "dport ${lower}:${upper}"
+    $dport_real = "dport ${negate_dport}${lower}:${upper}"
   } elsif String($dport) == '' {
     $dport_real = ''
   } else {
-    fail("invalid destination-port: ${dport}")
+    fail("invalid destination-port: ${negate_dport}${dport}")
   }
 
   if $sport =~ Array {
     $sports = join($sport, ' ')
-    $sport_real = "mod multiport source-ports (${sports})"
+    $sport_real = "mod multiport source-ports ${negate_sport}(${sports})"
   } elsif $sport =~ Integer {
-    $sport_real = "sport ${sport}"
+    $sport_real = "sport ${negate_sport}${sport}"
   } elsif String($sport) =~ /^\d*:\d+$/ {
     $portrange = split($sport, /:/)
     $lower = $portrange[0] ? {
@@ -123,7 +135,7 @@ define ferm::rule (
     if $lower > $upper {
       fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
     }
-    $sport_real = "sport ${lower}:${upper}"
+    $sport_real = "sport ${negate_sport}${lower}:${upper}"
   } elsif String($sport) == '' {
     $sport_real = ''
   } else {
@@ -138,8 +150,8 @@ define ferm::rule (
   }
   $saddr_real = $saddr ? {
     undef   => '',
-    Array   => "saddr @ipfilter((${join(flatten($saddr).unique, ' ')}))",
-    String  => "saddr @ipfilter((${saddr}))",
+    Array   => "saddr ${negate_saddr}@ipfilter((${join(flatten($saddr).unique, ' ')}))",
+    String  => "saddr ${negate_saddr}@ipfilter((${saddr}))",
     default => '',
   }
   if $daddr =~ Array {
@@ -150,8 +162,8 @@ define ferm::rule (
   }
   $daddr_real = $daddr ? {
     undef   => '',
-    Array   => "daddr @ipfilter((${join(flatten($daddr).unique, ' ')}))",
-    String  => "daddr @ipfilter((${daddr}))",
+    Array   => "daddr ${negate_daddr}@ipfilter((${join(flatten($daddr).unique, ' ')}))",
+    String  => "daddr ${negate_daddr}@ipfilter((${daddr}))",
     default => '',
   }
   $proto_options_real = $proto_options ? {
