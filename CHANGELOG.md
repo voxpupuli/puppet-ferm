@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v8.1.0) (2023-01-23)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v8.0.0...v8.1.0)
+
+**Implemented enhancements:**
+
+- Enable negation of 'saddr', 'daddr', 'sport', and 'dport' [\#156](https://github.com/voxpupuli/puppet-ferm/pull/156) ([kengelhardt-godaddy](https://github.com/kengelhardt-godaddy))
+
 ## [v8.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v8.0.0) (2022-05-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v7.0.1...v8.0.0)
