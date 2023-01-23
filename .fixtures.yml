@@ -4,3 +4,4 @@ fixtures:
     stdlib: 'https://github.com/puppetlabs/puppetlabs-stdlib'
     concat: 'https://github.com/puppetlabs/puppetlabs-concat'
     vcsrepo: 'https://github.com/puppetlabs/puppetlabs-vcsrepo'
+    systemd: 'https://github.com/voxpupuli/puppet-systemd'
