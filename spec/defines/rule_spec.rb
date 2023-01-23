@@ -84,6 +84,26 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('INPUT-eth0-zzz').with_content("}\n") }
       end
 
+      context 'without a specific interface using array for daddr with negation' do
+        let(:title) { 'filter-ssh-negated' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: 22,
+            daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],
+            negate: %w[saddr daddr sport]
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-ssh-negated').with_content("mod comment comment 'filter-ssh-negated' proto tcp dport 22 daddr !@ipfilter((127.0.0.1 123.123.123.123 10.0.0.1 10.0.0.2)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
+      end
+
       context 'without a specific interface using array for proto' do
         let(:title) { 'filter-consul' }
         let :params do
@@ -117,6 +137,26 @@ describe 'ferm::rule', type: :define do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_concat__fragment('INPUT-filter-portrange').with_content("mod comment comment 'filter-portrange' proto tcp dport 20000:25000 saddr @ipfilter((127.0.0.1)) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+        it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
+      end
+
+      context 'with a valid destination-port range with negation of destination-port and source-address' do
+        let(:title) { 'filter-portrange-negated' }
+        let :params do
+          {
+            chain: 'INPUT',
+            action: 'ACCEPT',
+            proto: 'tcp',
+            dport: '20000:25000',
+            saddr: '127.0.0.1',
+            negate: %w[saddr dport]
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('INPUT-filter-portrange-negated').with_content("mod comment comment 'filter-portrange-negated' proto tcp dport !20000:25000 saddr !@ipfilter((127.0.0.1)) ACCEPT;\n") }
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
         it { is_expected.to contain_concat__fragment('filter-OUTPUT-config-include') }
