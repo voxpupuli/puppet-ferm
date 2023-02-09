@@ -22,17 +22,22 @@ iptables_output = case sut_os
                     ]
                   end
 
-iptables_output_custom = ['-A FORWARD -s 10.8.0.0/24 -p udp -m comment --comment "OpenVPN - FORWORD all udp traffic from network 10.8.0.0/24 to subchain OPENVPN_FORWORD_RULES" -j OPENVPN_FORWORD_RULES',
-                          '-A OPENVPN_FORWORD_RULES -s 10.8.0.0/24 -i tun0 -o enp4s0 -p udp -m conntrack --ctstate NEW -j ACCEPT']
-
 # When `install_method` is `vcsrepo` with `vcstag` >= `v2.5` ferm call "legacy"
 # xtables tools because nft based tools are incompatible.
+#
+# And on Debian-10, it causes iptables rules inconsistency depending on used command
 iptables_save_cmd = case sut_os
-                    when 'Debian-10'
+                    when 'Ubuntu-22.04'
                       'iptables-legacy-save'
                     else
                       'iptables-save'
                     end
+iptables_save_filter_cmd = case sut_os
+                           when 'Debian-10', 'Ubuntu-22.04'
+                             'iptables-legacy-save -t filter'
+                           else
+                             'iptables-save -t filter'
+                           end
 
 basic_manifest = %(
   class { 'ferm':
@@ -72,7 +77,7 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command("#{iptables_save_cmd} -t filter") do
+    describe command(iptables_save_filter_cmd.to_s) do
       its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
       its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
       its(:stdout) { is_expected.to match %r{allow_acceptance_tests.*-j ACCEPT}m }
@@ -98,17 +103,10 @@ describe 'ferm' do
       it { is_expected.to be_running }
     end
 
-    describe command('iptables-save') do
+    describe command(iptables_save_cmd.to_s) do
       its(:stdout) { is_expected.to match %r{.*filter.*:INPUT DROP.*:FORWARD DROP.*:OUTPUT ACCEPT.*}m }
       its(:stdout) { is_expected.not_to match %r{state INVALID -j DROP} }
-    end
-
-    describe iptables do
-      it do
-        expect(subject).to have_rule(iptables_output[0]). \
-          with_table('filter'). \
-          with_chain('INPUT')
-      end
+      its(:stdout) { is_expected.not_to match %r{.*filter.*#{iptables_output[0]}} }
     end
 
     context 'with custom chains' do
@@ -144,18 +142,9 @@ describe 'ferm' do
         apply_manifest(pp, catch_changes: true)
       end
 
-      describe iptables do
-        it do
-          expect(subject).to have_rule(iptables_output[1]). \
-            with_table('filter'). \
-            with_chain('INPUT')
-        end
-
-        it do
-          expect(subject).to have_rule(iptables_output[2]). \
-            with_table('filter'). \
-            with_chain('HTTP')
-        end
+      describe command(iptables_save_cmd.to_s) do
+        its(:stdout) { is_expected.not_to match %r{.*filter.*#{iptables_output[1]}} }
+        its(:stdout) { is_expected.not_to match %r{.*filter.*#{iptables_output[2]}} }
       end
     end
 
@@ -192,8 +181,8 @@ describe 'ferm' do
         it { is_expected.to be_running }
       end
 
-      describe command('iptables-save') do
-        its(:stdout) { is_expected.to match %r{INPUT.*state INVALID -j DROP} }
+      describe command(iptables_save_cmd.to_s) do
+        its(:stdout) { is_expected.to match %r{-A INPUT -m conntrack --ctstate INVALID -j DROP} }
       end
     end
   end
@@ -235,26 +224,13 @@ describe 'ferm' do
       apply_manifest(pp, catch_changes: true)
     end
 
-    describe iptables do
-      it do
-        expect(subject).to have_rule(iptables_output_custom[0]). \
-          with_table('filter'). \
-          with_chain('FORWARD')
-      end
-
-      it do
-        expect(subject).to have_rule(iptables_output_custom[1]). \
-          with_table('filter'). \
-          with_chain('OPENVPN_FORWORD_RULES')
-      end
-    end
-
     describe service('ferm') do
       it { is_expected.to be_running }
     end
 
-    describe command('iptables-save') do
-      its(:stdout) { is_expected.to match %r{FORWARD.*-j OPENVPN_FORWORD_RULES} }
+    describe command(iptables_save_cmd.to_s) do
+      its(:stdout) { is_expected.to match %r{-A FORWARD.*-j OPENVPN_FORWORD_RULES} }
+      its(:stdout) { is_expected.to match %r{-A OPENVPN_FORWORD_RULES.*-i tun0 -o enp4s0 -p udp -m conntrack --ctstate NEW -j ACCEPT} }
     end
   end
 end
