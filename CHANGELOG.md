@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v9.0.0) (2023-02-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v8.1.0...v9.0.0)
+
+**Breaking changes:**
+
+- drop EOL OSes Debian-9 and Ubuntu-16.04 [\#162](https://github.com/voxpupuli/puppet-ferm/pull/162) ([Dan33l](https://github.com/Dan33l))
+
+**Implemented enhancements:**
+
+- add ubuntu 22.04 support [\#161](https://github.com/voxpupuli/puppet-ferm/pull/161) ([Dan33l](https://github.com/Dan33l))
+- bump puppet/systemd to \< 5.0.0 [\#159](https://github.com/voxpupuli/puppet-ferm/pull/159) ([jhoblitt](https://github.com/jhoblitt))
+
 ## [v8.1.0](https://github.com/voxpupuli/puppet-ferm/tree/v8.1.0) (2023-01-23)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v8.0.0...v8.1.0)
