@@ -246,7 +246,7 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('filter-SSH-policy') }
 
         it do
-          expect(subject).to contain_concat__fragment('INPUT-filter-ssh').\
+          expect(subject).to contain_concat__fragment('INPUT-filter-ssh'). \
             with_content("mod comment comment 'filter-ssh' proto tcp dport 22 jump SSH;\n"). \
             that_requires('Ferm::Chain[check-ssh]')
         end
