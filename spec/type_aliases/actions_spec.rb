@@ -16,7 +16,6 @@ describe 'Ferm::Actions' do
       SNAT
       MASQUERADE
       REDIRECT
-      MYFANCYCUSTOMCHAINNAMEISALSOVALID
     ].each do |value|
       describe value.inspect do
         it { is_expected.to allow_value(value) }
@@ -37,6 +36,7 @@ describe 'Ferm::Actions' do
         [95_000, 67_000],
         {},
         { 'foo' => 'bar' },
+        %w[MYFANCYCUSTOMCHAINNAMEISALSOVALID],
       ].each do |value|
         describe value.inspect do
           it { is_expected.not_to allow_value(value) }
