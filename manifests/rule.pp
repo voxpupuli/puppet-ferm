@@ -67,6 +67,9 @@
 # @param interface
 #   an Optional interface where this rule should be applied
 #
+# @param outerface
+#   an Optional outerface where this rule should be applied
+#
 # @param ensure
 #   Set the rule to present or absent
 #
@@ -91,6 +94,7 @@ define ferm::rule (
   Optional[Ferm::Address]             $saddr         = undef,
   Optional[String[1]]                 $proto_options = undef,
   Optional[String[1]]                 $interface     = undef,
+  Optional[String[1]]                 $outerface     = undef,
   Enum['absent','present']            $ensure        = 'present',
   Ferm::Tables                        $table         = 'filter',
   Optional[Ferm::Negation]            $negate        = undef,
@@ -145,6 +149,11 @@ define ferm::rule (
     default => $proto_options
   }
 
+  $outerface_real = $outerface ? {
+    String  => "outerface ${outerface}",
+    default => '',
+  }
+
   $comment_real = "mod comment comment '${comment}'"
 
   # prevent unmanaged files due to new naming schema
@@ -156,7 +165,20 @@ define ferm::rule (
     $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
   }
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
+  $_rule = @("END"/L)
+    ${comment_real}       \
+    ${proto_real}         \
+    ${proto_options_real} \
+    ${dport_real}         \
+    ${sport_real}         \
+    ${daddr_real}         \
+    ${saddr_real}         \
+    ${outerface_real}     \
+    ${action_real};
+    |- END
+
+  $rule = squeeze($_rule, ' ')
+
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
