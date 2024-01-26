@@ -55,7 +55,7 @@
 define ferm::rule (
   String[1] $chain,
   Ferm::Protocols $proto,
-  Ferm::Actions $action,
+  Variant[Ferm::Actions, String[1]] $action,
   String $comment = $name,
   Optional[Ferm::Port] $dport = undef,
   Optional[Ferm::Port] $sport = undef,
@@ -67,13 +67,18 @@ define ferm::rule (
   Ferm::Tables $table = 'filter',
   Optional[Ferm::Negation] $negate = undef,
 ) {
-  if $action in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
-    $action_real = $action
-  } else {
-    # assume the action contains a target chain, so prefix it with the "jump" statement
-    $action_real = "jump ${action}"
-    # make sure the target chain is created before we try to add rules to it
-    Ferm::Chain <| chain == $action and table == $table |> -> Ferm::Rule[$name]
+
+  case $action {
+    Ferm::Actions: {
+      $action_real = $action
+    }
+    String[1]: {
+      # assume the action contains a target chain, so prefix it with the "jump" statement
+      $action_real = "jump ${action}"
+      # make sure the target chain is created before we try to add rules to it
+      Ferm::Chain <| chain == $action and table == $table |> -> Ferm::Rule[$name]
+    }
+    default: {}
   }
 
   $proto_real = $proto ? {
