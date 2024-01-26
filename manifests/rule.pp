@@ -67,7 +67,6 @@ define ferm::rule (
   Ferm::Tables $table = 'filter',
   Optional[Ferm::Negation] $negate = undef,
 ) {
-
   case $action {
     Ferm::Actions: {
       $action_real = $action
@@ -95,56 +94,70 @@ define ferm::rule (
   $negate_sport = 'sport' in $_negate ? { true => '!', false => '', }
   $negate_dport = 'dport' in $_negate ? { true => '!', false => '', }
 
-  if $dport =~ Array {
-    $dports = join($dport, ' ')
-    $dport_real = "mod multiport destination-ports ${negate_dport}(${dports})"
-  } elsif $dport =~ Integer {
-    $dport_real = "dport ${negate_dport}${dport}"
-  } elsif String($dport) =~ /^\d*:\d+$/ {
-    $portrange = split($dport, /:/)
-    $lower = $portrange[0] ? {
-      ''      => 0,
-      default => Integer($portrange[0]),
+  $dport_real = case $dport {
+    Array: {
+      $dports = join($dport, ' ')
+
+      "mod multiport destination-ports ${negate_dport}(${dports})"
     }
-    $upper = Integer($portrange[1])
-    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+    Integer: {
+      "dport ${negate_dport}${dport}"
+    }
+    Pattern[/^\d*:\d+$/]: {
+      $portrange = split($dport, /:/)
+
+      $lower = if $portrange[0].empty { 0 } else { Integer($portrange[0]) }
+      $upper = Integer($portrange[1])
+
+      assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+        fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+      }
+
+      if $lower > $upper {
+        fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+      }
+
+      "dport ${negate_dport}${lower}:${upper}"
+    }
+    Undef: {
       ''
     }
-    if $lower > $upper {
-      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    default: {
+      fail("invalid destination-port: ${negate_dport}${dport}")
     }
-    $dport_real = "dport ${negate_dport}${lower}:${upper}"
-  } elsif String($dport) == '' {
-    $dport_real = ''
-  } else {
-    fail("invalid destination-port: ${negate_dport}${dport}")
   }
 
-  if $sport =~ Array {
-    $sports = join($sport, ' ')
-    $sport_real = "mod multiport source-ports ${negate_sport}(${sports})"
-  } elsif $sport =~ Integer {
-    $sport_real = "sport ${negate_sport}${sport}"
-  } elsif String($sport) =~ /^\d*:\d+$/ {
-    $portrange = split($sport, /:/)
-    $lower = $portrange[0] ? {
-      ''      => 0,
-      default => Integer($portrange[0]),
+  $sport_real = case $sport {
+    Array: {
+      $sports = join($sport, ' ')
+
+      "mod multiport destination-ports ${negate_sport}(${sports})"
     }
-    $upper = Integer($portrange[1])
-    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+    Integer: {
+      "sport ${negate_sport}${sport}"
+    }
+    Pattern[/^\d*:\d+$/]: {
+      $portrange = split($sport, /:/)
+
+      $lower = if $portrange[0].empty { 0 } else { Integer($portrange[0]) }
+      $upper = Integer($portrange[1])
+
+      assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
+        fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
+      }
+
+      if $lower > $upper {
+        fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+      }
+
+      "sport ${negate_sport}${lower}:${upper}"
+    }
+    Undef: {
       ''
     }
-    if $lower > $upper {
-      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
+    default: {
+      fail("invalid source-port: ${negate_sport}${sport}")
     }
-    $sport_real = "sport ${negate_sport}${lower}:${upper}"
-  } elsif String($sport) == '' {
-    $sport_real = ''
-  } else {
-    fail("invalid source-port: ${sport}")
   }
 
   if $saddr =~ Array {
