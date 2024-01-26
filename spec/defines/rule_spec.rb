@@ -286,6 +286,23 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-SSH-config-include') }
       end
+
+      context 'with outerface on forward chain with jump action' do
+        let(:title) { 'filter_FORWARD_jump_DOCKER' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'filter',
+            chain: 'FORWARD',
+            outerface: 'docker0',
+            action: 'DOCKER',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('FORWARD-filter_FORWARD_jump_DOCKER').with_content("mod comment comment 'filter_FORWARD_jump_DOCKER' proto all outerface docker0 jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+      end
     end
   end
 end
