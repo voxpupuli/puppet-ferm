@@ -91,73 +91,15 @@ define ferm::rule (
 
   $negate_saddr = 'saddr' in $_negate ? { true => '!', false => '', }
   $negate_daddr = 'daddr' in $_negate ? { true => '!', false => '', }
-  $negate_sport = 'sport' in $_negate ? { true => '!', false => '', }
-  $negate_dport = 'dport' in $_negate ? { true => '!', false => '', }
 
-  $dport_real = case $dport {
-    Array: {
-      $dports = join($dport, ' ')
-
-      "mod multiport destination-ports ${negate_dport}(${dports})"
-    }
-    Integer: {
-      "dport ${negate_dport}${dport}"
-    }
-    Pattern[/^\d*:\d+$/]: {
-      $portrange = split($dport, /:/)
-
-      $lower = if $portrange[0].empty { 0 } else { Integer($portrange[0]) }
-      $upper = Integer($portrange[1])
-
-      assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-        fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-      }
-
-      if $lower > $upper {
-        fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
-      }
-
-      "dport ${negate_dport}${lower}:${upper}"
-    }
-    Undef: {
-      ''
-    }
-    default: {
-      fail("invalid destination-port: ${negate_dport}${dport}")
-    }
+  $dport_real = $dport ? {
+    Ferm::Port => ferm::port_to_string('destination', $dport, 'dport' in $_negate),
+    default    => '',
   }
 
-  $sport_real = case $sport {
-    Array: {
-      $sports = join($sport, ' ')
-
-      "mod multiport destination-ports ${negate_sport}(${sports})"
-    }
-    Integer: {
-      "sport ${negate_sport}${sport}"
-    }
-    Pattern[/^\d*:\d+$/]: {
-      $portrange = split($sport, /:/)
-
-      $lower = if $portrange[0].empty { 0 } else { Integer($portrange[0]) }
-      $upper = Integer($portrange[1])
-
-      assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-        fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-      }
-
-      if $lower > $upper {
-        fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
-      }
-
-      "sport ${negate_sport}${lower}:${upper}"
-    }
-    Undef: {
-      ''
-    }
-    default: {
-      fail("invalid source-port: ${negate_sport}${sport}")
-    }
+  $sport_real = $sport ? {
+    Ferm::Port => ferm::port_to_string('source', $sport, 'sport' in $_negate),
+    default    => '',
   }
 
   if $saddr =~ Array {
@@ -188,6 +130,7 @@ define ferm::rule (
     undef   => '',
     default => $proto_options
   }
+
   $comment_real = "mod comment comment '${comment}'"
 
   # prevent unmanaged files due to new naming schema
