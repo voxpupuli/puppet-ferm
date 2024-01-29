@@ -76,6 +76,9 @@
 # @param saddr_type
 #   Match source packets based on their address type
 #
+# @param ctstate
+#   Check conntrack information for ctstate, e.g. [ 'RELATED', 'ESTABLISHED' ]
+#
 # @param ensure
 #   Set the rule to present or absent
 #
@@ -103,6 +106,7 @@ define ferm::rule (
   Optional[String[1]]                 $outerface     = undef,
   Optional[Ferm::Addr_Type]           $daddr_type    = undef,
   Optional[Ferm::Addr_Type]           $saddr_type    = undef,
+  Optional[Variant[String[1], Array]] $ctstate       = undef,
   Enum['absent','present']            $ensure        = 'present',
   Ferm::Tables                        $table         = 'filter',
   Optional[Ferm::Negation]            $negate        = undef,
@@ -172,6 +176,11 @@ define ferm::rule (
     default => '',
   }
 
+  $ctstate_real = $ctstate ? {
+    Variant[String[1], Array] => "mod conntrack ctstate (${join(flatten([$ctstate]).unique, ' ')})",
+    default                   => '',
+  }
+
   $comment_real = "mod comment comment '${comment}'"
 
   # prevent unmanaged files due to new naming schema
@@ -194,6 +203,7 @@ define ferm::rule (
     ${saddr_real}         \
     ${saddr_type_real}    \
     ${outerface_real}     \
+    ${ctstate_real}       \
     ${action_real};
     |- END
 
