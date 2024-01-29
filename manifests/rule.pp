@@ -39,7 +39,6 @@
 # @param comment A comment that will be added to the ferm config and to ip{,6}tables
 # @param action Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name). The parameter is mandatory.
 #   Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-# @param dport The destination port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param sport The source port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param saddr The source address we want to match
 # @param daddr The destination address we want to match
@@ -48,6 +47,7 @@
 # @param outerface an Optional outerface where this rule should be applied
 # @param daddr_type Match destination packets based on their address type
 # @param saddr_type Match source packets based on their address type
+# @param ctstate Check conntrack information for ctstate, e.g. [ 'RELATED', 'ESTABLISHED' ]
 # @param ensure Set the rule to present or absent
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
@@ -69,6 +69,7 @@ define ferm::rule (
   Optional[String[1]] $outerface = undef,
   Optional[Ferm::Addr_Type] $daddr_type = undef,
   Optional[Ferm::Addr_Type] $saddr_type = undef,
+  Optional[Variant[String[1], Array]] $ctstate = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
   Optional[Ferm::Negation] $negate = undef,
@@ -138,6 +139,11 @@ define ferm::rule (
     default => '',
   }
 
+  $ctstate_real = $ctstate ? {
+    Variant[String[1], Array] => "mod conntrack ctstate (${join(flatten([$ctstate]).unique, ' ')})",
+    default                   => '',
+  }
+
   $comment_real = "mod comment comment '${comment}'"
 
   # prevent unmanaged files due to new naming schema
@@ -160,6 +166,7 @@ define ferm::rule (
     ${saddr_real}         \
     ${saddr_type_real}    \
     ${outerface_real}     \
+    ${ctstate_real}       \
     ${action_real};
     |- END
 
