@@ -339,6 +339,24 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('OUTPUT-daddr_type_local_jump_docker').with_content("mod comment comment 'daddr_type_local_jump_docker' proto all daddr !@ipfilter((127.0.0.0/8)) mod addrtype dst-type LOCAL jump DOCKER;\n") }
         it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
       end
+
+      context 'with outerface docker0 matching ctstates' do
+        let(:title) { 'filter_FORWARD_ctstate_accept' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'filter',
+            chain: 'FORWARD',
+            ctstate: %w[RELATED ESTABLISHED],
+            outerface: 'docker0',
+            action: 'ACCEPT',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('FORWARD-filter_FORWARD_ctstate_accept').with_content("mod comment comment 'filter_FORWARD_ctstate_accept' proto all outerface docker0 mod conntrack ctstate (RELATED ESTABLISHED) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+      end
     end
   end
 end
