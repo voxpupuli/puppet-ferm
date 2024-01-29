@@ -303,6 +303,42 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('FORWARD-filter_FORWARD_jump_DOCKER').with_content("mod comment comment 'filter_FORWARD_jump_DOCKER' proto all outerface docker0 jump DOCKER;\n") }
         it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
       end
+
+      context 'with saddr_type LOCAL jump to DOCKER chain' do
+        let(:title) { 'saddr_type_local_jump_docker' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'nat',
+            chain: 'OUTPUT',
+            saddr_type: 'LOCAL',
+            action: 'DOCKER',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('OUTPUT-saddr_type_local_jump_docker').with_content("mod comment comment 'saddr_type_local_jump_docker' proto all mod addrtype src-type LOCAL jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
+      end
+
+      context 'with daddr_type LOCAL jump to DOCKER chain' do
+        let(:title) { 'daddr_type_local_jump_docker' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'nat',
+            chain: 'OUTPUT',
+            daddr: '127.0.0.0/8',
+            daddr_type: 'LOCAL',
+            action: 'DOCKER',
+            negate: %w[daddr]
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('OUTPUT-daddr_type_local_jump_docker').with_content("mod comment comment 'daddr_type_local_jump_docker' proto all daddr !@ipfilter((127.0.0.0/8)) mod addrtype dst-type LOCAL jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
+      end
     end
   end
 end

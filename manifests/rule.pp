@@ -46,6 +46,8 @@
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
 # @param outerface an Optional outerface where this rule should be applied
+# @param daddr_type Match destination packets based on their address type
+# @param saddr_type Match source packets based on their address type
 # @param ensure Set the rule to present or absent
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
@@ -65,6 +67,8 @@ define ferm::rule (
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
   Optional[String[1]] $outerface = undef,
+  Optional[Ferm::Addr_Type] $daddr_type = undef,
+  Optional[Ferm::Addr_Type] $saddr_type = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
   Optional[Ferm::Negation] $negate = undef,
@@ -114,6 +118,16 @@ define ferm::rule (
     default       => '',
   }
 
+  $daddr_type_real = $daddr_type ? {
+    Ferm::Addr_Type => "mod addrtype dst-type ${daddr_type}",
+    default         => '',
+  }
+
+  $saddr_type_real = $saddr_type ? {
+    Ferm::Addr_Type => "mod addrtype src-type ${saddr_type}",
+    default         => '',
+  }
+
   $proto_options_real = $proto_options ? {
     undef   => '',
     default => $proto_options
@@ -142,7 +156,9 @@ define ferm::rule (
     ${dport_real}         \
     ${sport_real}         \
     ${daddr_real}         \
+    ${daddr_type_real}    \
     ${saddr_real}         \
+    ${saddr_type_real}    \
     ${outerface_real}     \
     ${action_real};
     |- END
