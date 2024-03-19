@@ -33,7 +33,7 @@ class ferm::config {
 
   if $ferm::manage_configfile {
     concat { $ferm::configfile:
-      ensure  => 'present',
+      ensure => 'present',
     }
     concat::fragment { 'ferm_header.conf':
       target  => $ferm::configfile,
