@@ -1,33 +1,49 @@
 # @summary This defined resource manages ferm/iptables chains
 #
 # @example create a custom chain, e.g. for all incoming SSH connections
-#   ferm::chain{'check-ssh':
+#
+#   ferm::chain{ 'check-ssh':
 #     chain               => 'SSH',
 #     disable_conntrack   => true,
 #     log_dropped_packets => true,
 #   }
 #
-# @param disable_conntrack Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
-# @param drop_invalid_packets_with_conntrack Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false` in this chain. You can set this to false if your policy is DROP.
-# @param log_dropped_packets Enable/Disable logging of packets to the kernel log, if no explicit chain matched
-# @param policy Set the default policy for CHAIN (works only for builtin chains)
+# @param disable_conntrack
+#   Disable/Enable usage of conntrack. By default, we enable conntrack only for the filter INPUT chain
+#
+# @param drop_invalid_packets_with_conntrack
+#   Enable/Disable the `mod conntrack ctstate INVALID DROP` statement. Only works if `$disable_conntrack` is `false` in this chain. You can set this to false if your policy is DROP.
+#
+# @param log_dropped_packets
+#   Enable/Disable logging of packets to the kernel log, if no explicit chain matched
+#
+# @param policy
+#   Set the default policy for CHAIN (works only for builtin chains)
 #   Allowed values: (ACCEPT|DROP) (see Ferm::Policies type)
-# @param chain Name of the chain that should be managed
+#
+# @param chain
+#   Name of the chain that should be managed
 #   Allowed values: String[1]
-# @param table Select the target table (filter/raw/mangle/nat)
+#
+# @param table
+#   Select the target table (filter/raw/mangle/nat)
 #   Allowed values: (filter|raw|mangle|nat) (see Ferm::Tables type)
-# @param ip_versions Set list of versions of ip we want ot use.
-# @param content custom string that will be written into th chain file
+#
+# @param ip_versions
+#   Set list of versions of ip we want ot use.
+#
+# @param content
+#   custom string that will be written into th chain file
 #
 define ferm::chain (
-  Boolean $log_dropped_packets                 = false,
-  Boolean $drop_invalid_packets_with_conntrack = false,
-  Boolean $disable_conntrack                   = true,
-  String[1] $chain                             = $name,
-  Optional[Ferm::Policies] $policy             = undef,
-  Ferm::Tables $table                          = 'filter',
-  Array[Enum['ip', 'ip6']] $ip_versions        = $ferm::ip_versions,
-  Optional[String[1]] $content                 = undef,
+  Boolean                  $log_dropped_packets                 = false,
+  Boolean                  $drop_invalid_packets_with_conntrack = false,
+  Boolean                  $disable_conntrack                   = true,
+  String[1]                $chain                               = $name,
+  Optional[Ferm::Policies] $policy                              = undef,
+  Ferm::Tables             $table                               = 'filter',
+  Array[Enum['ip', 'ip6']] $ip_versions                         = $ferm::ip_versions,
+  Optional[String[1]]      $content                             = undef,
 ) {
   # prevent unmanaged files due to new naming schema
   # keep the default "filter" chains in the original location
