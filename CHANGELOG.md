@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v10.0.0) (2024-06-13)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v9.0.0...v10.0.0)
+
+**Breaking changes:**
+
+- Drop Ubuntu 18.04 support [\#174](https://github.com/voxpupuli/puppet-ferm/pull/174) ([zilchms](https://github.com/zilchms))
+- Drop Puppet 6 support [\#164](https://github.com/voxpupuli/puppet-ferm/pull/164) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- puppet/systemd: Allow 6.x [\#177](https://github.com/voxpupuli/puppet-ferm/pull/177) ([zilchms](https://github.com/zilchms))
+- puppetlabs/vcsrepo: Allow 6.x [\#176](https://github.com/voxpupuli/puppet-ferm/pull/176) ([zilchms](https://github.com/zilchms))
+- puppetlabs/concat: Allow 9.x [\#175](https://github.com/voxpupuli/puppet-ferm/pull/175) ([zilchms](https://github.com/zilchms))
+- Add Puppet 8 support [\#167](https://github.com/voxpupuli/puppet-ferm/pull/167) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: Allow 9.x [\#166](https://github.com/voxpupuli/puppet-ferm/pull/166) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- update puppet-systemd upper bound to 8.0.0 [\#182](https://github.com/voxpupuli/puppet-ferm/pull/182) ([TheMeier](https://github.com/TheMeier))
+
 ## [v9.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v9.0.0) (2023-02-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v8.1.0...v9.0.0)
