@@ -93,6 +93,7 @@ The following parameters are available in the `ferm` class:
 * [`input_drop_invalid_packets_with_conntrack`](#-ferm--input_drop_invalid_packets_with_conntrack)
 * [`rules`](#-ferm--rules)
 * [`chains`](#-ferm--chains)
+* [`ipsets`](#-ferm--ipsets)
 * [`forward_log_dropped_packets`](#-ferm--forward_log_dropped_packets)
 * [`output_log_dropped_packets`](#-ferm--output_log_dropped_packets)
 * [`input_log_dropped_packets`](#-ferm--input_log_dropped_packets)
@@ -208,6 +209,14 @@ Default value: `{}`
 Data type: `Hash`
 
 A hash that holds all data for ferm::chain
+
+Default value: `{}`
+
+##### <a name="-ferm--ipsets"></a>`ipsets`
+
+Data type: `Hash`
+
+A hash that holds all data for ferm::ipset
 
 Default value: `{}`
 
