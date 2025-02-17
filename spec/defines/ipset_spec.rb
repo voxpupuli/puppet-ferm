@@ -17,6 +17,7 @@ describe 'ferm::ipset', type: :define do
       context 'default params creates INPUT2 chain' do
         let :params do
           {
+            match: 'src',
             sets: {
               office: 'ACCEPT',
               internet: 'DROP'
