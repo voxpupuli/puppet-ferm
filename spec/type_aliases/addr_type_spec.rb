@@ -2,20 +2,21 @@
 
 require 'spec_helper'
 
-describe 'Ferm::Actions' do
+describe 'Ferm::Addr_Type' do
   describe 'valid values' do
     %w[
-      RETURN
-      ACCEPT
-      DROP
-      REJECT
-      NOTRACK
-      LOG
-      MARK
-      DNAT
-      SNAT
-      MASQUERADE
-      REDIRECT
+      ANYCAST
+      BLACKHOLE
+      BROADCAST
+      LOCAL
+      MULTICAST
+      NAT
+      PROHIBIT
+      THROW
+      UNICAST
+      UNREACHABLE
+      UNSPEC
+      XRESOLVE
     ].each do |value|
       describe value.inspect do
         it { is_expected.to allow_value(value) }

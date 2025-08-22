@@ -286,6 +286,77 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
         it { is_expected.to contain_concat__fragment('filter-SSH-config-include') }
       end
+
+      context 'with outerface on forward chain with jump action' do
+        let(:title) { 'filter_FORWARD_jump_DOCKER' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'filter',
+            chain: 'FORWARD',
+            outerface: 'docker0',
+            action: 'DOCKER',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('FORWARD-filter_FORWARD_jump_DOCKER').with_content("mod comment comment 'filter_FORWARD_jump_DOCKER' proto all outerface docker0 jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+      end
+
+      context 'with saddr_type LOCAL jump to DOCKER chain' do
+        let(:title) { 'saddr_type_local_jump_docker' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'nat',
+            chain: 'OUTPUT',
+            saddr_type: 'LOCAL',
+            action: 'DOCKER',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('OUTPUT-saddr_type_local_jump_docker').with_content("mod comment comment 'saddr_type_local_jump_docker' proto all mod addrtype src-type LOCAL jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
+      end
+
+      context 'with daddr_type LOCAL jump to DOCKER chain' do
+        let(:title) { 'daddr_type_local_jump_docker' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'nat',
+            chain: 'OUTPUT',
+            daddr: '127.0.0.0/8',
+            daddr_type: 'LOCAL',
+            action: 'DOCKER',
+            negate: %w[daddr]
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('OUTPUT-daddr_type_local_jump_docker').with_content("mod comment comment 'daddr_type_local_jump_docker' proto all daddr !@ipfilter((127.0.0.0/8)) mod addrtype dst-type LOCAL jump DOCKER;\n") }
+        it { is_expected.to contain_concat__fragment('nat-OUTPUT-config-include') }
+      end
+
+      context 'with outerface docker0 matching ctstates' do
+        let(:title) { 'filter_FORWARD_ctstate_accept' }
+        let :params do
+          {
+            proto: 'all',
+            table: 'filter',
+            chain: 'FORWARD',
+            ctstate: %w[RELATED ESTABLISHED],
+            outerface: 'docker0',
+            action: 'ACCEPT',
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_concat__fragment('FORWARD-filter_FORWARD_ctstate_accept').with_content("mod comment comment 'filter_FORWARD_ctstate_accept' proto all outerface docker0 mod conntrack ctstate (RELATED ESTABLISHED) ACCEPT;\n") }
+        it { is_expected.to contain_concat__fragment('filter-FORWARD-config-include') }
+      end
     end
   end
 end

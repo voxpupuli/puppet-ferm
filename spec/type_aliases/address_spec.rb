@@ -2,20 +2,12 @@
 
 require 'spec_helper'
 
-describe 'Ferm::Actions' do
+describe 'Ferm::Address' do
   describe 'valid values' do
-    %w[
-      RETURN
-      ACCEPT
-      DROP
-      REJECT
-      NOTRACK
-      LOG
-      MARK
-      DNAT
-      SNAT
-      MASQUERADE
-      REDIRECT
+    [
+      ['10.0.0.0/8', ['10.0.0.1', '10.0.0.2'], %w[string]], # Array[Ferm::Address]
+      '10.0.0.3',                                           # Stdlib::IP::Address
+      %w[string],                                           # String[1]
     ].each do |value|
       describe value.inspect do
         it { is_expected.to allow_value(value) }
@@ -26,17 +18,13 @@ describe 'Ferm::Actions' do
   describe 'invalid values' do
     context 'with garbage inputs' do
       [
-        # :symbol, # this should not match but seems liks String[1] allows it?
-        # nil,     # this should not match but seems liks String[1] allows it?
         '',
         true,
         false,
-        %w[meep meep],
         65_538,
         [95_000, 67_000],
         {},
         { 'foo' => 'bar' },
-        %w[MYFANCYCUSTOMCHAINNAMEISALSOVALID],
       ].each do |value|
         describe value.inspect do
           it { is_expected.not_to allow_value(value) }

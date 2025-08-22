@@ -22,9 +22,15 @@
 * [`ferm::ipset`](#ferm--ipset): a defined resource that can match for ipsets at the top of a chain. This is a per-chain resource. You cannot mix IPv4 and IPv6 sets.
 * [`ferm::rule`](#ferm--rule): This defined resource manages a single rule in a specific chain
 
+### Functions
+
+* [`ferm::port_to_string`](#ferm--port_to_string): Transform given Ferm::Port value(s) to String usable with ferm rules
+
 ### Data types
 
 * [`Ferm::Actions`](#Ferm--Actions): a list of allowed actions for a rule
+* [`Ferm::Addr_Type`](#Ferm--Addr_Type): Define allowed match types
+* [`Ferm::Address`](#Ferm--Address): Define allowed values for (e.g.) 'daddr' and 'saddr'
 * [`Ferm::Negation`](#Ferm--Negation): list of keywords that support negation
 * [`Ferm::Policies`](#Ferm--Policies): a list of allowed policies for a chain
 * [`Ferm::Port`](#Ferm--Port): ferm port-spec
@@ -42,13 +48,15 @@ This class manages ferm installation and rule generation on modern linux systems
 ##### deploy ferm without any configured rules, but also don't start the service or modify existing config files
 
 ```puppet
+
 include ferm
 ```
 
 ##### deploy ferm and start it, on nodes with only ipv6 enabled
 
 ```puppet
-class{'ferm':
+
+class{ 'ferm':
   manage_service  => true,
   ip_versions     => ['ip6'],
 }
@@ -57,7 +65,8 @@ class{'ferm':
 ##### deploy ferm and don't touch chains from other software, like fail2ban and docker
 
 ```puppet
-class{'ferm':
+
+class{ 'ferm':
   manage_service            => true,
   preserve_chains_in_tables => {
     'filter' => [
@@ -304,7 +313,8 @@ This defined resource manages ferm/iptables chains
 ##### create a custom chain, e.g. for all incoming SSH connections
 
 ```puppet
-ferm::chain{'check-ssh':
+
+ferm::chain{ 'check-ssh':
   chain               => 'SSH',
   disable_conntrack   => true,
   log_dropped_packets => true,
@@ -481,7 +491,8 @@ This defined resource manages a single rule in a specific chain
 ##### Jump to the 'SSH' chain for all incoming SSH traffic (see chain.pp examples on how to create the chain)
 
 ```puppet
-ferm::rule{'incoming-ssh':
+
+ferm::rule{ 'incoming-ssh':
   chain  => 'INPUT',
   action => 'SSH',
   proto  => 'tcp',
@@ -492,7 +503,8 @@ ferm::rule{'incoming-ssh':
 ##### Create a rule in the 'SSH' chain to allow connections from localhost
 
 ```puppet
-ferm::rule{'allow-ssh-localhost':
+
+ferm::rule{ 'allow-ssh-localhost':
   chain  => 'SSH',
   action => 'ACCEPT',
   proto  => 'tcp',
@@ -504,7 +516,8 @@ ferm::rule{'allow-ssh-localhost':
 ##### Confuse people that do a traceroute/mtr/ping to your system
 
 ```puppet
-ferm::rule{'drop-icmp-time-exceeded':
+
+ferm::rule{ 'drop-icmp-time-exceeded':
   chain         => 'OUTPUT',
   action        => 'DROP',
   proto         => 'icmp',
@@ -515,7 +528,8 @@ ferm::rule{'drop-icmp-time-exceeded':
 ##### allow multiple protocols
 
 ```puppet
-ferm::rule{'allow_consul':
+
+ferm::rule{ 'allow_consul':
   chain  => 'INPUT',
   action => 'ACCEPT',
   proto  => ['udp', 'tcp'],
@@ -537,6 +551,10 @@ The following parameters are available in the `ferm::rule` defined type:
 * [`daddr`](#-ferm--rule--daddr)
 * [`proto_options`](#-ferm--rule--proto_options)
 * [`interface`](#-ferm--rule--interface)
+* [`outerface`](#-ferm--rule--outerface)
+* [`daddr_type`](#-ferm--rule--daddr_type)
+* [`saddr_type`](#-ferm--rule--saddr_type)
+* [`ctstate`](#-ferm--rule--ctstate)
 * [`ensure`](#-ferm--rule--ensure)
 * [`table`](#-ferm--rule--table)
 * [`negate`](#-ferm--rule--negate)
@@ -563,7 +581,7 @@ Default value: `$name`
 
 ##### <a name="-ferm--rule--action"></a>`action`
 
-Data type: `Ferm::Actions`
+Data type: `Variant[Ferm::Actions, String[1]]`
 
 Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name). The parameter is mandatory.
 Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
@@ -586,7 +604,7 @@ Default value: `undef`
 
 ##### <a name="-ferm--rule--saddr"></a>`saddr`
 
-Data type: `Optional[Variant[Array, String[1]]]`
+Data type: `Optional[Ferm::Address]`
 
 The source address we want to match
 
@@ -594,7 +612,7 @@ Default value: `undef`
 
 ##### <a name="-ferm--rule--daddr"></a>`daddr`
 
-Data type: `Optional[Variant[Array, String[1]]]`
+Data type: `Optional[Ferm::Address]`
 
 The destination address we want to match
 
@@ -613,6 +631,38 @@ Default value: `undef`
 Data type: `Optional[String[1]]`
 
 an Optional interface where this rule should be applied
+
+Default value: `undef`
+
+##### <a name="-ferm--rule--outerface"></a>`outerface`
+
+Data type: `Optional[String[1]]`
+
+an Optional outerface where this rule should be applied
+
+Default value: `undef`
+
+##### <a name="-ferm--rule--daddr_type"></a>`daddr_type`
+
+Data type: `Optional[Ferm::Addr_Type]`
+
+Match destination packets based on their address type
+
+Default value: `undef`
+
+##### <a name="-ferm--rule--saddr_type"></a>`saddr_type`
+
+Data type: `Optional[Ferm::Addr_Type]`
+
+Match source packets based on their address type
+
+Default value: `undef`
+
+##### <a name="-ferm--rule--ctstate"></a>`ctstate`
+
+Data type: `Optional[Variant[String[1], Array]]`
+
+Check conntrack information for ctstate, e.g. [ 'RELATED', 'ESTABLISHED' ]
 
 Default value: `undef`
 
@@ -644,13 +694,95 @@ Allowed values: (saddr|daddr|sport|dport) (see Ferm::Negation type)
 
 Default value: `undef`
 
+## Functions
+
+### <a name="ferm--port_to_string"></a>`ferm::port_to_string`
+
+Type: Puppet Language
+
+Transform given Ferm::Port value(s) to String usable with ferm rules
+
+#### Examples
+
+##### ferm::port_to_string(direction, port, negate)
+
+```puppet
+
+ferm::port_to_string('destination', '22:222', true)
+# => "dport !22:222"
+
+ferm::port_to_string('source', [22, 222], false)
+# => "mod multiport source-ports (22, 222)"
+
+ferm::port_to_string('destination')
+# => ""
+
+ferm::port_to_string('source', 'foobar')
+# => "invalid source-port: 'foobar'"
+```
+
+#### `ferm::port_to_string(Enum['destination', 'source'] $direction, Optional[Ferm::Port] $port = undef, Boolean $negate = false)`
+
+The ferm::port_to_string function.
+
+Returns: `String` String
+
+##### Examples
+
+###### ferm::port_to_string(direction, port, negate)
+
+```puppet
+
+ferm::port_to_string('destination', '22:222', true)
+# => "dport !22:222"
+
+ferm::port_to_string('source', [22, 222], false)
+# => "mod multiport source-ports (22, 222)"
+
+ferm::port_to_string('destination')
+# => ""
+
+ferm::port_to_string('source', 'foobar')
+# => "invalid source-port: 'foobar'"
+```
+
+##### `direction`
+
+Data type: `Enum['destination', 'source']`
+
+Either 'destination' or 'source'
+
+##### `port`
+
+Data type: `Optional[Ferm::Port]`
+
+Ferm::Port (e.g. 22, '22:222', [ 22, 222 ]
+
+##### `negate`
+
+Data type: `Boolean`
+
+Negate port/ports
+
 ## Data types
 
 ### <a name="Ferm--Actions"></a>`Ferm::Actions`
 
-As you can also *jump* to other chains, each chain-name is also a valid action/target
+a list of allowed actions for a rule
 
-Alias of `Variant[Enum['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'], String[1]]`
+Alias of `Enum['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT']`
+
+### <a name="Ferm--Addr_Type"></a>`Ferm::Addr_Type`
+
+- https://ipset.netfilter.org/iptables-extensions.man.html
+
+Alias of `Enum['ANYCAST', 'BLACKHOLE', 'BROADCAST', 'LOCAL', 'MULTICAST', 'NAT', 'PROHIBIT', 'THROW', 'UNICAST', 'UNREACHABLE', 'UNSPEC', 'XRESOLVE']`
+
+### <a name="Ferm--Address"></a>`Ferm::Address`
+
+Define allowed values for (e.g.) 'daddr' and 'saddr'
+
+Alias of `Variant[Array[Ferm::Address], Stdlib::IP::Address, String[1]]`
 
 ### <a name="Ferm--Negation"></a>`Ferm::Negation`
 
