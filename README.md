@@ -1,6 +1,6 @@
 # puppet-ferm
 
-[![Build Status](https://travis-ci.org/voxpupuli/puppet-ferm.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-ferm)
+![Build Status](https://github.com/voxpupuli/puppet-ferm/actions/workflows/ci.yml/badge.svg?branch=master)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/ferm.svg)](https://forge.puppetlabs.com/puppet/ferm)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/ferm.svg)](https://forge.puppetlabs.com/puppet/ferm)
 [![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/ferm.svg)](https://forge.puppetlabs.com/puppet/ferm)
