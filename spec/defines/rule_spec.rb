@@ -20,7 +20,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             proto: 'tcp',
             dport: 22,
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -35,7 +35,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             dport: 22,
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -55,7 +55,7 @@ describe 'ferm::rule', type: :define do
             proto: 'tcp',
             dport: 22,
             saddr: '127.0.0.1',
-            interface: 'eth0'
+            interface: 'eth0',
           }
         end
 
@@ -74,7 +74,7 @@ describe 'ferm::rule', type: :define do
             proto: 'tcp',
             dport: 22,
             daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],
-            interface: 'eth0'
+            interface: 'eth0',
           }
         end
 
@@ -93,7 +93,7 @@ describe 'ferm::rule', type: :define do
             proto: 'tcp',
             dport: 22,
             daddr: ['127.0.0.1', '123.123.123.123', ['10.0.0.1', '10.0.0.2']],
-            negate: %w[saddr daddr sport]
+            negate: %w[saddr daddr sport],
           }
         end
 
@@ -112,7 +112,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: %w[tcp udp],
             dport: [8301, 8302],
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -131,7 +131,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             dport: '20000:25000',
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -151,7 +151,7 @@ describe 'ferm::rule', type: :define do
             proto: 'tcp',
             dport: '20000:25000',
             saddr: '127.0.0.1',
-            negate: %w[saddr dport]
+            negate: %w[saddr dport],
           }
         end
 
@@ -170,7 +170,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             sport: '25000:20000',
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -185,7 +185,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             dport: '50000:65538',
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -200,7 +200,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             dport: '65538',
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -215,7 +215,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             sport: 65_538,
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 
@@ -238,7 +238,7 @@ describe 'ferm::rule', type: :define do
             chain: 'INPUT',
             action: 'SSH',
             proto: 'tcp',
-            dport: 22
+            dport: 22,
           }
         end
 
@@ -246,9 +246,9 @@ describe 'ferm::rule', type: :define do
         it { is_expected.to contain_concat__fragment('filter-SSH-policy') }
 
         it do
-          expect(subject).to contain_concat__fragment('INPUT-filter-ssh'). \
-            with_content("mod comment comment 'filter-ssh' proto tcp dport 22 jump SSH;\n"). \
-            that_requires('Ferm::Chain[check-ssh]')
+          expect(subject).to contain_concat__fragment('INPUT-filter-ssh')
+            .with_content("mod comment comment 'filter-ssh' proto tcp dport 22 jump SSH;\n")
+            .that_requires('Ferm::Chain[check-ssh]')
         end
 
         it { is_expected.to contain_concat__fragment('filter-INPUT-config-include') }
@@ -277,7 +277,7 @@ describe 'ferm::rule', type: :define do
             action: 'ACCEPT',
             proto: 'tcp',
             dport: 22,
-            saddr: '127.0.0.1'
+            saddr: '127.0.0.1',
           }
         end
 

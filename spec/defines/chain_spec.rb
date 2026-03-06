@@ -18,7 +18,7 @@ describe 'ferm::chain', type: :define do
         let :params do
           {
             disable_conntrack: false,
-            log_dropped_packets: true
+            log_dropped_packets: true,
           }
         end
 
@@ -26,13 +26,13 @@ describe 'ferm::chain', type: :define do
         it { is_expected.to contain_concat__fragment('filter-INPUT2-config-include') }
 
         it do
-          expect(subject).to contain_concat__fragment('filter-INPUT2-policy'). \
-            with_content(%r{ESTABLISHED RELATED})
+          expect(subject).to contain_concat__fragment('filter-INPUT2-policy')
+            .with_content(%r{ESTABLISHED RELATED})
         end
 
         it do
-          expect(subject).to contain_concat__fragment('filter-INPUT2-footer'). \
-            with_content(%r{LOG log-prefix 'INPUT2: ';})
+          expect(subject).to contain_concat__fragment('filter-INPUT2-footer')
+            .with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
 
         if facts[:os]['name'] == 'Debian'
@@ -47,7 +47,7 @@ describe 'ferm::chain', type: :define do
         let :params do
           {
             disable_conntrack: true,
-            log_dropped_packets: false
+            log_dropped_packets: false,
           }
         end
 
@@ -55,13 +55,13 @@ describe 'ferm::chain', type: :define do
 
         it do
           expect(subject).to contain_concat__fragment('filter-INPUT2-policy')
-          expect(subject).not_to contain_concat__fragment('filter-INPUT2-policy'). \
-            with_content(%r{ESTABLISHED RELATED})
+          expect(subject).not_to contain_concat__fragment('filter-INPUT2-policy')
+            .with_content(%r{ESTABLISHED RELATED})
         end
 
         it do
-          expect(subject).not_to contain_concat__fragment('filter-INPUT2-footer'). \
-            with_content(%r{LOG log-prefix 'INPUT2: ';})
+          expect(subject).not_to contain_concat__fragment('filter-INPUT2-footer')
+            .with_content(%r{LOG log-prefix 'INPUT2: ';})
         end
       end
 
@@ -71,7 +71,7 @@ describe 'ferm::chain', type: :define do
             chain: 'INPUT2',
             policy: 'DROP',
             disable_conntrack: true,
-            log_dropped_packets: false
+            log_dropped_packets: false,
           }
         end
 
@@ -82,7 +82,7 @@ describe 'ferm::chain', type: :define do
         let(:title) { 'FERM-DSL' }
         let :params do
           {
-            content: 'mod rpfilter invert DROP;'
+            content: 'mod rpfilter invert DROP;',
           }
         end
 
@@ -90,8 +90,8 @@ describe 'ferm::chain', type: :define do
         it { is_expected.to contain_concat__fragment('filter-FERM-DSL-config-include') }
 
         it do
-          expect(subject).to contain_concat__fragment('filter-FERM-DSL-custom-content'). \
-            with_content(%r{mod rpfilter invert DROP;})
+          expect(subject).to contain_concat__fragment('filter-FERM-DSL-custom-content')
+            .with_content(%r{mod rpfilter invert DROP;})
         end
 
         it do
