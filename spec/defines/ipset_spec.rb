@@ -19,8 +19,8 @@ describe 'ferm::ipset', type: :define do
           {
             sets: {
               office: 'ACCEPT',
-              internet: 'DROP'
-            }
+              internet: 'DROP',
+            },
           }
         end
 

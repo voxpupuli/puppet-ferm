@@ -12,13 +12,13 @@ iptables_output = case sut_os
                     [
                       '-A INPUT -p tcp -m tcp --dport 22 -m comment --comment allow_acceptance_tests -j ACCEPT',
                       '-A INPUT -p tcp -m tcp --dport 80 -m comment --comment jump_http -j HTTP',
-                      '-A HTTP -s 127.0.0.1/32 -p tcp -m tcp --dport 80 -m comment --comment allow_http_localhost -j ACCEPT'
+                      '-A HTTP -s 127.0.0.1/32 -p tcp -m tcp --dport 80 -m comment --comment allow_http_localhost -j ACCEPT',
                     ]
                   else
                     [
                       '-A INPUT -p tcp -m comment --comment ["]*allow_acceptance_tests["]* -m tcp --dport 22 -j ACCEPT',
                       '-A INPUT -p tcp -m comment --comment ["]*jump_http["]* -m tcp --dport 80 -j HTTP',
-                      '-A HTTP -s 127.0.0.1/32 -p tcp -m comment --comment ["]*allow_http_localhost["]* -m tcp --dport 80 -j ACCEPT'
+                      '-A HTTP -s 127.0.0.1/32 -p tcp -m comment --comment ["]*allow_http_localhost["]* -m tcp --dport 80 -j ACCEPT',
                     ]
                   end
 

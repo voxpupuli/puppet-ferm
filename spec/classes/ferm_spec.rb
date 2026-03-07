@@ -72,8 +72,8 @@ describe 'ferm' do
         # the following string exists only if we preserve chains
 
         it do
-          expect(subject).to contain_concat__fragment('ferm.conf'). \
-            without_content(%r{@preserve;})
+          expect(subject).to contain_concat__fragment('ferm.conf')
+            .without_content(%r{@preserve;})
         end
 
         it { is_expected.to contain_concat__fragment('raw-PREROUTING-config-include') }
@@ -181,25 +181,25 @@ describe 'ferm' do
         let :params do
           {
             manage_configfile: true,
-            preserve_chains_in_tables: { 'nat' => %w[PREROUTING POSTROUTING] }
+            preserve_chains_in_tables: { 'nat' => %w[PREROUTING POSTROUTING] },
           }
         end
 
         it { is_expected.to compile.with_all_deps }
 
         it do
-          expect(subject).to contain_concat__fragment('ferm.conf'). \
-            with_content(%r{domain \(ip ip6\) table nat \{})
+          expect(subject).to contain_concat__fragment('ferm.conf')
+            .with_content(%r{domain \(ip ip6\) table nat \{})
         end
 
         it do
-          expect(subject).to contain_concat__fragment('ferm.conf'). \
-            with_content(%r{chain PREROUTING @preserve;})
+          expect(subject).to contain_concat__fragment('ferm.conf')
+            .with_content(%r{chain PREROUTING @preserve;})
         end
 
         it do
-          expect(subject).to contain_concat__fragment('ferm.conf'). \
-            with_content(%r{chain POSTROUTING @preserve;})
+          expect(subject).to contain_concat__fragment('ferm.conf')
+            .with_content(%r{chain POSTROUTING @preserve;})
         end
       end
 
