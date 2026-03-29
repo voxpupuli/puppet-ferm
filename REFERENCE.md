@@ -410,6 +410,18 @@ ferm::ipset { 'CONSUL':
 }
 ```
 
+##### Create an iptables rule that allows outbound traffic that matches the ipset `internet`
+
+```puppet
+ferm::ipset { 'allow_outbound_ipsets':
+  table => 'OUTPUT',
+  match => 'dst',
+  sets  => {
+    'internet' => 'ACCEPT'
+  },
+}
+```
+
 ##### create two matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
 
 ```puppet
@@ -433,6 +445,7 @@ The following parameters are available in the `ferm::ipset` defined type:
 * [`table`](#-ferm--ipset--table)
 * [`ip_version`](#-ferm--ipset--ip_version)
 * [`prepend_to_chain`](#-ferm--ipset--prepend_to_chain)
+* [`match`](#-ferm--ipset--match)
 
 ##### <a name="-ferm--ipset--sets"></a>`sets`
 
@@ -471,6 +484,14 @@ Data type: `Boolean`
 By default, ipset rules are added to the top of the chain. Set this to false to append them to the end instead.
 
 Default value: `true`
+
+##### <a name="-ferm--ipset--match"></a>`match`
+
+Data type: `Enum['dst', 'src']`
+
+Define if 'sets' should match for 'src' or 'dst'. Default: 'src'
+
+Default value: `'src'`
 
 ### <a name="ferm--rule"></a>`ferm::rule`
 
