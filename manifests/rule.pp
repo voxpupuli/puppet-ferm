@@ -39,12 +39,15 @@
 # @param comment A comment that will be added to the ferm config and to ip{,6}tables
 # @param action Configure what we want to do with the packet (drop/accept/reject, can also be a target chain name). The parameter is mandatory.
 #   Allowed values: (RETURN|ACCEPT|DROP|REJECT|NOTRACK|LOG|MARK|DNAT|SNAT|MASQUERADE|REDIRECT|String[1])
-# @param dport The destination port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param sport The source port, can be a single port number as integer or an Array of integers (which will then use the multiport matcher)
 # @param saddr The source address we want to match
 # @param daddr The destination address we want to match
 # @param proto_options Optional parameters that will be passed to the protocol (for example to match specific ICMP types)
 # @param interface an Optional interface where this rule should be applied
+# @param outerface an Optional outerface where this rule should be applied
+# @param daddr_type Match destination packets based on their address type
+# @param saddr_type Match source packets based on their address type
+# @param ctstate Check conntrack information for ctstate, e.g. [ 'RELATED', 'ESTABLISHED' ]
 # @param ensure Set the rule to present or absent
 # @param table Select the target table (filter/raw/mangle/nat)
 #   Default value: filter
@@ -55,25 +58,33 @@
 define ferm::rule (
   String[1] $chain,
   Ferm::Protocols $proto,
-  Ferm::Actions $action,
+  Variant[Ferm::Actions, String[1]] $action,
   String $comment = $name,
   Optional[Ferm::Port] $dport = undef,
   Optional[Ferm::Port] $sport = undef,
-  Optional[Variant[Array, String[1]]] $saddr = undef,
-  Optional[Variant[Array, String[1]]] $daddr = undef,
+  Optional[Ferm::Address] $daddr = undef,
+  Optional[Ferm::Address] $saddr = undef,
   Optional[String[1]] $proto_options = undef,
   Optional[String[1]] $interface = undef,
+  Optional[String[1]] $outerface = undef,
+  Optional[Ferm::Addr_Type] $daddr_type = undef,
+  Optional[Ferm::Addr_Type] $saddr_type = undef,
+  Optional[Variant[String[1], Array]] $ctstate = undef,
   Enum['absent','present'] $ensure = 'present',
   Ferm::Tables $table = 'filter',
   Optional[Ferm::Negation] $negate = undef,
 ) {
-  if $action in ['RETURN', 'ACCEPT', 'DROP', 'REJECT', 'NOTRACK', 'LOG', 'MARK', 'DNAT', 'SNAT', 'MASQUERADE', 'REDIRECT'] {
-    $action_real = $action
-  } else {
-    # assume the action contains a target chain, so prefix it with the "jump" statement
-    $action_real = "jump ${action}"
-    # make sure the target chain is created before we try to add rules to it
-    Ferm::Chain <| chain == $action and table == $table |> -> Ferm::Rule[$name]
+  case $action {
+    Ferm::Actions: {
+      $action_real = $action
+    }
+    String[1]: {
+      # assume the action contains a target chain, so prefix it with the "jump" statement
+      $action_real = "jump ${action}"
+      # make sure the target chain is created before we try to add rules to it
+      Ferm::Chain <| chain == $action and table == $table |> -> Ferm::Rule[$name]
+    }
+    default: {}
   }
 
   $proto_real = $proto ? {
@@ -87,89 +98,52 @@ define ferm::rule (
 
   $negate_saddr = 'saddr' in $_negate ? { true => '!', false => '', }
   $negate_daddr = 'daddr' in $_negate ? { true => '!', false => '', }
-  $negate_sport = 'sport' in $_negate ? { true => '!', false => '', }
-  $negate_dport = 'dport' in $_negate ? { true => '!', false => '', }
 
-  if $dport =~ Array {
-    $dports = join($dport, ' ')
-    $dport_real = "mod multiport destination-ports ${negate_dport}(${dports})"
-  } elsif $dport =~ Integer {
-    $dport_real = "dport ${negate_dport}${dport}"
-  } elsif String($dport) =~ /^\d*:\d+$/ {
-    $portrange = split($dport, /:/)
-    $lower = $portrange[0] ? {
-      ''      => 0,
-      default => Integer($portrange[0]),
-    }
-    $upper = Integer($portrange[1])
-    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-      ''
-    }
-    if $lower > $upper {
-      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
-    }
-    $dport_real = "dport ${negate_dport}${lower}:${upper}"
-  } elsif String($dport) == '' {
-    $dport_real = ''
-  } else {
-    fail("invalid destination-port: ${negate_dport}${dport}")
+  $dport_real = $dport ? {
+    Ferm::Port => ferm::port_to_string('destination', $dport, 'dport' in $_negate),
+    default    => '',
   }
 
-  if $sport =~ Array {
-    $sports = join($sport, ' ')
-    $sport_real = "mod multiport source-ports ${negate_sport}(${sports})"
-  } elsif $sport =~ Integer {
-    $sport_real = "sport ${negate_sport}${sport}"
-  } elsif String($sport) =~ /^\d*:\d+$/ {
-    $portrange = split($sport, /:/)
-    $lower = $portrange[0] ? {
-      ''      => 0,
-      default => Integer($portrange[0]),
-    }
-    $upper = Integer($portrange[1])
-    assert_type(Tuple[Stdlib::Port, Stdlib::Port], [$lower, $upper]) |$expected, $actual| {
-      fail("The data type should be \'${expected}\', not \'${actual}\'. The data is [${lower}, ${upper}])}.")
-      ''
-    }
-    if $lower > $upper {
-      fail("Lower port number of the port range is larger than upper. ${lower}:${upper}")
-    }
-    $sport_real = "sport ${negate_sport}${lower}:${upper}"
-  } elsif String($sport) == '' {
-    $sport_real = ''
-  } else {
-    fail("invalid source-port: ${sport}")
+  $sport_real = $sport ? {
+    Ferm::Port => ferm::port_to_string('source', $sport, 'sport' in $_negate),
+    default    => '',
   }
 
-  if $saddr =~ Array {
-    assert_type(Array[Stdlib::IP::Address], flatten($saddr)) |$expected, $actual| {
-      fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($saddr)}." )
-      ''
-    }
-  }
-  $saddr_real = $saddr ? {
-    undef   => '',
-    Array   => "saddr ${negate_saddr}@ipfilter((${join(flatten($saddr).unique, ' ')}))",
-    String  => "saddr ${negate_saddr}@ipfilter((${saddr}))",
-    default => '',
-  }
-  if $daddr =~ Array {
-    assert_type(Array[Stdlib::IP::Address], flatten($daddr)) |$expected, $actual| {
-      fail( "The data type should be \'${expected}\', not \'${actual}\'. The data is ${flatten($daddr)}." )
-      ''
-    }
-  }
   $daddr_real = $daddr ? {
-    undef   => '',
-    Array   => "daddr ${negate_daddr}@ipfilter((${join(flatten($daddr).unique, ' ')}))",
-    String  => "daddr ${negate_daddr}@ipfilter((${daddr}))",
-    default => '',
+    Ferm::Address => "daddr ${negate_daddr}@ipfilter((${join(flatten([$daddr]).unique, ' ')}))",
+    default       => '',
   }
+
+  $saddr_real = $saddr ? {
+    Ferm::Address => "saddr ${negate_saddr}@ipfilter((${join(flatten([$saddr]).unique, ' ')}))",
+    default       => '',
+  }
+
+  $daddr_type_real = $daddr_type ? {
+    Ferm::Addr_Type => "mod addrtype dst-type ${daddr_type}",
+    default         => '',
+  }
+
+  $saddr_type_real = $saddr_type ? {
+    Ferm::Addr_Type => "mod addrtype src-type ${saddr_type}",
+    default         => '',
+  }
+
   $proto_options_real = $proto_options ? {
     undef   => '',
     default => $proto_options
   }
+
+  $outerface_real = $outerface ? {
+    String  => "outerface ${outerface}",
+    default => '',
+  }
+
+  $ctstate_real = $ctstate ? {
+    Variant[String[1], Array] => "mod conntrack ctstate (${join(flatten([$ctstate]).unique, ' ')})",
+    default                   => '',
+  }
+
   $comment_real = "mod comment comment '${comment}'"
 
   # prevent unmanaged files due to new naming schema
@@ -181,7 +155,23 @@ define ferm::rule (
     $filename = "${ferm::configdirectory}/chains/${table}-${chain}.conf"
   }
 
-  $rule = squeeze("${comment_real} ${proto_real} ${proto_options_real} ${dport_real} ${sport_real} ${daddr_real} ${saddr_real} ${action_real};", ' ')
+  $_rule = @("END"/L)
+    ${comment_real}       \
+    ${proto_real}         \
+    ${proto_options_real} \
+    ${dport_real}         \
+    ${sport_real}         \
+    ${daddr_real}         \
+    ${daddr_type_real}    \
+    ${saddr_real}         \
+    ${saddr_type_real}    \
+    ${outerface_real}     \
+    ${ctstate_real}       \
+    ${action_real};
+    |- END
+
+  $rule = squeeze($_rule, ' ')
+
   if $ensure == 'present' {
     if $interface {
       unless defined(Concat::Fragment["${chain}-${interface}-aaa"]) {
