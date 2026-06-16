@@ -2,12 +2,13 @@
 Ferm::Tables $table,
 String[1] $chain,
 Hash[String[1], Ferm::Actions] $sets,
+Enum['dst', 'src'] $match,
 | -%>
 
 domain (<%= $ip %>) table <%= $table %> {
     chain <%= $chain %> {
       <%- $sets.each |$ipset, $action| { -%>
-      mod set set <%= $ipset %> src <%= $action %>;
+      mod set set <%= $ipset %> <%= $match %> <%= $action %>;
       <%- } -%>
     }
 }
