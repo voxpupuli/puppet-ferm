@@ -685,4 +685,3 @@ Alias of `Variant[Integer[0, 255], Array[Integer[0, 255]], Enum['icmp', 'tcp', '
 a list of available tables
 
 Alias of `Enum['raw', 'mangle', 'nat', 'filter']`
-
