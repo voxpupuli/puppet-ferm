@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v11.0.0) (2026-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v10.0.0...v11.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#201](https://github.com/voxpupuli/puppet-ferm/pull/201) ([TheMeier](https://github.com/TheMeier))
+- Drop Debian 10 support [\#193](https://github.com/voxpupuli/puppet-ferm/pull/193) ([zilchms](https://github.com/zilchms))
+- Drop EL support [\#191](https://github.com/voxpupuli/puppet-ferm/pull/191) ([zilchms](https://github.com/zilchms))
+
+**Implemented enhancements:**
+
+- puppet/systemd: Allow 11.x [\#214](https://github.com/voxpupuli/puppet-ferm/pull/214) ([bastelfreak](https://github.com/bastelfreak))
+- Update requirements to allow OpenVox 9 [\#213](https://github.com/voxpupuli/puppet-ferm/pull/213) ([sebastianrakel](https://github.com/sebastianrakel))
+- puppetlabs/vcsrepo Allow 7.x [\#200](https://github.com/voxpupuli/puppet-ferm/pull/200) ([TheMeier](https://github.com/TheMeier))
+- metadata.json: Add OpenVox [\#196](https://github.com/voxpupuli/puppet-ferm/pull/196) ([jstraw](https://github.com/jstraw))
+- puppet/systemd: allow 8.x [\#189](https://github.com/voxpupuli/puppet-ferm/pull/189) ([jay7x](https://github.com/jay7x))
+- add test for 'Ferm::Negation' [\#172](https://github.com/voxpupuli/puppet-ferm/pull/172) ([kBite](https://github.com/kBite))
+- Add Debian 11 support [\#153](https://github.com/voxpupuli/puppet-ferm/pull/153) ([bastelfreak](https://github.com/bastelfreak))
+- add 'ipsets' hash to configure 'ferm::ipset' resource via Hiera [\#125](https://github.com/voxpupuli/puppet-ferm/pull/125) ([kBite](https://github.com/kBite))
+
 ## [v10.0.0](https://github.com/voxpupuli/puppet-ferm/tree/v10.0.0) (2024-06-13)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ferm/compare/v9.0.0...v10.0.0)
