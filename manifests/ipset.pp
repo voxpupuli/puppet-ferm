@@ -10,6 +10,15 @@
 #     },
 #   }
 #
+# @example Create an iptables rule that allows outbound traffic that matches the ipset `internet`
+#   ferm::ipset { 'allow_outbound_ipsets':
+#     table => 'OUTPUT',
+#     match => 'dst',
+#     sets  => {
+#       'internet' => 'ACCEPT'
+#     },
+#   }
+#
 # @example create two matches for IPv6, both at the end of the `INPUT` chain. Explicitly mention the `filter` table.
 #   ferm::ipset { 'INPUT':
 #     prepend_to_chain => false,
@@ -35,12 +44,16 @@
 # @param prepend_to_chain
 #   By default, ipset rules are added to the top of the chain. Set this to false to append them to the end instead.
 #
+# @param match
+#   Define if 'sets' should match for 'src' or 'dst'. Default: 'src'
+#
 define ferm::ipset (
   Hash[String[1], Ferm::Actions] $sets,
   String[1]                      $chain            = $name,
   Ferm::Tables                   $table            = 'filter',
   Enum['ip','ip6']               $ip_version       = 'ip',
   Boolean                        $prepend_to_chain = true,
+  Enum['dst', 'src']             $match            = 'src',
 ) {
   $suffix = $prepend_to_chain ? {
     true  => 'aaa',
@@ -56,6 +69,7 @@ define ferm::ipset (
         'table' => $table,
         'chain' => $chain,
         'sets'  => $sets,
+        'match' => $match,
       }
     ),
     order   => "${table}-${chain}-${suffix}",
