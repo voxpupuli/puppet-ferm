@@ -188,21 +188,21 @@ define ferm::rule (
         concat::fragment { "${chain}-${interface}-aaa":
           target  => $filename,
           content => "interface ${interface} {\n",
-          order   => $interface,
+          order   => "${interface}-000",
         }
       }
 
       concat::fragment { "${chain}-${interface}-${name}":
         target  => $filename,
         content => "  ${rule}\n",
-        order   => $interface,
+        order   => "${interface}-001",
       }
 
       unless defined(Concat::Fragment["${chain}-${interface}-zzz"]) {
         concat::fragment { "${chain}-${interface}-zzz":
           target  => $filename,
           content => "}\n",
-          order   => $interface,
+          order   => "${interface}-999",
         }
       }
     } else {
